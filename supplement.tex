@@ -1,0 +1,168 @@
+\PassOptionsToPackage{dvipsnames}{xcolor}
+\documentclass[acmsmall,screen,review,anonymous,nonacm]{acmart}
+
+\settopmatter{printacmref=false}
+\input{preamble.tex}
+
+\citestyle{acmnumeric}
+\providecommand{\textcite}{\citet}
+\providecommand{\autocite}{\cite}
+\providecommand{\parencite}{\citep}
+
+\begin{document}
+
+\title{Polymorphic Type Slicing: Supplementary Material}
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Anonymous Institution}
+  \country{}}
+\maketitle
+
+\noindent This supplement collects the rule sets and theorems deferred from the
+main paper: the complete bidirectional typing rules, the full (unmarked and
+marked) context-classification rules, and the marked-context metatheory.
+
+\section{Full Typing Rules}
+\label{supp:typing-rules}
+
+\begin{figure}[H]
+\small
+\fbox{$\synthesis{e}{\tau}$}\ \ \ $e$ synthesises type $\tau$ under type variable context $\Delta$ and typing assumptions $\Gamma$
+\[\inference[\synr{$\gap$}]{}{\synthesis{\gap}{\gap}} \qquad
+  \inference[\synr{*}]{}{\synthesis{*}{*}}\]
+\[\inference[\synr{Var}]{x : \tau \in \Gamma}{\synthesis{x}{\tau}}\]
+\[\inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \Rightarrow \tau_2}} \qquad
+  \inference[\synr{let}]{\synthesis{e_1}{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_2}{\tau_2}}{\synthesis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}}\]
+\[\inference[\synr{$\Lambda$}]{\synthesis[\Delta, \alpha;\,\Gamma]{e}{\tau}}{\synthesis{\Lambda\alpha.\; e}{\forall\alpha.\;\tau}} \qquad
+  \inference[\synr{TApp}]{\wf{\sigma} & \synthesis{e}{\tau} & \tau \sqcup \forall\alpha.\;\gap \equiv \forall\alpha.\;\tau'}{\synthesis{e\langle\sigma\rangle}{[\alpha \mapsto \sigma]\,\tau'}}\]
+\[\inference[\synr{App}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \analysis{e_2}{\tau_1}}{\synthesis{e_1(e_2)}{\tau_2}}\]
+\[\inference[\synr{\&}]{\synthesis{e_1}{\tau_1} & \synthesis{e_2}{\tau_2}}{\synthesis{(e_1,\; e_2)}{\tau_1 \times \tau_2}}\]
+\[\inference[\synr{$\pi_1$}]{\synthesis{e}{\tau} & \tau \sqcup (\gap \times \gap) \equiv \tau_1 \times \tau_2}{\synthesis{\pi_1\; e}{\tau_1}} \qquad
+  \inference[\synr{$\pi_2$}]{\synthesis{e}{\tau} & \tau \sqcup (\gap \times \gap) \equiv \tau_1 \times \tau_2}{\synthesis{\pi_2\; e}{\tau_2}}\]
+\[\inference[\synr{$\iota_1$}]{\synthesis{e}{\tau}}{\synthesis{\iota_1\; e}{\tau + \gap}} \qquad
+  \inference[\synr{$\iota_2$}]{\synthesis{e}{\tau}}{\synthesis{\iota_2\; e}{\gap + \tau}}\]
+\[\inference[\synr{case}]{\synthesis{e}{\tau} & \tau \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 & \tau_1' \sim \tau_2' \\ \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_1}{\tau_1'} & \synthesis[\Delta;\,\Gamma, y \mathbin{:} \tau_2]{e_2}{\tau_2'}}{\synthesis{\mathbf{case}\;e\;\mathbf{of}\;x.\;e_1 \mid y.\;e_2}{\tau_1' \sqcup \tau_2'}}\]
+\caption{Synthesis rules.}
+\label{supp:fig:synthesis-rules}
+\end{figure}
+
+\begin{figure}[H]
+\small
+\fbox{$\analysis{e}{\tau}$}\ \ \ $e$ analyses against type $\tau$ under $\Delta$ and $\Gamma$
+\[\inference[\anar{Sub}]{\synthesis{e}{\tau'} & \tau \sim \tau'}{\analysis{e}{\tau}}\]
+\[\inference[\anar{$\lambda$}]{\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\analysis{\lambda x.\; e}{\tau}}\]
+\[\inference[\anar{$\lambda$Ann}]{\wf{\tau_1} & \tau \sim \tau_1 \Rightarrow \gap \\ \tau \sqcup \tau_1 \Rightarrow \gap \equiv \tau_1' \Rightarrow \tau_2 & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\analysis{\lambda x \mathbin{:} \tau_1.\; e}{\tau}}\]
+\[\inference[\anar{case}]{\synthesis{e}{\tau'} & \tau' \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 \\ \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_1}{\tau} & \analysis[\Delta;\,\Gamma, y \mathbin{:} \tau_2]{e_2}{\tau}}{\analysis{\mathbf{case}\;e\;\mathbf{of}\;x.\;e_1 \mid y.\;e_2}{\tau}}\]
+\[\inference[\anar{$\iota_1$}]{\tau \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 & \analysis{e}{\tau_1}}{\analysis{\iota_1\; e}{\tau}} \qquad
+  \inference[\anar{$\iota_2$}]{\tau \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 & \analysis{e}{\tau_2}}{\analysis{\iota_2\; e}{\tau}}\]
+\[\inference[\anar{\&}]{\tau \sqcup (\gap \times \gap) \equiv \tau_1 \times \tau_2 & \analysis{e_1}{\tau_1} & \analysis{e_2}{\tau_2}}{\analysis{(e_1,\; e_2)}{\tau}}\]
+\[\inference[\anar{let}]{\synthesis{e_1}{\tau_1} & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_2}{\tau}}{\analysis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau}}\]
+\caption{Analysis rules. \anar{Sub} is the unique bridge from analysis to synthesis.}
+\label{supp:fig:analysis-rules}
+\end{figure}
+
+\section{Term-Minimal Slice Calculus}
+\label{supp:tmrules}
+
+\begin{figure}[H]
+\centering
+\scriptsize
+\fbox{\normalsize $\Delta;\,\Gamma \vdash e \Uparrow \tau \mathbin{\blacktriangleleft} \upsilon \rightsquigarrow \varsigma \Uparrow \psi \dashv \gamma$}
+\bigskip
+
+\inference[\synr{Var}]{
+  \Gamma(x) = \tau \quad \upsilon \neq \gap
+}{\tmrule{x}{\tau}{\upsilon}{x}{\tau}{x : \upsilon}}
+
+\bigskip
+
+\inference[\synr{Gap}]{}{\tmrule{e}{\tau}{\gap}{\gap}{\gap}{\emptyset}}
+
+\bigskip
+
+\inference[\synr{Const}]{}{\tmrule{*}{*}{\latticetop}{*}{*}{\emptyset}}
+
+\bigskip
+
+\inference[\synr{Pair}]{
+  \tmrule{e_1}{\tau_1}{\upsilon_1}{\varsigma_1}{\psi_1}{\gamma_1}
+  &
+  \tmrule{e_2}{\tau_2}{\upsilon_2}{\varsigma_2}{\psi_2}{\gamma_2}
+}{\tmrule{(e_1, e_2)}{\tau_1 \times \tau_2}{\upsilon_1 \times \upsilon_2}{(\varsigma_1, \varsigma_2)}{\psi_1 \times \psi_2}{\gamma_1 \sqcup \gamma_2}}
+
+\bigskip
+
+\inference[\synr{Proj}]{
+  \upsilon \neq \gap
+  &
+  \tmrule{e}{\tau_1 \times \tau_2}{\widehat{\upsilon}_i}{\varsigma}{\psi_1}{\gamma}
+}{\tmrule{\pi_i\,e}{\tau_i}{\upsilon}{\pi_i\,\varsigma}{\pi_i\,\psi_1}{\gamma}}
+
+\bigskip
+
+\inference[\synr{App}]{
+  \analysis{e_2}{\tau_1}
+  &
+  \upsilon \neq \gap
+  &
+  \tmrule{e_1}{\tau_1 \Rightarrow \tau_2}{\gap \Rightarrow \upsilon}{\varsigma_{\mathit{fn}}}{\psi_1}{\gamma}
+}{\tmrule{e_1\,e_2}{\tau_2}{\upsilon}{\varsigma_{\mathit{fn}}(\gap)}{\mathsf{cod}(\psi_1)}{\gamma}}
+
+\bigskip
+
+\inference[\synr{Lam{:}}]{
+  \tmrule[\Delta;\,\Gamma, x{:}\tau_1]{e_2}{\tau_2}{\upsilon_2}{\varsigma_2}{\psi_2}{\gamma, x{:}\phi_1}
+  &
+  \synthesis[\Delta;\,\Gamma, x{:}(\phi_1 \sqcup \upsilon_1)]{\varsigma_2}{\psi_2'}
+}{\tmrule{\lambda x{:}\tau_1.\,e_2}{\tau_1 \Rightarrow \tau_2}{\upsilon_1 \Rightarrow \upsilon_2}{\lambda x{:}(\phi_1 \sqcup \upsilon_1).\;\varsigma_2}{(\phi_1 \sqcup \upsilon_1) \Rightarrow \psi_2'}{\gamma}}
+
+\bigskip
+
+\inference[\synr{Let}]{
+  \upsilon_2 \neq \gap
+  &
+  \tmrule[\Delta;\,\Gamma, x{:}\tau_1]{e_2}{\tau_2}{\upsilon_2}{\varsigma_b}{\psi_2}{\gamma_2, x{:}\upsilon_1}
+  \\
+  \tmrule{e_1}{\tau_1}{\upsilon_1}{\varsigma_d}{\psi_1}{\gamma_1}
+  &
+  \synthesis[\Delta;\,\Gamma, x{:}\psi_1]{\varsigma_b}{\psi_2'}
+}{\tmrule{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}{\upsilon_2}{\mathbf{let}\;x = \varsigma_d\;\mathbf{in}\;\varsigma_b}{\psi_2'}{\gamma_1 \sqcup \gamma_2}}
+
+\bigskip
+
+\inference[\synr{TLam}]{
+  \tmrule[\Delta, \alpha;\,\Gamma]{e}{\tau}{\upsilon}{\varsigma}{\psi'}{\gamma}
+}{\tmrule{\Lambda\alpha.\,e}{\forall\alpha.\,\tau}{\forall\alpha.\,\upsilon}{\Lambda\alpha.\,\varsigma}{\forall\alpha.\,\psi'}{\gamma}}
+
+\bigskip
+
+\centerline{\normalsize \fbox{\synr{TApp} and \synr{Case}: see the Optimising section of the main paper.}}
+\caption{Term-minimal slice calculus rules.}
+\label{fig:tmrules}
+\end{figure}
+
+\clearpage
+\input{appendix-context-classification.tex}
+
+\section{Marked-Context Metatheory}
+\label{supp:marked}
+
+Marked context classification (introduced in the Error Marking section of the main
+paper) is validated by a pair of theorems mirroring the unmarked plug totality and
+soundness theorems.
+
+\begin{theorem}[Marked Plug Decomposition -- Totality]\label{supp:thm:mplug-decompose}
+For any context $\C$, expression $e$, and outer derivation mode $d$:
+\begin{itemize}
+\item If\/ $\synmark{\C[e]}{\chk{e_\star}}{\tau}$, then there exist $\Delta'$, $\Gamma'$, $\chk\C$, $\chk e$, and $m$ such that $\mctxclass{\C}{\chk\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}$, $e$ marks to $\chk e$ at focus mode $m$, and $\chk{e_\star} = \chk\C[\chk e]$.
+\item If\/ $\anamark{\C[e]}{\chk{e_\star}}{\tau}$, then there exist $\Delta'$, $\Gamma'$, $\chk\C$, $\chk e$, and $m$ such that $\mctxclass{\C}{\chk\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}$, $e$ marks to $\chk e$ at focus mode $m$, and $\chk{e_\star} = \chk\C[\chk e]$.
+\end{itemize}
+Here ``$e$ marks to $\chk e$ at focus mode $m$'' means: if $m = {\color{BrickRed}\Uparrow}\;\tau'$ then $\synmark[\Delta';\,\Gamma']{e}{\chk e}{\tau'}$; if $m = {\color{BlueViolet}\Downarrow}\;\tau'$ then $\anamark[\Delta';\,\Gamma']{e}{\chk e}{\tau'}$.
+\end{theorem}
+
+\begin{theorem}[Marked Plug Composition -- Soundness]\label{supp:thm:mplug-compose}
+For any context $\C$, marked context $\chk\C$, outer derivation mode $d$, and focus mode $m$: if\/ $\mctxclass{\C}{\chk\C}{d}{\Delta';\,\Gamma'}{m}$ and $e$ marks to $\chk e$ at focus mode $m$, then $\C[e]$ marks to $\chk\C[\chk e]$ at outer derivation mode $d$.
+\end{theorem}
+
+
+\end{document}

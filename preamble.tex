@@ -1,0 +1,357 @@
+% preamble.tex - POPL port of the Polymorphic Type Slicing macros.
+% Loaded AFTER \documentclass{acmart}. acmart already provides amsmath, amssymb,
+% amsthm, graphicx, xcolor, hyperref, booktabs, geometry, natbib, and predefined
+% theorem/lemma/proposition/corollary/conjecture/definition/example environments.
+% Dropped vs the dissertation: geometry, fancyhdr, hyperref, biblatex, the lualatex
+% font setup (directlua emdash + \setmainfont), caption, marginnote, all
+% mechanisation glyphs/marginpars (now no-ops; see end of file).
+
+% acmart loads amsmath but not amssymb; we need \triangleq, \blacktriangleright,
+% \Box, \boxdot, \nRightarrow, ... throughout.
+\usepackage{amssymb}
+
+% Save \sqsubseteq before semantic redefines it (needed for tikz-cd labels).
+\let\sqsubseteqOriginal\sqsubseteq
+\let\sqsupseteqOriginal\sqsupseteq
+
+\usepackage{semantic}        % \inference
+\usepackage{stmaryrd}        % \llbracket, \rrparenthesis, ...
+\providecommand{\Circle}{\bigcirc} % wasysym incompatible with lualatex
+\usepackage{mathtools}
+
+\usepackage{soul}             % \hl
+\usepackage[most]{tcolorbox}
+\usepackage[normalem]{ulem}
+
+\usepackage{tabularx}
+\usepackage{arydshln}         % dashed col separators
+\usepackage{float}
+\usepackage{subcaption}
+
+\usepackage{etoolbox}
+\usepackage{needspace}
+\pretocmd{\subsection}{\needspace{2\baselineskip}}{}{}
+
+\usepackage{cleveref}
+
+% ---------------------------------------------------------------------------
+% Colours
+% ---------------------------------------------------------------------------
+\definecolor{commentgreen}{RGB}{2,112,10}
+\definecolor{weborange}{RGB}{255,165,0}
+\definecolor{frenchplum}{RGB}{129,20,83}
+
+% Vibrant overrides for dvipsnames slice/highlight colours
+\definecolor{BrickRed}{RGB}{210,35,40}
+\definecolor{NavyBlue}{RGB}{30,80,225}
+\definecolor{OliveGreen}{RGB}{35,165,45}
+\definecolor{Mulberry}{RGB}{215,55,175}
+
+% Universal-property diagram convention: assumed (Class 2), induced (Class 3)
+\colorlet{assumed}{BurntOrange!80!black}
+\colorlet{induced}{TealBlue!45!black}
+
+% ---------------------------------------------------------------------------
+% Review-edit highlighting (every reworded/new span is wrapped for the author).
+% \edited{...} for inline spans; editedblock for new paragraphs / display math.
+% ---------------------------------------------------------------------------
+% lua-ul \highLight survives line breaks and arbitrary macros (\cref, footnotes)
+% under lualatex, unlike soul's \hl.
+\usepackage{luacolor}
+\usepackage{lua-ul}
+\newcommand{\edited}[1]{\highLight[cyan!22]{#1}}
+\newtcolorbox{editedblock}{breakable, enhanced, colback=cyan!6, colframe=cyan!45,
+  boxrule=0.3pt, left=4pt, right=4pt, top=3pt, bottom=3pt, sharp corners}
+
+% ---------------------------------------------------------------------------
+% Code / slice text fonts
+% ---------------------------------------------------------------------------
+\newcommand{\asmref}[1]{\textcolor{assumed}{\textbf{#1}}}
+\newcommand{\synsrc}[1]{\textcolor{NavyBlue!60!gray}{#1}}
+\newcommand{\anasrc}[1]{\textcolor{OliveGreen!60!gray}{#1}}
+% Heavy mono for highlighted type-source spans. The dissertation used
+% SourceCodePro-Black via fontspec; here we use bold typewriter to avoid a
+% hard font dependency under acmart.
+\newcommand{\heavymono}{\bfseries\ttfamily}
+\newcommand{\synsrcS}[1]{\textcolor{blue!85!black}{{\heavymono #1}}}
+\newcommand{\anasrcS}[1]{\textcolor{OliveGreen!75!black}{{\heavymono #1}}}
+\newcommand{\strN}[1]{\textcolor{black!85}{#1}}
+
+% Fold glyph: alias for \gap.
+\newcommand{\fold}{\gap}
+
+% ---------------------------------------------------------------------------
+% Lattice ops and precision in a muted colour
+% ---------------------------------------------------------------------------
+\definecolor{latticecolor}{HTML}{8055B5}
+\let\OLDsqcap\sqcap
+\let\OLDsqcup\sqcup
+\let\OLDsqsubset\sqsubset
+\let\OLDsqsupset\sqsupset
+\def\sqcap{\mathbin{{\color{latticecolor}\OLDsqcap}}}
+\def\sqcup{\mathbin{{\color{latticecolor}\OLDsqcup}}}
+\def\sqsubseteq{\mathrel{{\color{latticecolor}\sqsubseteqOriginal}}}
+\def\sqsupseteq{\mathrel{{\color{latticecolor}\sqsupseteqOriginal}}}
+\def\sqsubset{\mathrel{{\color{latticecolor}\OLDsqsubset}}}
+\def\sqsupset{\mathrel{{\color{latticecolor}\OLDsqsupset}}}
+\newcommand{\heytingto}{\mathbin{{\color{latticecolor}\to}}}
+\newcommand{\heytingminus}{\mathbin{{\color{latticecolor}\setminus}}}
+\newcommand{\latticetop}{{\color{latticecolor}\top}}
+\newcommand{\latticebot}{{\color{latticecolor}\bot}}
+
+% ---------------------------------------------------------------------------
+% Highlighting
+% ---------------------------------------------------------------------------
+\newcommand{\hlc}[2][yellow]{{%
+    \colorlet{foo}{#1}%
+    \sethlcolor{foo}\hl{#2}}%
+}
+\newcommand{\error}[1]{\hlc[pink!50]{#1}}
+\newcommand{\hlcmaths}[2][yellow!50]{\colorbox{#1}{$\displaystyle #2$}}
+
+\newcommand{\dyn}{{\color{teal}\texttt{?}}}          % dynamic type
+\newcommand{\gap}{{\color{teal}\Box}}
+\newcommand{\hole}[1][]{{\color{teal}\llparenthesis} #1 {\color{teal}\rrparenthesis}} % hole
+\newcommand{\cmark}{{\color{blue}\Circle}}            % context mark
+\newcommand{\type}[1]{\llbracket #1 \rrbracket}       % type interpretation
+\newcommand{\id}{\mathrm{id}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% Well-formedness: Delta |- tau wf
+\newcommand{\wf}[2][\Delta]{#1 \vdash #2\;\mathsf{wf}}
+
+% Synthesis / analysis judgements
+\newcommand{\synthesis}[3][\Delta;\,\Gamma]{#1 \vdash #2 {\color{BrickRed}\ \Uparrow}\ #3}
+\newcommand{\analysis}[3][\Delta;\,\Gamma]{#1 \vdash #2 {\color{BlueViolet}\ \Downarrow}\ #3}
+
+% Rule-name labels
+\newcommand{\synr}[1]{\textnormal{{\color{BrickRed}$\Uparrow$}\texttt{#1}}}
+\newcommand{\anar}[1]{\textnormal{{\color{BlueViolet}$\Downarrow$}\texttt{#1}}}
+\newcommand{\cnsr}[1]{\textnormal{$#1$}}
+
+\newcommand{\typeassignment}[3][\Delta;\Gamma]{#1 \vdash #2 : #3}
+
+% Slice judgements
+\newcommand{\synthesisslice}[4][\Gamma]{#1 \vdash #2 {\color{BrickRed}\ \Rightarrow}\ #3 \mid #4}
+\newcommand{\analysisslice}[5][\Gamma]{#1; #2 \vdash #3 {\color{BlueViolet}\ \Leftarrow}\ #4 \mid #5}
+
+% Term-minimal slice judgement (used in the Optimising section and the supplement).
+\providecommand{\tmrule}[7][\Delta;\,\Gamma]{%
+  #1 \vdash #2 \mathbin{{\color{BrickRed}\Uparrow}} #3
+  \mathbin{{\color{BrickRed}\blacktriangleleft}} #4
+  \;{\color{BrickRed}\rightsquigarrow}\; #5
+  \mathbin{{\color{BrickRed}\Uparrow}} #6
+  \,\dashv\, #7%
+}
+
+% Casts
+\newcommand{\scast}[2]{{\color{blue}\langle} #1 {\color{blue}\Rightarrow} #2 {\color{blue}\rangle}}
+\newcommand{\scasterror}[2]{{\color{red}\langle} #1 {\color{red}\Rightarrow} \dyn {\color{red}\nRightarrow} #2 {\color{red}\rangle}}
+\newcommand{\scastcast}[3]{{\color{blue}\langle} #1 {\color{blue}\Rightarrow} #2 {\color{blue}\Rightarrow} #3 {\color{blue}\rangle}}
+
+% Type matching
+\newcommand{\funmatch}{\blacktriangleright_\rightarrow}
+\newcommand{\groundmatch}{\blacktriangleright_{\text{ground}}}
+\newcommand{\forallmatch}{\blacktriangleright_\forall}
+
+% Elaboration judgements
+\newcommand{\elaborationSynthesis}[5][\Gamma]{#1 \vdash #2 {\color{BrickRed}\ \Uparrow\ } #3 \leadsto #4 \dashv #5}
+\newcommand{\elaborationAnalysis}[6][\Gamma]{#1 \vdash #2 {\color{BlueViolet}\ \Downarrow\ } #3 \leadsto #4 : #5 \dashv #6}
+\newcommand{\elaborationSynthesisSlice}[6][\Gamma]{#1 \vdash #2 {\color{BrickRed}\ \Rightarrow\ } #3 \mid #4 \leadsto #5 \dashv #6}
+\newcommand{\elaborationAnalysisSlice}[9][\Gamma]{#1;\ #2 \vdash #3 {\color{BlueViolet}\ \Leftarrow\ } #4 \mid #5 \leadsto #6 : #7 \mid #8 \dashv #9}
+
+% Context classification
+\newcommand{\ctxclass}[5][\Delta;\,\Gamma]{#1 \vdash #2\;\mathbf{at}\;#3\;\triangleright\;#4\;[\,#5\,]}
+
+% Marking
+\newcommand{\marksto}{\looparrowright}
+\newcommand{\synmark}[4][\Delta;\,\Gamma]{#1 \vdash #2 \marksto #3 {\color{BrickRed}\ \Uparrow}\ #4}
+\newcommand{\anamark}[4][\Delta;\,\Gamma]{#1 \vdash #2 \marksto #3 {\color{BlueViolet}\ \Downarrow}\ #4}
+\newcommand{\mctxclass}[6][\Delta;\,\Gamma]{#1 \vdash #2 \marksto #3\;\mathbf{at}\;#4\;\triangleright\;#5\;[\,#6\,]}
+\newcommand{\chk}[1]{\check{#1}}
+
+% Mark wrappers
+\definecolor{markcolor}{RGB}{170,40,60}
+\newcommand{\markopen}{{\color{markcolor}\llparenthesis}}
+\newcommand{\markclose}{{\color{markcolor}\rrparenthesis}}
+\newcommand{\markincon}[3][\cdot]{{\markopen #1 \markclose}_{#2 \not\sim #3}}
+\newcommand{\markarrow}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright \Rightarrow}}
+\newcommand{\marksum}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright +}}
+\newcommand{\markprod}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright \times}}
+\newcommand{\markforall}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright \forall}}
+\newcommand{\marklam}[1][\cdot]{{\markopen #1 \markclose}_{\sim \Rightarrow}}
+\newcommand{\markprodsim}[1][\cdot]{{\markopen #1 \markclose}_{\sim \times}}
+\newcommand{\markvar}[1]{{\color{markcolor}\langle} #1 {\color{markcolor}\rangle}\!\Uparrow}
+
+\newcommand{\markbox}[1]{%
+  \tikz[baseline=(N.base)]{%
+    \node[draw=BrickRed!85, dashed, line width=0.7pt, rounded corners=2pt,
+          inner sep=2pt, fill=BrickRed!6, anchor=base] (N) {\strut$#1$};%
+  }%
+}
+
+\DeclareRobustCommand{\squiggle}[1]{%
+  {\color{red}\uwave{\mbox{\normalcolor #1}}}%
+}
+
+\newcommand{\slist}[1]{%
+  \tikz[baseline=(N.base)]{%
+    \node[draw=OliveGreen!25, dashed, line width=0.4pt, rounded corners=1.5pt,
+          inner sep=1.5pt, fill=OliveGreen!4, anchor=base] (N) {\strut$#1$};%
+  }%
+}
+
+\newcommand{\queryblock}[2]{%
+  \begin{center}
+  \small
+  \begin{tabular}{r@{\;}c@{\;}l}
+    {\color{NavyBlue}synthesis query}  & $\upsilon\;=$ & $#1$ \\
+    {\color{OliveGreen}analysis query} & $\psi\;=$ & $#2$ \\
+  \end{tabular}
+  \end{center}
+}
+
+% Structural variables (from formalism)
+\newcommand{\C}{\mathcal{C}}
+\newcommand{\Cs}{c}
+\newcommand{\p}{d}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\f}{f}
+\newcommand{\Sb}{\mathcal{S}}
+
+\DeclareMathAlphabet{\mathdcal}{U}{dutchcal}{m}{n}
+\newcommand{\A}{\mathdcal{A}}
+
+\newcommand{\ground}[1][\tau]{#1\text{ ground}}
+\newcommand{\final}[1][d]{#1\text{ final}}
+\newcommand{\val}[1][d]{#1\text{ val}}
+\newcommand{\boxedval}[1][d]{#1\text{ boxedval}}
+\newcommand{\indet}[1][d]{#1\text{ indet}}
+
+\newcommand{\contextualsub}[1][d/u]{\llbracket #1 \rrbracket}
+
+% Polymorphism
+\newcommand{\Forall}[2]{\forall #1.\ #2}
+\newcommand{\TLam}[2]{\Lambda #1.\ #2}
+\newcommand{\TApp}[2]{#1\ @#2}
+\newcommand{\ForallSlice}[2]{\forall #1.\ #2}
+\newcommand{\gapforall}{{\color{teal}\forall\Box.\Box}}
+
+% Labelled tuples
+\newcommand{\lbl}[2]{\mathtt{#1} : #2}
+\newcommand{\tuplety}[1]{\{#1\}}
+
+% ---------------------------------------------------------------------------
+% Theorem environments. acmart predefines theorem/lemma/proposition/corollary/
+% conjecture/definition/example; we add the ones it lacks.
+% ---------------------------------------------------------------------------
+\makeatletter
+\theoremstyle{acmplain}
+\@ifundefined{theorem}{\newtheorem{theorem}{Theorem}[section]}{}
+\@ifundefined{lemma}{\newtheorem{lemma}[theorem]{Lemma}}{}
+\@ifundefined{proposition}{\newtheorem{proposition}[theorem]{Proposition}}{}
+\@ifundefined{corollary}{\newtheorem{corollary}[theorem]{Corollary}}{}
+\@ifundefined{conjecture}{\newtheorem{conjecture}[theorem]{Conjecture}}{}
+\@ifundefined{counterexample}{\newtheorem{counterexample}[theorem]{Counterexample}}{}
+\theoremstyle{acmdefinition}
+\@ifundefined{definition}{\newtheorem{definition}[theorem]{Definition}}{}
+\@ifundefined{example}{\newtheorem{example}[theorem]{Example}}{}
+\theoremstyle{acmplain}
+\@ifundefined{remark}{\newtheorem{remark}[theorem]{Remark}}{}
+\makeatother
+
+% Master-theorem sub-numbering: produces "Theorem N.M.k"
+\newcounter{subthm}
+\newcommand{\masterthmnum}{??}
+\renewcommand{\thesubthm}{\masterthmnum.\arabic{subthm}}
+\newcommand{\mastercases}{%
+  \xdef\masterthmnum{\thetheorem}%
+  \setcounter{subthm}{0}%
+}
+\newenvironment{thmcase}[1][]{%
+  \refstepcounter{subthm}%
+  \par\medskip\noindent{\bfseries Theorem~\thesubthm}%
+  \ifx\\#1\\\else\ (\textit{#1})\fi%
+  {\bfseries.}\itshape\quad\ignorespaces
+}{%
+  \par\medskip
+}
+
+\newtcolorbox{recipe}[1]{
+  colback=blue!3, colframe=blue!40, fonttitle=\bfseries,
+  title={Recipe: #1}, sharp corners, boxrule=0.5pt
+}
+\newtcolorbox{originalerror}[1][]{
+  colback=red!3, colframe=red!40, fonttitle=\bfseries,
+  title={Error (Original)#1}, sharp corners, boxrule=0.5pt
+}
+\newtcolorbox{majortheorembox}{
+  colback=green!3, colframe=OliveGreen!60, sharp corners, boxrule=0.5pt, enhanced
+}
+\newtcolorbox{counterexamplebox}{
+  colback=orange!3, colframe=orange!50, sharp corners, boxrule=0.5pt, enhanced
+}
+
+% Multi-slice highlighting
+\newcommand{\sliceA}[1]{\textbf{\underline{\textcolor{BrickRed}{#1}}}}
+\newcommand{\sliceB}[1]{\underline{\textcolor{NavyBlue}{#1}}}
+\newcommand{\sliceC}[1]{\underline{\textcolor{OliveGreen}{#1}}}
+\newcommand{\sliceD}[1]{\underline{\textcolor{Mulberry}{#1}}}
+
+% Highlighted-box slice notation
+\newcommand{\sli}[2][NavyBlue]{%
+  \tikz[baseline=(N.base)]{%
+    \node[draw=#1!60, dashed, line width=0.4pt, rounded corners=1.5pt,
+          inner sep=1.5pt, fill=#1!12, anchor=base] (N) {\strut$#2$};%
+  }%
+}
+\newcommand{\slr}[1]{%
+  \tikz[baseline=(N.base)]{%
+    \node[draw=BrickRed!80, line width=0.8pt, rounded corners=2pt,
+          inner sep=3pt, fill=none, anchor=base] (N) {\strut$#1$};%
+  }%
+}
+\newcommand{\fullslice}[2]{%
+  \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
+    \node[draw, line width=0.9pt, rounded corners,
+          label={[font=\scriptsize\itshape]above:assumptions}] (a) {$#1$};
+    \node[below=6pt of a] (t) {$#2$};
+  \end{tikzpicture}%
+}
+\newcommand{\gapbox}{\boxdot}
+
+% tikz
+\usepackage{tikz-cd}
+\usetikzlibrary{positioning,calc,fit,backgrounds,decorations.pathmorphing,shapes.geometric,arrows.meta}
+\tikzcdset{arrows={->}, diagrams={column sep=large, row sep=large}}
+
+% Lightweight footnote-block environment retained from the dissertation.
+\newsavebox{\fnbox}
+\newenvironment{fn}
+  {\begin{lrbox}{\fnbox}\footnotesize\begin{minipage}{\linewidth}}
+  {\end{minipage}\end{lrbox}\footnote{\usebox{\fnbox}}}
+
+% ---------------------------------------------------------------------------
+% Mechanisation markers and marginpars: REMOVED for the POPL version (a separate
+% mechanisation supplement is provided). Defined as no-ops so any residual call in
+% the copied sources still compiles.
+% ---------------------------------------------------------------------------
+\newcommand{\yo}{}
+\newcommand{\no}{}
+\newcommand{\po}{}
+\newcommand{\iy}{}
+\newcommand{\ino}{}
+\newcommand{\ipart}{}
+\newcommand{\mech}[2]{}
+\newcommand{\mechyes}[1]{}
+\newcommand{\mechno}[1]{}
+\newcommand{\mechpartial}[1]{}
+\newcommand{\mechfile}[2][]{}
+\newcommand{\mechbox}[1]{}
+\newcommand{\sectionlegend}{}
+% Raw \marginnote / \marginpar no-ops (signature [opt]{mand}[opt]).
+\makeatletter
+\renewcommand{\marginpar}[2][]{}
+\newcommand{\marginnote}[2][]{\@ifnextchar[\@mn@gobble\relax}
+\def\@mn@gobble[#1]{}
+\makeatother

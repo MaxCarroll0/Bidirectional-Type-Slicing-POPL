@@ -1,0 +1,119 @@
+\section{Context Typing}
+\label{sec:context-typing}
+
+Context classification is a novel construction for bidirectional type systems. It is inspired by one-hole contexts (zippers) of algebraic data types~\cite{Huet1997}, decomposing a data structure into a focused element and its surrounding context. We apply the same idea applies to \textit{typing derivations}: given a derivation of an expression $e$ and focusing on a sub-term $e'$ in $e$, we focus on the subderivation of $e'$ and pair it with a `context typing derivation' of the surrounding context.
+
+A context typing derivation therefore must record the extra assumptions made available at the focus by additional bound variables introduced in the captured context, and the mode of the focus (whether or not the sub-term synthesises a type). These are necessary to type checking the focus (i.e. e') directly from the typing derivation of the context.
+
+\subsection{Context Syntax and Slice Lattice}
+\label{sec:context-syntax}
+
+
+Formally we must first define one-hole contexts on terms themselves (figure~\ref{fig:contexts}). The focus of the context is notated $\cmark$ and is restricted to a single position in an expression. For any context, you can place a term at the focus to produce a complete term. This is notated by $\C[e]$, `plugging $e$ into context $\C$'.
+
+\begin{figure}[h]
+\fbox{Syntax}\ \ \ One-hole expression contexts $\C$
+\begin{align*}
+\C &::= \cmark \mid \lambda x \mathbin{:} \tau.\; \C \mid \lambda x.\; \C \mid \C(e) \mid e(\C) \mid \C\langle\tau\rangle \\
+  &\quad\mid\; (\C,\; e) \mid (e,\; \C) \mid \iota_1\; \C \mid \iota_2\; \C \mid \pi_1\; \C \mid \pi_2\; \C \\
+  &\quad\mid\; \mathbf{case}\;e\;\mathbf{of}\;x.\;\C \mid y.\;f \mid \mathbf{case}\;e\;\mathbf{of}\;x.\;f \mid y.\;\C \\
+  &\quad\mid\; \Lambda\alpha.\; \C \mid \mathbf{let}\;x = \C\;\mathbf{in}\;e \mid \mathbf{let}\;x = e\;\mathbf{in}\;\C
+\end{align*}
+\fbox{$\C[e]$}\ \ \ Plug expression $e$ into the hole $\cmark$
+\vspace{-0.5em}
+\begin{align*}
+\cmark[e] &= e \\
+(\lambda x \mathbin{:} \tau.\; \C)[e] &= \lambda x \mathbin{:} \tau.\; \C[e] \\
+(\C_1(e_2))[e] &= \C_1[e](e_2) \qquad\qquad \text{(similarly for all other constructors)}
+\end{align*}
+\fbox{$\gap_\C$}\ \ \ Purely structural context: replace all sub-terms with $\gap$, preserving structure
+\vspace{-0.5em}
+\begin{align*}
+\gap_\cmark &= \cmark &
+\gap_{\lambda x \mathbin{:} \tau.\; \C} &= \lambda x \mathbin{:} \gap.\; \gap_\C &
+\gap_{\C(e)} &= \gap_\C(\gap) \quad \text{etc.}
+\end{align*}
+\caption{One-hole expression contexts. $\cmark$ marks the hole; $\C[e]$ plugs it.}
+\label{fig:contexts}
+\end{figure}
+
+
+\label{sec:context-precision}
+Precision extends to contexts, $\C' \sqsubseteq \C$, additionally requiring the focus to be in the same structural position. This is required so that plugging context preserves precision:
+
+\begin{lemma}[Plug Preserves Precision]\label{lem:plug-precision}
+If\/ $\C' \sqsubseteq \C$ and $e' \sqsubseteq e$, then $\C'[e]' \sqsubseteq \C[e]$.
+\end{lemma}
+
+This lemma allows slicing to independently slice the \textit{external} type information from the context and the \textit{internal} type information of the focused term, whilst ensuring the whole program slice (plugging the two together) remains a valid slice of the original program.
+
+\subsection{The Context Typing Judgement}
+\label{sec:context-classification}
+
+Then, we notate context typing by a judgement $\ctxclass{\C}{d}{\Delta';\ \Gamma'}{m}$. Reading as: ``under assumptions $\Delta, \Gamma$, context $\C$ in a derivation of outer mode $d$ has its focus typed under $\Delta';\,\Gamma'$ in focus mode $m$''.
+
+The \textit{outer derivation mode} $d$ records whether the whole expression $\C[e]$ is in a synthesis derivation producing type $\tau$ ($d = {\color{BrickRed}\Uparrow}\;\tau$) or an analysis derivation against $\tau$ ($d = {\color{BlueViolet}\Downarrow}\;\tau$). The \textit{focus mode} $m$ records what the focus $e$ is must synthesise ($m = {\color{BrickRed}\Uparrow}\;\tau'$), or the type it is checked against ($m = {\color{BlueViolet}\Downarrow}\;\tau'$). Finally, $\Gamma'$ records the \textit{focus assumptions}. Each rule in these derivations is subject to \textit{additional premises} matching the corresponding term typing rules.
+
+\paragraph{Example.} Consider the derivation of $\synthesis{e_1(e_2)}{\tau_2}$ via \synr{App}, where $\synthesis{e_1}{\tau}$, $\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2$, and $\analysis{e_2}{\tau_1}$.
+\begin{itemize}
+\item \textbf{Function position} ($e_1$ is the focus, $\C = \cmark(e_2)$): The corresponding classification is: $\ctxclass{\cmark(e_2)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta;\,\Gamma}{{\color{BrickRed}\Uparrow}\;\tau}$. The focus must synthesise type $\tau$ as per the focus mode, with the extra premises being $\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2$ and $\analysis{e_2}{\tau_1}$.
+\item \textbf{Argument position} ($e_2$ is the focus, $\C = e_1(\cmark)$): The corresponding classification is: $\ctxclass{e_1(\cmark)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta;\,\Gamma}{{\color{BlueViolet}\Downarrow}\;\tau_1}$. The focus analyses against $\tau_1$ as per the focus mode, with the extra premises being: $\synthesis{e_1}{\tau}$ and $\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2$.
+\end{itemize}
+
+Specifying these rules is systematic, one for each typing rule and focus location. I give a few representative rules in Figure~\ref{fig:context-classification}. The only additional rules are for identity contexts $\texttt{s}\cmark$ and $\texttt{a}\cmark$ (the base cases) where the focus mode must match the outer derivation mode.
+
+\begin{figure}[h]
+\small
+\fbox{$\ctxclass{\C}{d}{\Delta';\,\Gamma'}{m}$}\ \ \ Context $\C$ at outer derivation mode $d$ classifies its focus under $\Delta';\,\Gamma'$ in focus mode $m$
+
+\bigskip
+\fbox{Base cases}\ \ \ identity contexts (focus mode matches outer derivation mode):
+\[\inference[\texttt{s$\cmark$}]{}{\ctxclass{\cmark}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta;\,\Gamma}{{\color{BrickRed}\Uparrow}\;\tau}} \qquad
+  \inference[\texttt{a$\cmark$}]{}{\ctxclass{\cmark}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta;\,\Gamma}{{\color{BlueViolet}\Downarrow}\;\tau}}\]
+
+\medskip
+\fbox{Synthesis mode: $d = {\color{BrickRed}\Uparrow}\;\tau$}\ \ \ the overall expression $\C[e]$ synthesises:
+\[\inference[\texttt{s$\circ_1$}]{\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \analysis{e_2}{\tau_1}}{\ctxclass{\C(e_2)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}\]
+\[\inference[\texttt{s$\circ_2$}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau_1}{\Delta';\,\Gamma'}{m}}{\ctxclass{e_1(\C)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}\]
+
+\medskip
+\fbox{Subsumption: ${\color{BrickRed}\Uparrow}\;\tau' \;\leadsto\; {\color{BlueViolet}\Downarrow}\;\tau$}\ \ \ the unique bridge from synthesis to analysis derivation mode:
+\[\inference[\texttt{aSub}]{\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau'}{\Delta';\,\Gamma'}{m} & \tau \sim \tau'}{\ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}\]
+\caption{Selected context classification rules.}
+\label{fig:context-classification}
+\end{figure}
+
+Correctness of context classification is formalised via a \textit{totality} theorem: every well-typed expression can be decomposed into context and expression at some focus, with a context classification matching a (consistent) typing derivation of the focused term. Conversely, a \textit{soundness} theorem states that a valid classification and expression satisfying the focus typing mode can be composed into a well-typed plugged expression.
+
+\begin{majortheorembox}
+\begin{theorem}[Plug Decomposition -- Totality]\label{thm:plug-decomposition}
+For any context $\C$, expression $e$, and outer derivation mode $d$:
+\begin{itemize}
+\item If\/ $\synthesis{\C[e]}{\tau}$, then there exist $\Delta'$, $\Gamma'$, and $m$ such that\\ $\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$.
+\item If\/ $\analysis{\C[e]}{\tau}$, then there exist $\Delta'$, $\Gamma'$, and $m$ such that\\ $\ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$.
+\end{itemize}
+Here ``$e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$'' means: if $m = {\color{BrickRed}\Uparrow}\;\tau'$ then $\Delta';\,\Gamma' \vdash e\;{\color{BrickRed}\Uparrow}\;\tau'$; if $m = {\color{BlueViolet}\Downarrow}\;\tau'$ then $\Delta';\,\Gamma' \vdash e\;{\color{BlueViolet}\Downarrow}\;\tau'$.
+\end{theorem}
+\end{majortheorembox}
+
+\begin{majortheorembox}
+\begin{theorem}[Plug Composition -- Soundness]\label{thm:plug-composition}
+For any context $\C$, expression $e$, outer mode $d$, and focus mode $m$: if\/ $\ctxclass{\C}{d}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$, then $\C[e]$ satisfies outer derivation mode $d$ under $\Delta;\,\Gamma$.
+\end{theorem}
+\end{majortheorembox}
+
+In order to apply the same ideas as synthesis slices, we also prove a substantial static gradual guarantee (\cref{sec:core-typing}) for context typings, defining precision on modes $m' \sqsubseteq m$ by lifting: ${\color{BrickRed}\Uparrow}\,\tau' \sqsubseteq {\color{BrickRed}\Uparrow}\,\tau$ iff $\tau' \sqsubseteq \tau$, and likewise for ${\color{BlueViolet}\Downarrow}$. The focus modes class itself (analysis or synthesis) is propagated unchanged through every classification rule.
+
+\begin{majortheorembox}
+\begin{theorem}[Static Gradual Guarantee -- Context, Synthesis Position]\label{thm:graduality-syn-cls}
+If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{{\color{BrickRed}\Uparrow}\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\tau_p'$, $\Gamma_f'$, and $m'$ with $\tau_p' \sqsubseteq \tau_p$, $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{{\color{BrickRed}\Uparrow}\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.
+\end{theorem}
+\begin{theorem}[Static Gradual Guarantee -- Context, Analysis Position]\label{thm:graduality-ana-cls}
+If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, $\tau_p' \sqsubseteq \tau_p$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{{\color{BlueViolet}\Downarrow}\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\Gamma_f'$ and $m'$ with $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{{\color{BlueViolet}\Downarrow}\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.
+\end{theorem}
+\end{majortheorembox}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "main"
+%%% End:

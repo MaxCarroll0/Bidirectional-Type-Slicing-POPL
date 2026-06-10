@@ -1,0 +1,145 @@
+\section{The Core Calculus}
+\label{sec:core-calculus}
+
+In this section, we present the core calculus which Type Slicing builds upon. It is a bidirectional, gradually typed lambda calculus, with precision on types and terms, based on the Hazel calculus~\cite{HazelLivePaper}, extended with products, sums, and explicit System~F polymorphism. We prove that this calculus satisfies graduality (\cref{sec:gradual-types}), and we define and prove several {lattices} on precision.
+
+\subsection{Syntax \& Relations}
+\label{sec:core-syntax}
+
+The syntax of the core calculus is given in Figure~\ref{fig:syntax}. $*$ is the unit type, and $\gap$ is a gap / hole serving a dual role: in the gradual typing interpretation it is the dynamic type, and in the slicing interpretation it represents unrequired type information (to explain a query). Similarly a $\gap$ in expressions represents omitted sub-expressions, irrelevant to the explanation resulting from a query. In type checking, omitted expressions synthesise the dynamic (omitted) type.
+
+\begin{figure}[H]
+\fbox{Syntax}\ \ \ Types $\tau$ and expressions $e$
+\begin{align*}
+\tau &::= \gap \mid * \mid \tau \Rightarrow \tau \mid \tau \times \tau \mid \tau + \tau \mid \forall\alpha.\;\tau \mid \alpha \\[4pt]
+e &::= \gap \mid * \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\; e \mid e(e) \mid (e,\; e) \mid \pi_1\; e \mid \pi_2\; e \\
+  &\quad\mid\; \iota_1\; e \mid \iota_2\; e \mid (\mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;e) \mid \Lambda\alpha.\; e \mid e\langle\tau\rangle \mid \mathbf{let}\;x = e\;\mathbf{in}\;e
+\end{align*}
+
+\caption{Syntax of the core calculus up to $\alpha$-equivalence (on variables $x$). $\mathrm{FV}(\cdot)$ denotes the set of free variables of an expression.}
+\label{fig:syntax}
+\end{figure}
+
+\subsubsection{Consistency}
+
+Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in standard gradual type systems (\cref{sec:gradual-types}). That is, a weakening of equality, where every type is consistent with $\gap$, and compound types are consistent when their components are. Consistency is reflexive and symmetric but \textit{not} transitive.
+
+\enlargethispage{3\baselineskip}
+\begin{figure}[H]
+\fbox{$\tau_1 \sim \tau_2$}\ \ \ $\tau_1$ is consistent with $\tau_2$
+\[\inference[$\sim\gap_1$]{}{\tau \sim \gap} \qquad
+  \inference[$\sim\gap_2$]{}{\gap \sim \tau} \qquad
+  \inference[$\sim{*}$]{}{* \sim *} \qquad
+  \inference[$\sim{\Rightarrow}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \Rightarrow \tau_2 \sim \tau_1' \Rightarrow \tau_2'}\]
+\[\inference[$\sim{\times}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \times \tau_2 \sim \tau_1' \times \tau_2'} \qquad
+  \inference[$\sim{+}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 + \tau_2 \sim \tau_1' + \tau_2'} \qquad
+  \inference[$\sim{\forall}$]{\tau \sim \tau'}{\forall\alpha.\;\tau \sim \forall\alpha.\;\tau'}\]
+\caption{Type consistency.}
+\label{fig:consistency}
+\end{figure}
+
+\subsubsection{Precision}
+
+Precision (Figure~\ref{fig:precision}) is a partial order that organises terms by \textit{information content}: for types, $\tau' \sqsubseteq \tau$ means $\tau$ has at least as much type information as $\tau'$. Here, $\gap$ is the global minimum. Expression precision is defined analogously. Figure~\ref{fig:term-precision-lattice} illustrates this with a small example.
+
+\begin{figure}[H]
+\fbox{$\tau \sqsubseteq \tau'$}\ \ \ $\tau$ is less precise than $\tau'$
+\[\inference[$\sqsubseteq\gap$]{}{\gap \sqsubseteq \tau} \qquad
+  \inference[$\sqsubseteq{*}$]{}{* \sqsubseteq *} \qquad
+  \inference[$\sqsubseteq{\alpha}$]{}{\alpha \sqsubseteq \alpha} \qquad
+  \inference[$\sqsubseteq{\Rightarrow}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 \Rightarrow \tau_2 \sqsubseteq \tau_1' \Rightarrow \tau_2'}\]
+\[\inference[$\sqsubseteq{\times}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 \times \tau_2 \sqsubseteq \tau_1' \times \tau_2'} \qquad
+  \inference[$\sqsubseteq{+}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 + \tau_2 \sqsubseteq \tau_1' + \tau_2'} \qquad
+  \inference[$\sqsubseteq{\forall}$]{\tau \sqsubseteq \tau'}{\forall\alpha.\;\tau \sqsubseteq \forall\alpha.\;\tau'}\]
+\caption{Type precision.}
+\label{fig:precision}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=1.6cm, >=stealth, every node/.style={inner sep=2pt},
+                    precarrow/.style={->, latticecolor!75, line width=0.5pt}]
+  \node (top) {$\lambda x \mathbin{:} *.\; x$};
+  \node (l)   [below left=1.4cm and 0.6cm of top] {$\lambda x \mathbin{:} *.\; \gap$};
+  \node (r)   [below right=1.4cm and 0.6cm of top] {$\lambda x \mathbin{:} \gap.\; x$};
+  \node (mid) [below=2.8cm of top] {$\lambda x \mathbin{:} \gap.\; \gap$};
+  \node (bot) [below=1.4cm of mid] {$\gap$};
+  \draw[precarrow] (l)   -- node[auto,sloped,font=\scriptsize] {$\sqsubseteq$} (top);
+  \draw[precarrow] (r)   -- node[auto,sloped,font=\scriptsize] {$\sqsupseteq$} (top);
+  \draw[precarrow] (mid) -- node[auto,sloped,font=\scriptsize] {$\sqsupseteq$} (l);
+  \draw[precarrow] (mid) -- node[auto,sloped,font=\scriptsize] {$\sqsubseteq$} (r);
+  \draw[precarrow] (bot) -- node[auto,sloped,font=\scriptsize] {$\sqsubseteq$} (mid);
+\end{tikzpicture}
+\caption{Hasse diagram of slices less precise than $\lambda x{:}*.\; x$, with each edge directed from a less-precise slice up to a more-precise slice.}
+\label{fig:term-precision-lattice}
+\end{figure}
+
+\paragraph{Precision on Typing Assumptions.} In this calculus, we represent typing assumptions as \textit{finite} partial functions from variable names to types, with domain $\mathrm{dom}(\Gamma)$. Precision is defined by domain inclusion and pointwise precision on types in the (smaller) domain:
+\[\gamma_1 \sqsubseteq \gamma_2 \iff \mathrm{dom}(\gamma_1) \subseteq \mathrm{dom}(\gamma_2) \text{ and } \gamma_1(x) \sqsubseteq \gamma_2(x) \text{ for all } x \in \mathrm{dom}(\gamma_1)\]
+That is, a less precise type assumptions set either assumes fewer variables' types, or assumes less precise types on the present variables.
+
+\begin{remark}\label{rem:assms-mechanisation}
+Typical literature refers to these \textit{typing assumptions} as `typing contexts'. I avoid this terminology as I use the \textit{context} to refer to the syntactic context around a subterm, i.e. in the same sense as used in contextual dynamics (\textcite[Chapter~5]{Harper2016}).
+\end{remark}
+
+\subsection{Lattice Properties}
+\label{sec:core-lattice}
+
+\subsubsection{Meets and Joins}
+\label{sec:core-meets-joins}
+
+The \textit{meet} $\tau_1 \sqcap \tau_2$ is the greatest lower bound (GLB), ommiting all sub-terms from both terms. The \textit{join} $\tau_1 \sqcup \tau_2$ the least upper bound (LUB) under precision, omitting only subterms omitted in both components. For example:
+\[(* \Rightarrow \gap) \sqcap (\gap \Rightarrow *) \;=\; \gap \Rightarrow \gap, \qquad\quad (* \Rightarrow \gap) \sqcup (\gap \Rightarrow *) \;=\; * \Rightarrow *.\]
+Meets are \textit{total}, but joins are defined only between \textit{consistent} types.
+
+\subsubsection{The Slice Lattice}
+\label{sec:slice-lattice}
+
+For a fixed type $\tau$, the \textit{slice lattice} of $\tau$ is the \textit{lower set} under precision:
+\[\lfloor\tau\rfloor \;=\; \{\,\upsilon \mid \upsilon \sqsubseteq \tau\,\}\]
+$\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ are defined analogously for expressions, contexts, and assumptions. Each slice lattice has top $\top = \tau$ and bottom $\bot = \gap$. Then precision, meets, and joins are simply lift unchanged into the slice lattice. Importantly all terms in the slice lattice are consistent, so joins are always defined:
+
+\begin{lemma}[Slices are Mutually Consistent]\label{lem:slices-consistent}
+If\/ $\upsilon_1 \sqsubseteq \tau$ and $\upsilon_2 \sqsubseteq \tau$, then $\upsilon_1 \sim \upsilon_2$.
+\end{lemma}
+
+Hence, all terms in the slice lattice are consistent, making it a well-defined \textit{bounded lattices}. The meet and join are also distributive. Further, they are trivially finite:
+
+\begin{theorem}\label{thm:slice-finite}
+Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ is finite.
+\end{theorem}
+
+\begin{theorem}\label{thm:slice-lattices}
+Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ is a bounded distributive lattice:
+\end{theorem}
+Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{DaveyPriestley}. We will later introduce and use co-Heyting subtraction to represent `disjoint' types in \cref{sec:algorithms}.
+
+\paragraph{Notation: Slice Lattices as Highlighted Terms.} An element of a slice lattice can be notated as a highlight of the original (top) term with omitted regions (the \gap{}s) left unhighlighted. For instance, the slice $\mathit{Int} \Rightarrow \gap$ in $\lfloor\mathit{Int} \Rightarrow \mathit{Bool}\rfloor$ can be represented as $\sli{\mathit{Int} \Rightarrow}\, \mathit{Bool}$.
+
+\subsection{Typing Rules}
+\label{sec:core-typing}
+
+The bidirectional typing judgements are mostly standard; the complete synthesis and analysis rule sets appear in the supplementary material, and Figure~\ref{fig:typing-rules-excerpt} presents some of the major rules. $\wf{\tau}$ denotes when a type $\tau$ is \textit{well-formed} under available type variables $\Delta$.
+
+\begin{figure}[H]
+\small
+\[\inference[\synr{Var}]{x : \tau \in \Gamma}{\synthesis{x}{\tau}} \qquad
+  \inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \Rightarrow \tau_2}}\]
+\[\inference[\synr{let}]{\synthesis{e_1}{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_2}{\tau_2}}{\synthesis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}} \qquad
+  \inference[\synr{$\Lambda$}]{\synthesis[\Delta, \alpha;\,\Gamma]{e}{\tau}}{\synthesis{\Lambda\alpha.\; e}{\forall\alpha.\;\tau}}\]
+\[\inference[\synr{App}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \analysis{e_2}{\tau_1}}{\synthesis{e_1(e_2)}{\tau_2}}\]
+\[\inference[\synr{TApp}]{\wf{\sigma} & \synthesis{e}{\tau} & \tau \sqcup \forall\alpha.\;\gap \equiv \forall\alpha.\;\tau'}{\synthesis{e\langle\sigma\rangle}{[\alpha \mapsto \sigma]\,\tau'}}\]
+\[\inference[\synr{case}]{\synthesis{e}{\tau} & \tau \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 & \tau_1' \sim \tau_2' \\ \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_1}{\tau_1'} & \synthesis[\Delta;\,\Gamma, y \mathbin{:} \tau_2]{e_2}{\tau_2'}}{\synthesis{\mathbf{case}\;e\;\mathbf{of}\;x.\;e_1 \mid y.\;e_2}{\tau_1' \sqcup \tau_2'}}\]
+\caption{Selected synthesis rules.}
+\label{fig:typing-rules-excerpt}
+\end{figure}
+
+Of note is the use of joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \Rightarrow \tau_2$.} $\tau \equiv \tau_1 \Rightarrow \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expression can synthesise a type when their branch synthesis \textit{consistent} types. There is a dedicated rule for unannotated let binding, which differ from function applications in a bidirectional setting due to type information flowing from the binding (argument) into the body (function). The typing rules satisfy graduality (\cref{sec:scope}).
+\begin{theorem}\label{thm:graduality-syn}
+The synthesis judgement $\synthesis[\_]{\_}{\_}$ and analysis judgement $\analysis[\_]{\_}{\_}$ satisfy downwards static graduality.
+\end{theorem}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "main"
+%%% End:

@@ -1,0 +1,47 @@
+\section{Analysis Slices}
+\label{sec:analysis}
+
+\providecommand{\anaslice}[2]{\mathit{AnaSlice}\;#1 \mathbin{\blacktriangleleft} #2}
+\providecommand{\minanaslice}[2]{\mathit{MinAnaSlice}\;#1 \mathbin{\blacktriangleleft} #2}
+\providecommand{\anaposslice}[2]{\mathit{InnerAnaSlice}\;#1 \mathbin{\blacktriangleleft} #2}
+\providecommand{\minanaposslice}[2]{\mathit{MinInnerAnaSlice}\;#1 \mathbin{\blacktriangleleft} #2}
+
+\noindent With this in mind, analysis slices are simple analogues to synthesis slices, except being conducted on context typing derivations for a \textit{fixed inner mode}. Specifically, as any program is a synthesising type, then analysis slices concern derivations only in \textit{synthesis} outer derivation mode.
+
+Intuitively, slices of the context explain why a sub-terms \textit{expected} by the surrounding context to synthesise or analyse against a given type. We typically only care about the cases where the inner mode is in \textit{analysis}; a (well-typed) surrounding context does not actually influence \textit{why} a term synthesises a type.\footnote{A context may define a variable which is used in a synthesising term, non-locally affecting the subterms type. However, assumption slices are treated entirely \textit{separately} in both modes. That is, we do not ask the analysis slice to explain how exactly the bindings provide the minimal assumptions for the focus, only how it explains the \textit{type} at the focus.}
+
+\subsection{Definition}
+\label{sec:ana-slice-def}
+Structurally, analysis slices are identical to synthesis slices (\cref{sec:syn-slice-def}), but with expression slices $\varsigma$ replaced by context slices $\kappa \in \lfloor\C\rfloor$.
+
+\begin{definition}
+\label{def:ana-slice}
+An \textit{analysis slice} of $\mathit{CD} : \ctxclass{\C}{{\color{BrickRed}\Uparrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BlueViolet}\Downarrow}\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaslice{\mathit{CD}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BrickRed}\Uparrow}\,\psi}{\Delta'';\,\Gamma''}{{\color{BlueViolet}\Downarrow}\,\upsilon}$ for some outer-type witness $\psi \sqsupseteq \upsilon$ (with $\psi \in \lfloor\tau_p\rfloor$ by graduality, \cref{thm:graduality-syn-cls}).
+\end{definition}
+
+
+\subsection{Minimality}
+\label{sec:ana-minimality}
+
+
+$\minanaslice{\mathit{Cls}}{\upsilon}$ is defined analogously to Definition~\ref{def:isminimal}, minimising over the context slice $(\kappa, \gamma)$. And as before, existance of minimal analysis slices and monotonicity follow from finiteness and graduality.
+
+\begin{majortheorembox}
+\begin{theorem}[Existence of minimal analysis slices]\label{thm:ana-min-exists}
+For every $s : \anaslice{\mathit{Cls}}{\upsilon}$, there exists $m : \minanaslice{\mathit{Cls}}{\upsilon}$ with $m \sqsubseteq s$.
+\end{theorem}
+\end{majortheorembox}
+
+\begin{theorem}[Monotonicity of minimal analysis slices]\label{thm:ana-mono}
+If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and $m_2 : \minanaslice{\mathit{Cls}}{\upsilon_2}$, then there exists $m_1 : \minanaslice{\mathit{Cls}}{\upsilon_1}$ with $m_1 \sqsubseteq m_2$.
+\end{theorem}
+
+\subsection{Minimally Scoped Analysis Slices}
+\noindent As mentioned earlier, a synthesising type derives all of its type information internally.\footnote{Again, given that assumptions are tracked externally.}. Therefore, the type is actually only enforced by the context up until the innermost subderivation with a synthesis outer derivation mode. 
+
+For example, consider an annotated term inside an annotation, only the inner annotation actually enforces a type of the inner term. Therefore, an algorithm need only check this region (the outer context can be fully omitted). Further, there is little point in highlighting the outer context in practice as it has no influence on the types; this is the approach the Hazel implementation takes, to avoid excessive highlighing.
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "PolymorphicTypeSlicing"
+%%% End:

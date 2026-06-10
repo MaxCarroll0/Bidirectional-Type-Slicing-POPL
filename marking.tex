@@ -1,0 +1,178 @@
+\section{Error Marking \& Type Error Debugging}
+\label{sec:marking}
+
+This section formally applies type slicing to static error squiggles as in \cref{fig:parse-digit-slices} (\cref{sec:explanation}). It demonstrates that we can not only use this calculus to ``explain types'' in well-typed programs, but also effectively ``explain type errors'' in ill-typed programs.
+
+This builds upon the theory of type error marking for bidirectional systems with holes of Zhao et al.~\cite{Marking2024}, which we briefly reca nextp and extend to the type slicing core calculus (\cref{sec:core-calculus}).
+ 
+\subsection{Error Marking}
+\label{sec:marking-calculus}
+
+
+A marking algorithm is a pair of bidirectional judgements,
+\[
+  \synmark{e}{\chk e}{\tau}
+  \qquad\text{and}\qquad
+  \anamark{e}{\chk e}{\tau},
+\]
+reading ``under $\Delta;\Gamma$, the source expression $e$ \textit{marks
+to} the marked expression $\chk e$, synthesising (resp.\ being analysed
+against) type $\tau$''. The marked output $\chk e$ has the same
+structure as $e$ but wraps each point of local type failure in a \emph{mark}. The marks, representing highlighting an entire erroneous term $e$, are tabulated in \cref{tab:mark-forms} alongside the corresponding typing rule failures. 
+
+The core calculus studied gives rise to four classes of errors: \textit{type inconsistencies} when subsumption cannot be applied, \textit{shape errors} when rules expect a sub-term to join (match) a specific type shape, \textit{mode limitations} where syntax which cannot synthesise its type is expected to provide type information. And variable \textit{scoping errors}, which do not pertain to types, so cannot be debugged by type slicing.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabularx}{\linewidth}{lll : X}
+\toprule
+\textbf{Mark} & \textbf{Class} & \textbf{Failed Rule(s)} & \textbf{Error} \\
+\midrule
+$\markincon[e]{\tau'}{\tau}$ & type inconsistency & Subsumption & $e$ synthesises $\tau'$ inconsistent with analysis type $\tau$ \\
+$\markarrow[e]$       & shape & Function Application & $e$ is in a function position, but is not a function \\
+$\marksum[e]$         & shape & Case Expression & $e$ is a case scrutinee, but is not a sum type \\
+$\markprod[e]$        & shape & Product Projection & $e$ is projected as a product, but is not a product \\
+$\markforall[e]$      & shape & Typfun Application & $e$ is in a typfun positon, but is not a typfun \\
+$\marklam[\lambda x.\,e]$ & mode limitation & Lambda Synthesis & Unannotated lambda in synthesis position \\
+$\marklam[\lambda x.\,e]$ & mode limitation & Lambda Analysis  & Unannotated lambda analysed against a non-function type \\
+$\markvar{k}$      & scope & Variables & Variable $k$ has no binding in scope \\
+\bottomrule
+\end{tabularx}
+\caption{Error Mark Forms Classified}
+\label{tab:mark-forms}
+\end{table}
+
+Importantly, marked terms can be type-checked by treating the marked terms as `non-empty' holes, synthesising $\gap$ (and recursively marking and type-checking the inner term).
+
+The validity of this method is formalised by two theorems: \textit{totality} ensures marks account for every possible typing error, and \textit{erasure} ensures adding marks doesn't change the structure of the terms.
+
+\begin{theorem}[Totality of Marking]
+\label{thm:mark-total}
+
+For every expression $e$ and assumptions $\Delta;\Gamma$. There exists marked expression $\chk e$ and type $\tau$ such that
+$\synmark{e}{\chk e}{\tau}$. And, for every type $\tau'$, there exists
+$\chk e'$ such that $\anamark{e}{\chk e'}{\tau}$.
+\end{theorem}
+
+\begin{theorem}[Erasure of Marking]
+\label{thm:mark-erase}
+
+If $\synmark{e}{\chk e}{\tau}$ then $\mathrm{erase}(\chk e) \equiv e$, and
+likewise for analysis.
+\end{theorem}
+
+\subsection{Marked Context Classification}
+\label{sec:marking-classification}
+
+
+In this style, we extend context typing (\cref{sec:context-typing}) to \textit{marked} context typing $\mctxclass[\Delta;\Gamma]{C}{\chk C}{p}{\Delta';\Gamma'}{m}$, threading a marked context $\chk C$ alongside $C$ (with context marks defined analogously to expressions), adding one error rule per mark form of \cref{tab:mark-forms}. We have proven analogous totality and soundness theorems hold for marked contexts, mirroring the unmarked plug decomposition and composition (\cref{thm:plug-decomposition,thm:plug-composition}).
+
+\subsection{The Debugging Recipe by Example}
+\label{sec:marking-recipes}
+
+We may now relate the tools developed over the last 4 sections to explain type errors:
+\begin{enumerate}
+\item Place the focus (cursor) at some marked term. This splits the marked program into a marked context $\chk C$ and marked focus $\chk e$, with $\chk C[\chk e]$ recovering the program; a marked context classification at the focus is then derivable by totality of marked context classification (supplementary material).
+\item Synthesis slice the internal type information, the term at the \emph{focus}, $\chk e$, if the focus mode $m$ is in synthesis (${\color{BrickRed}\Uparrow}\;\tau$).
+\item Analysis slice the external type information, the \emph{context classification} itself, if the focus mode $m$ is in analysis (${\color{BlueViolet}\Downarrow}\;\tau$).
+\item Pick queries to explore the error. For type-inconsistency marks \textit{both} the synthesis and analysis slices exist (two context classifications exist from step 1). From these,you can query \textit{only} the inconsistent parts. For shape errors, simply query just the outermost shape of the synthesised type; mode-limitation errors are analogous on the analysis side.
+\end{enumerate}
+
+I give some worked examples, notating with a \markbox{\text{marked term}}, a \sli{\text{synthesis slice}}, and/or an \sli[OliveGreen]{\text{analysis slice}}. `Purely structural' slice regions which don't add additional or manipulate type information (i.e. bindings) are in a lighter shade.
+
+\subsubsection{Type inconsistency: {$\markincon{\tau'}{\tau}$}}
+\label{sec:marking-recipes-incon}
+
+Consider the program
+\[
+  \mathbf{let}\;p : * \Rightarrow * = (\texttt{true},\,\texttt{false})\;\mathbf{in}\;p.
+\]
+The RHS $(\texttt{true},\,\texttt{false})$ synthesises $\texttt{Bool} \times \texttt{Bool}$ but is analysed against $* \Rightarrow *$. Marking inserts
+$\markincon{\texttt{Bool} \times \texttt{Bool}}{* \Rightarrow *}$
+around the RHS:
+\[
+  \mathbf{let}\;p : * \Rightarrow * = \markbox{\markincon[(\texttt{true},\,\texttt{false})]{\texttt{Bool} \times \texttt{Bool}}{* \Rightarrow *}}\;\mathbf{in}\;p.
+\]
+Marking would ordinarily reports an error that $\markincon{\texttt{Bool} \times \texttt{Bool}}{* \Rightarrow *}$ with the entire red term highlighted. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
+
+\noindent\paragraph{\textbf{Decomposition}}
+The (context, focus) pair the marking factors into is
+\[
+  C \;=\; \mathbf{let}\;p : * \Rightarrow * = \cmark\;\mathbf{in}\;p,
+  \qquad
+  e \;=\; (\texttt{true},\,\texttt{false}),
+\]
+with the focus at ${\color{BlueViolet}\Downarrow}\,(* \Rightarrow *)$. The two
+debugging queries run on the two sides of this split.
+
+\noindent\paragraph{\textbf{Synthesis Slice}}
+$\mathit{MinSynSlice}$ at the minimal type-slice $\upsilon \sqsubseteq \texttt{Bool} \times \texttt{Bool}$ that still witnesses $\upsilon \not\sim (* \Rightarrow *)$:
+\[
+  e \;\rightsquigarrow\; (\,\texttt{true}\,\sli{,}\,\texttt{false}\,)
+  \qquad\text{with}\qquad
+  \upsilon = \gap\,\sli{\times}\,\gap.
+\]
+
+\noindent\paragraph{\textbf{Analysis Slice}}
+$\mathit{MinAnaSlice}$ at the minimal $\psi \sqsubseteq * \Rightarrow *$ that still witnesses $(* \times *) \not\sim \psi$:
+\[
+  C \;\rightsquigarrow\;
+  \slist{\mathbf{let}}\;p\,\slist{:}\,*\,\sli[OliveGreen]{\Rightarrow}\,*\,\slist{=}\,\cmark\,\slist{\mathbf{in}}\;p
+  \qquad\text{with}\qquad
+  \psi = \gap\,\sli[OliveGreen]{\Rightarrow}\,\gap.
+\]
+
+\paragraph{\textbf{Full view:}} The slices pick out exactly what each side contributes to the failure.
+
+\queryblock{\texttt{Bool}\sli{\times}\texttt{Bool}\;\;(\equiv\;\gap \times \gap)}{\texttt{*}\sli[OliveGreen]{\Rightarrow}\texttt{*}\;\;(\equiv\;\gap \Rightarrow \gap)}
+\[
+  \slist{\mathbf{let}}\;p\,\slist{:}\,*\,\sli[OliveGreen]{\Rightarrow}\,*\,\slist{=}\,
+  \markbox{\markincon[(\,\texttt{true}\,\sli{,}\,\texttt{false}\,)]{\texttt{Bool} \times \texttt{Bool}}{* \Rightarrow *}}\,
+  \slist{\mathbf{in}}\;p.
+\]
+
+We can see that this recipe does not \textit{arbitrarily} blame either the synthesising term or the analysing context for the error, after all, errors are commonly in annotations, especially when assigning types in a gradual language (49\%)~\cite{TypeAnnotationStudy}.
+
+However, type slicing is flexible. A user who \text{does} want to trust the surrounding context (annotations), as is often done in conventional type error highlighting, can simply only query the synthesis-side. Or vice versa, to trust the implementation, which is useful when refactoring code to a different type, which conflicts with existing annotations.
+
+\subsubsection{Shape mismatches: $\markarrow$, $\marksum$, $\markprod$, $\markforall$}
+\label{sec:marking-recipes-shape}
+
+The shape-mismatch marks all occur in similar situations: the syntactic position of the focus requires a type kind, but the focus's synthesised type does not match this.
+
+A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$. Where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \Rightarrow \gap$. We can therefore query just why it is a product, and not a function.
+\queryblock{\texttt{*}\sli{\times}\texttt{*}}{\text{---}}
+\[
+  \markbox{\markarrow[(\texttt{*}\sli,\texttt{*})]}\,(\,\texttt{true}\,).
+\]
+
+\subsubsection{Unannotated Lambda against Non-Arrow: $\marklam$}
+\label{sec:marking-recipes-lam}
+
+Unannotated lambdas $\lambda y.\,e$ have no synthesis rule; their type can only be
+determined by the surrounding context. Consequentially it has
+no synthesis type, so type inconsistencies are not marked via subsumption (type inconsistency), but instead by a mode limitation mark. In this situation all the relevant type information is derived from the surrounding context, so we use analysis slices.
+
+Consider the program:
+\[
+  \mathbf{let}\;b : \texttt{Bool} = \lambda y.\,y\;\mathbf{in}\;b.
+\]
+The RHS $\lambda y.\,y$ is a bare lambda analysed against
+$\texttt{Bool}$. Take the $\mathit{MinAnaSlice}$ on the enclosing context witnesses the context enforcing a non-function type (\texttt{Bool}):
+\queryblock{\text{---}}{\sli[OliveGreen]{\texttt{Bool}}}
+\[
+  \slist{\mathbf{let}}\;b\,\slist{:}\,\sli[OliveGreen]{\texttt{Bool}}\,\slist{=}\,
+  \markbox{\marklam[\lambda y.\,y]}\,\slist{\mathbf{in}}\;b.
+\]
+
+\subsubsection{Unbound variable: $\markvar{k}$}
+\label{sec:marking-recipes-unbound}
+
+The free-variable mark records a \emph{scope} failure. There are no types involved, so type slicing is inapplicable.
+
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "PolymorphicTypeSlicing"
+%%% End:

@@ -1,0 +1,26 @@
+\section{Introduction}
+\label{sec:intro}
+\label{firstcontentpage}
+
+Programmers report that debugging and testing consumes 20--60\% of their development time~\cite{DebugTimeSelfReport}, with a small fraction of difficult bugs absorbing a disproportionate share of that effort~\cite{DebugSkew}. In statically typed languages, many such bugs are caught statically at compile time by \textit{type errors}. 
+
+These type errors are conventionally reported at a single location, yet most errors genuinely involve more than one source location~\cite{StudentTypeErrorFixes}. The reported location is often imprecise in \textit{two} directions: often including code that does \textit{not} directly contribute to the error, yet at the same time misses regions of the surrounding context that \textit{do} (for example, non-local type information sourced from bindings). As a result, existing highlighting systems show both too much and too little context to the programmer for any given error. The error itself states only that the term has a differing type that was \textit{expected}, not \textit{why} the system expected it.
+
+This {paper} develops the theory of \textit{type slicing}: a decomposable highlighting system that allows terms to be selected and the type explained in a \textit{bidirectional} locally inferred type system. A programmer selects an expression and queries a part of the type, $\upsilon$, that they wish to explain. The explanation picks out a minimal portion of the program that suffices to justify the queried type. 
+
+A \textit{synthesis slice} (\cref{sec:synthesis}) of a selected term answers ``which parts of the term caused it to have type $\upsilon$?''; an \textit{analysis slice} (\cref{sec:analysis}) of a selected term answers the complementary question, ``which parts of the surrounding program enforced that this term have type $\upsilon$?''.
+
+Slices can be \textit{refined}: refining a query, say from an entire function type to just its codomain, gives a smaller highlighted region for the refined query, supporting interactive exploration complex types, where the programmer can incrementally focus into sub-parts of the type that are of interest. For example, maybe only a small region of a large type involed in a type error is erroneous.
+
+The type slicing machinery applies even beyond errors (\cref{sec:marking}); it is possible to query any program regions responsible for any type information of interest, even well-typed code. Hence, type slicing is a tool to explain \textit{any} types in a program.
+
+\subsection{Scope}
+\label{sec:scope}
+The theory presented in this paper applies to \textit{bidirectional type systems} with any form of \textit{downwards static graduality} (\cref{sec:core-calculus}) on expressions, inspired by the gradual typing literature~\cite{GradualRefined} extended to incomplete programs, like those of the Hazel calculus~\cite{HazelLivePaper}. Notably, we do \textit{not} require any cast dynamics like in gradual type systems, meaning type slicing is applicable to any bidirectional system only by assigning an appropriate precision relation on types and terms (\cref{sec:core-lattice}).
+
+An example language which satisfies these conditions is the Hazel calculus~\cite{HazelLivePaper}, whose implementation we have extended with an efficient linear-time approximation of type slicing~\cite{CarrollEtAl2025}. This implementation is currently accessible at [TODO: url to interactive web version].
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "PolymorphicTypeSlicing"
+%%% End:

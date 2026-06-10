@@ -1,0 +1,61 @@
+\PassOptionsToPackage{dvipsnames}{xcolor}
+\documentclass[acmsmall,screen,review,anonymous,nonacm]{acmart}
+
+\settopmatter{printacmref=false}
+\input{preamble.tex}
+
+\citestyle{acmnumeric}
+\providecommand{\textcite}{\citet}
+\providecommand{\autocite}{\cite}
+\providecommand{\parencite}{\citep}
+
+\begin{document}
+
+\title{Bidirectional Type Slicing}
+
+\author{Max Carroll}
+\orcid{0009-0007-9636-8502}
+\affiliation{%
+  \institution{?University of Cambridge?}
+  \department{Department of Computer Science and Technology}
+  \city{Cambridge}
+  \country{UK}}
+\author{Anil Madhavapeddy}
+\orcid{0000-0001-8954-2428}
+\affiliation{%
+  \institution{University of Cambridge}
+  \department{Department of Computer Science and Technology}
+  \city{Cambridge}
+  \country{UK}}
+\author{Cyrus Omar}
+\orcid{}
+\affiliation{%
+  \institution{University of Michigan}
+  \city{Ann Arbor}
+  \country{USA}}
+
+\keywords{type slicing, bidirectional typing, gradual typing, type error
+debugging, Hazel}
+\ccsdesc[500]{Software and its engineering~General programming languages}
+
+\input{abstract.tex}
+
+\maketitle
+
+\input{intro.tex}
+\input{ui.tex}
+\input{background.tex}
+\input{core-calculus.tex}
+\input{synthesis.tex}
+\input{context-typing.tex}
+\input{analysis.tex}
+\input{marking.tex}
+\input{algorithms.tex}
+\input{comparisons.tex}
+\input{set-theoretic.tex}
+\input{conclusions.tex}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

@@ -1,0 +1,32 @@
+\section{Further Extensions \& Applications}
+\label{sec:further-work}
+
+\subsection{Implicit Polymorphism}
+\label{sec:future-implicit}
+
+Globally inferred languages typically have much more confusing typing derivations and type errors than locally inferred languages. Extending the calculus to implicit polymorphism in a bidirectional setting would expand the application significantly. In particular, the ability to explain even well-typed code is particularly useful here as error marks are often localised to the wrong location, resulting the real error being in well-typed code whose types may be inconsistent with the programmers intuitive expectation. Adapting the constraint slicing systems of Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} to integrate with type slicing is worth exploring.
+
+\subsection{Cast Slicing \& Dynamics}
+\label{sec:cast-dynamics}
+
+A gradually-typed language elaborates source programs into a cast calculus and runs the resulting casts dynamically. Type slices can be attached directly to those casts. Hence, casts can then explain why they were inserted by pointing back to code; the source will be a slice of the term being cast, and the target a slice of its context. 
+
+Approximate minimal slices can be tagged directly onto types allowing them to be decomposed at runtime, allowing dynamic casts to point back to code. This is particularly useful for debugging dynamic type errors, which would not otherwise point back to code. This is implemented in the Hazel implementation; you can select any dynamic cast and retrieve the code from which it originated. [TODO: add a screenshot] This application is explored thoroughly in prior work~\cite{Carroll2024}.
+
+However, the strong theoretical properties of slices being slices of the original program is not maintained during dynamic execution as reductions are performed. Tracking dynamic execution, perhaps integrating ideas from Perera~\cite{Perera2012,PereraGarg2016}, would allow users to trace back casts to source code with stronger guarantees.
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+This paper presented the type slicing theory for a bidirectional calculus with explicit System~F polymorphism, bindings, products, and sums, mechanising a large majority of the theory in Agda.
+
+We formally integrated this with the error-marking calculus of Zhao et al. \textcite{Marking2024}, which applies type slicing to ill-typed programs, justifying its \textit{sound} use in debugging \textit{all} static type errors of a program.
+
+Type slicing was discussed to be substantially different from previous program slicing techniques, of which there are several varieties, none of which being directly applicable to the problem of explaining types in bidirectional type systems. This provides a solid foundations, which with some extensions, place type slicing as a promising tool for use in practical languages, especially gradually typed ones, for explaining both static \textit{and dynamic} types.
+
+\label{lastcontentpage}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "main"
+%%% End:
