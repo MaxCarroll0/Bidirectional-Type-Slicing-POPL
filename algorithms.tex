@@ -3,6 +3,8 @@
 
 \providecommand{\tmslice}[2]{\mathit{TermMin}\;#1 \mathbin{\blacktriangleleft} #2}
 \providecommand{\mintmslice}[2]{\mathit{MinTermMin}\;#1 \mathbin{\blacktriangleleft} #2}
+\providecommand{\syntypeslice}[2]{\mathit{TypeSlice}^{{\color{BrickRed}\Uparrow}}\;#1 \mathbin{\blacktriangleleft} #2}
+\providecommand{\anatypeslice}[2]{\mathit{TypeSlice}^{{\color{BlueViolet}\Downarrow}}\;#1 \mathbin{\blacktriangleleft} #2}
 \providecommand{\tmcalc}[5]{#1 \mathbin{{\color{BrickRed}\blacktriangleleft}} #2 \;{\color{BrickRed}\rightsquigarrow}\; #3 \mathbin{{\color{BrickRed}\Uparrow}} #4 \,\dashv\, #5}
 \providecommand{\tmrule}[7][\Delta;\,\Gamma]{%
   #1 \vdash #2 \mathbin{{\color{BrickRed}\Uparrow}} #3
@@ -196,6 +198,30 @@ Intuitively, an inner analysis slice gives the the minimal assumptions, context,
 \label{def:ana-pos-slice}
 An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BlueViolet}\Downarrow}\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaposslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that, for some chosen outer-type $\upsilon_{\mathrm{outer}} \in \lfloor\tau_p\rfloor$ then $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BlueViolet}\Downarrow}\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{{\color{BlueViolet}\Downarrow}\,\upsilon}$.
 \end{definition}
+
+\section{Full Type Slices -- Slicing Assumption Definitions}
+An astute reader may have noticed that analysis slices do \textit{not} explain a set of minimal assumptions upon the focus allowing it to analyse against the queried type. We take this approach to allow analysis slices to work in principle with \textit{any} (type-checking) term at the focus, many of which will have differing minimal assumptions to analyse against the type.
+
+However, when you actually want to consider a specific term at the focus, in particular, a \textit{synthesising} term, which makes use of variables \textit{provided by the surrounding context}, a full slice of the context can be very meaningful. For example, when debugging a type error, the error itself may be \textit{non-local}, giving one of the used variables the wrong type.
+
+Formally, we refer to such a construct as a \textit{type slice}. A full sliced decomposition of a program around a focus, which can be pieced back together to form a well-typed program which has the same (or stronger) typing properties at the focus than some given query:
+
+\begin{definition}[Type slices]
+  \label{def:type-slice}
+A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{{\color{BrickRed}\Uparrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BrickRed}\Uparrow}\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair \\$((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$ synthesises $\phi$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BrickRed}\Uparrow}\,\psi}{\Delta';\,\gamma_f}{{\color{BrickRed}\Uparrow}\,\phi}$ for some $\psi$.
+\end{definition}
+
+Importantly, the pair of slices forms a well-typed program: by context-classification soundness, $\kappa[\varsigma]$ synthesises $\psi$. Then, a \textit{minimal} type slice is one which the context $\kappa$, the focused expression $\varsigma$ are jointly minimised alongside minimal external typing assumptions of the context typing $\gamma$. Notably, we do \textit{not} minimise the assumptions to the focused terms, as its assumptions are now explicitly provided by the surrounding context (and $\gamma$).
+
+An analogous construct is derivable for analysis foci, where simply any slices of the focused term are possible components. However, minimal analysis-focus type slices are equivalent to regular analysis slices paired with the entire focus omitted.\footnote{The empty term will analyse against any type imposed by any context.}
+
+\subsection{Calculating Full Type Slices}
+Calculating a valid synthesis slice part from our previous tools is trivial. Term-minimal slices (\cref{sec:term-minimal-slices}) are always a component of some minimal type slice. On the other hand, non-term-minimal slices are, for similar reasons to the product counterexamples from \cref{sec:product-revisited}, \textit{not necessarily} valid minimal components of any minimal type slice.
+
+Calculating the context slice component is very similar to analysis slices. For annotated bindings: just take the corresponding type from the synthesis slice's minimal assumptions. However, for unannotated bindings, you may not actually be able to synthesise exactly the minimal assumption, which may entail that, in the presence of this additional type information, the other used assumptions are non-minimal. The Hazel implementation recursively slices unannotated let bindings, accepting that any `overshoot' in the type provided by this might lead to an \textit{overapproximation} of a minimum.
+
+To find a truly minimal slice of the context you can individually calculate a minimal assumption for the binding given all outer bound assumptions are fully utilised and slice the definition using this. However, this naively requires re-analysing the body of each unannotated binding. This could be made more efficient in real programs by incrementalising slice calculation; Hazel already has work on formal theory behind incremental type checking~\cite{PorterEtAl2025}. \edited{TODO: I think there might even be a way to cleverly pick a minimal assumptions set which avoids this re-typechecking at all.}
+
 
 \section{Minimum-Size Slices}
 \label{sec:min-size}
