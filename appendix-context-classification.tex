@@ -1,0 +1,472 @@
+\clearpage
+\section{Context Classification: Full Rule Set}
+\label{app:ctx-classification}
+
+
+\fbox{$\ctxclass{\C}{d}{\Delta';\,\Gamma'}{m}$}\ \ \ Context $\C$ at outer derivation mode $d$ classifies its focus under $\Delta';\,\Gamma'$ in focus mode $m$
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$s\!\Circle$]{}
+    {\ctxclass{\cmark}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta;\,\Gamma}{{\color{BrickRed}\Uparrow}\;\tau}}
+  \qquad
+  \inference[$a\!\Circle$]{}
+    {\ctxclass{\cmark}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta;\,\Gamma}{{\color{BlueViolet}\Downarrow}\;\tau}}
+\]
+\[
+  \inference[$aSub$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau'}{\Delta';\,\Gamma'}{m} & \tau \sim \tau'}
+    {\ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s\lambda{:}$]
+    {\wf{\tau_1} & \ctxclass[\Delta;\,\Gamma, x{:}\tau_1]{\C}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\lambda x{:}\tau_1.\,\C}{{\color{BrickRed}\Uparrow}\;\tau_1 \Rightarrow \tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$a\lambda{:}$]
+    {\tau \sim \tau_1 \Rightarrow \gap & \tau \sqcup \tau_1 \Rightarrow \gap \equiv \tau_1 \Rightarrow \tau_2 \\
+     \wf{\tau_1} & \ctxclass[\Delta;\,\Gamma, x{:}\tau_1]{\C}{{\color{BlueViolet}\Downarrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\lambda x{:}\tau_1.\,\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$a\lambda{\Rightarrow}$]
+    {\tau \sqcup \gap \Rightarrow \gap \equiv \tau_1 \Rightarrow \tau_2 &
+     \ctxclass[\Delta;\,\Gamma, x{:}\tau_1]{\C}{{\color{BlueViolet}\Downarrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\lambda x.\,\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Unmarked context classification: holes, subsumption, and lambdas.}
+\label{fig:unmarked-ctx-classification-1}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$s\circ_1$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup \gap \Rightarrow \gap \equiv \tau_1 \Rightarrow \tau_2 & \analysis{e}{\tau_1}}
+    {\ctxclass{\C \circ_1 e}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s\circ_2$]
+    {\synthesis{e}{\tau} & \tau \sqcup \gap \Rightarrow \gap \equiv \tau_1 \Rightarrow \tau_2 & \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau_1}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{e \circ_2 \C}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s{<>}_1$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup \forall\!\cdot\,\gap \equiv \forall\!\cdot\,\tau' & \wf{\sigma}}
+    {\ctxclass{\C\langle \sigma \rangle_1}{{\color{BrickRed}\Uparrow}\;[0 \mapsto \sigma]\,\tau'}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s\pi_1$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup \gap \times \gap \equiv \tau_1 \times \tau_2}
+    {\ctxclass{\pi_1\,\C}{{\color{BrickRed}\Uparrow}\;\tau_1}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s\pi_2$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup \gap \times \gap \equiv \tau_1 \times \tau_2}
+    {\ctxclass{\pi_2\,\C}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s\Lambda$]
+    {\ctxclass[\Delta,\alpha;\,\Gamma]{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\Lambda\alpha.\,\C}{{\color{BrickRed}\Uparrow}\;\forall\alpha.\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Unmarked context classification: application, type application, projections, type abstraction.}
+\label{fig:unmarked-ctx-classification-2}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$s\&_1$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau_1}{\Delta';\,\Gamma'}{m} & \synthesis{e}{\tau_2}}
+    {\ctxclass{\C \mathbin{\&_1} e}{{\color{BrickRed}\Uparrow}\;\tau_1 \times \tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s\&_2$]
+    {\synthesis{e}{\tau_1} & \ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{e \mathbin{\&_2} \C}{{\color{BrickRed}\Uparrow}\;\tau_1 \times \tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$a\&_1$]
+    {\tau \sqcup \gap \times \gap \equiv \tau_1 \times \tau_2 &
+     \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau_1}{\Delta';\,\Gamma'}{m} & \analysis{e}{\tau_2}}
+    {\ctxclass{\C \mathbin{\&_1} e}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$a\&_2$]
+    {\tau \sqcup \gap \times \gap \equiv \tau_1 \times \tau_2 &
+     \analysis{e}{\tau_1} & \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{e \mathbin{\&_2} \C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s\iota_1$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\iota_1\,\C}{{\color{BrickRed}\Uparrow}\;\tau + \gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$s\iota_2$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\iota_2\,\C}{{\color{BrickRed}\Uparrow}\;\gap + \tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$a\iota_1$]
+    {\tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 &
+     \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau_1}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\iota_1\,\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$a\iota_2$]
+    {\tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 &
+     \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\iota_2\,\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Unmarked context classification: pairs and injections.}
+\label{fig:unmarked-ctx-classification-3}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$scase_1$]
+    {\synthesis{e}{\tau} & \tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \ctxclass[\Delta;\,\Gamma, x{:}\tau_1]{\C}{{\color{BrickRed}\Uparrow}\;\tau_1'}{\Delta';\,\Gamma'}{m} &
+     \synthesis[\Delta;\,\Gamma, y{:}\tau_2]{e'}{\tau_2'} & \tau_1' \sim \tau_2'}
+    {\ctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,\C \mid y.\,e'}{{\color{BrickRed}\Uparrow}\;\tau_1' \sqcup \tau_2'}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$scase_2$]
+    {\synthesis{e}{\tau} & \tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \synthesis[\Delta;\,\Gamma, x{:}\tau_1]{e'}{\tau_1'} &
+     \ctxclass[\Delta;\,\Gamma, y{:}\tau_2]{\C}{{\color{BrickRed}\Uparrow}\;\tau_2'}{\Delta';\,\Gamma'}{m} & \tau_1' \sim \tau_2'}
+    {\ctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,\C}{{\color{BrickRed}\Uparrow}\;\tau_1' \sqcup \tau_2'}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$acase_1$]
+    {\synthesis{e}{\tau_0} & \tau_0 \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \ctxclass[\Delta;\,\Gamma, x{:}\tau_1]{\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m} &
+     \analysis[\Delta;\,\Gamma, y{:}\tau_2]{e'}{\tau}}
+    {\ctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,\C \mid y.\,e'}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$acase_2$]
+    {\synthesis{e}{\tau_0} & \tau_0 \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \analysis[\Delta;\,\Gamma, x{:}\tau_1]{e'}{\tau} &
+     \ctxclass[\Delta;\,\Gamma, y{:}\tau_2]{\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Unmarked context classification: case.}
+\label{fig:unmarked-ctx-classification-4}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$sdef_1$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau'}{\Delta';\,\Gamma'}{m} & \synthesis[\Delta;\,\Gamma, x{:}\tau']{e}{\tau}}
+    {\ctxclass{\mathbf{def}\,\C \vdash_1 e}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$sdef_2$]
+    {\synthesis{e}{\tau'} & \ctxclass[\Delta;\,\Gamma, x{:}\tau']{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\mathbf{def}\,e \vdash_2 \C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$adef_1$]
+    {\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau'}{\Delta';\,\Gamma'}{m} & \analysis[\Delta;\,\Gamma, x{:}\tau']{e}{\tau}}
+    {\ctxclass{\mathbf{def}\,\C \vdash_1 e}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$adef_2$]
+    {\synthesis{e}{\tau'} & \ctxclass[\Delta;\,\Gamma, x{:}\tau']{\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+    {\ctxclass{\mathbf{def}\,e \vdash_2 \C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Unmarked context classification: let (def).}
+\label{fig:unmarked-ctx-classification-5}
+\end{figure}
+
+\clearpage
+
+\fbox{$\mctxclass{C}{\chk C}{p}{\Delta';\,\Gamma'}{m}$}\ \ \ Marked context $C \marksto \chk C$ at outer position $p$ classifies its focus under $\Delta';\,\Gamma'$ in focus mode $m$
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$ms\!\Circle$]{}
+    {\mctxclass{\cmark}{\cmark}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta;\,\Gamma}{{\color{BrickRed}\Uparrow}\,\tau}}
+  \qquad
+  \inference[$ma\!\Circle$]{}
+    {\mctxclass{\cmark}{\cmark}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta;\,\Gamma}{{\color{BlueViolet}\Downarrow}\,\tau}}
+\]
+\[
+  \inference[$maSub$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau'}{\Delta';\,\Gamma'}{m} & \tau \sim \tau'}
+    {\mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$maSub\!\Uparrow$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau'}{\Delta';\,\Gamma'}{m} & \neg(\tau \sim \tau')}
+    {\mctxclass{C}{\markincon[\chk C]{\tau'}{\tau}}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\lambda{:}$]
+    {\wf{\tau_1} & \mctxclass[\Delta;\,\Gamma, x{:}\tau_1]{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\lambda x{:}\tau_1.\,C}{\lambda x{:}\tau_1.\,\chk C}{{\color{BrickRed}\Uparrow}\,\tau_1 \Rightarrow \tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ma\lambda{:}$]
+    {\tau \sim \tau_1 \Rightarrow \gap & \tau \sqcup \tau_1 \Rightarrow \gap \equiv \tau_1 \Rightarrow \tau_2 \\
+     \wf{\tau_1} & \mctxclass[\Delta;\,\Gamma, x{:}\tau_1]{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\lambda x{:}\tau_1.\,C}{\lambda x{:}\tau_1.\,\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Marked context classification: holes, subsumption, annotated lambda.}
+\label{fig:marked-ctx-classification-1}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$ma\lambda{\Rightarrow}$]
+    {\tau \sqcup \gap \Rightarrow \gap \equiv \tau_1 \Rightarrow \tau_2 &
+     \mctxclass[\Delta;\,\Gamma, x{:}\tau_1]{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\lambda x.\,C}{\lambda x.\,\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ma\lambda{\Rightarrow}\!\Uparrow$]
+    {\forall \tau_1,\tau_2.\;\tau \sqcup \gap \Rightarrow \gap \not\equiv \tau_1 \Rightarrow \tau_2 &
+     \mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\lambda x.\,C}{\marklam[\lambda x.\,\chk C]}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\lambda{\Rightarrow}\!\Uparrow$]
+    {\mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\lambda x.\,C}{\marklam[\lambda x.\,\chk C]}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\circ_1$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup \gap \Rightarrow \gap \equiv \tau_1 \Rightarrow \tau_2 & \anamark{e}{\chk e}{\tau_1}}
+    {\mctxclass{C \circ_1 e}{\chk C \circ_1 \chk e}{{\color{BrickRed}\Uparrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\circ_1\!\Uparrow$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m} & \forall \tau_1,\tau_2.\;\tau \sqcup \gap \Rightarrow \gap \not\equiv \tau_1 \Rightarrow \tau_2 & \anamark{e}{\chk e}{\gap}}
+    {\mctxclass{C \circ_1 e}{\markarrow[\chk C] \circ_1 \chk e}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\circ_2$]
+    {\synmark{e}{\chk e}{\tau} & \tau \sqcup \gap \Rightarrow \gap \equiv \tau_1 \Rightarrow \tau_2 & \mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau_1}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{e \circ_2 C}{\chk e \circ_2 \chk C}{{\color{BrickRed}\Uparrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\circ_2\!\Uparrow$]
+    {\synmark{e}{\chk e}{\tau} & \forall \tau_1,\tau_2.\;\tau \sqcup \gap \Rightarrow \gap \not\equiv \tau_1 \Rightarrow \tau_2 & \mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{e \circ_2 C}{\markarrow[\chk e] \circ_2 \chk C}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Marked context classification: unannotated lambda and application.}
+\label{fig:marked-ctx-classification-2}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$ms{<>}_1$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup \forall\!\cdot\,\gap \equiv \forall\!\cdot\,\tau' & \wf{\sigma}}
+    {\mctxclass{C\langle \sigma \rangle_1}{\chk C\langle \sigma \rangle_1}{{\color{BrickRed}\Uparrow}\,[0 \mapsto \sigma]\,\tau'}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms{<>}_1\!\Uparrow$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m} & \forall \tau'.\;\tau \sqcup \forall\!\cdot\,\gap \not\equiv \forall\!\cdot\,\tau' & \wf{\sigma}}
+    {\mctxclass{C\langle \sigma \rangle_1}{\markforall[\chk C]\langle \sigma \rangle_1}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\&_1$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_1}{\Delta';\,\Gamma'}{m} & \synmark{e}{\chk e}{\tau_2}}
+    {\mctxclass{C \mathbin{\&_1} e}{\chk C \mathbin{\&_1} \chk e}{{\color{BrickRed}\Uparrow}\,\tau_1 \times \tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\&_2$]
+    {\synmark{e}{\chk e}{\tau_1} & \mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{e \mathbin{\&_2} C}{\chk e \mathbin{\&_2} \chk C}{{\color{BrickRed}\Uparrow}\,\tau_1 \times \tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ma\&_1$]
+    {\tau \sqcup \gap \times \gap \equiv \tau_1 \times \tau_2 &
+     \mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau_1}{\Delta';\,\Gamma'}{m} & \anamark{e}{\chk e}{\tau_2}}
+    {\mctxclass{C \mathbin{\&_1} e}{\chk C \mathbin{\&_1} \chk e}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ma\&_2$]
+    {\tau \sqcup \gap \times \gap \equiv \tau_1 \times \tau_2 &
+     \anamark{e}{\chk e}{\tau_1} & \mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{e \mathbin{\&_2} C}{\chk e \mathbin{\&_2} \chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Marked context classification: type application and pairs.}
+\label{fig:marked-ctx-classification-3}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$ms\iota_1$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\iota_1\,C}{\iota_1\,\chk C}{{\color{BrickRed}\Uparrow}\,\tau + \gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\iota_2$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\iota_2\,C}{\iota_2\,\chk C}{{\color{BrickRed}\Uparrow}\,\gap + \tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ma\iota_1$]
+    {\tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 &
+     \mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau_1}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\iota_1\,C}{\iota_1\,\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ma\iota_2$]
+    {\tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 &
+     \mctxclass{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\iota_2\,C}{\iota_2\,\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\pi_1$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup \gap \times \gap \equiv \tau_1 \times \tau_2}
+    {\mctxclass{\pi_1\,C}{\pi_1\,\chk C}{{\color{BrickRed}\Uparrow}\,\tau_1}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\pi_2$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup \gap \times \gap \equiv \tau_1 \times \tau_2}
+    {\mctxclass{\pi_2\,C}{\pi_2\,\chk C}{{\color{BrickRed}\Uparrow}\,\tau_2}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\pi_1\!\Uparrow$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m} & \forall \tau_1,\tau_2.\;\tau \sqcup \gap \times \gap \not\equiv \tau_1 \times \tau_2}
+    {\mctxclass{\pi_1\,C}{\pi_1\,\markprod[\chk C]}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\pi_2\!\Uparrow$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m} & \forall \tau_1,\tau_2.\;\tau \sqcup \gap \times \gap \not\equiv \tau_1 \times \tau_2}
+    {\mctxclass{\pi_2\,C}{\pi_2\,\markprod[\chk C]}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Marked context classification: injections and projections.}
+\label{fig:marked-ctx-classification-4}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$mscase_1$]
+    {\synmark{e}{\chk e}{\tau} & \tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \mctxclass[\Delta;\,\Gamma, x{:}\tau_1]{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_1'}{\Delta';\,\Gamma'}{m} &
+     \synmark[\Delta;\,\Gamma, y{:}\tau_2]{e'}{\chk e'}{\tau_2'} & \tau_1' \sim \tau_2'}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,C \mid y.\,e'}{\mathbf{case}\,\chk e\,\mathbf{of}\,x.\,\chk C \mid y.\,\chk e'}{{\color{BrickRed}\Uparrow}\,\tau_1' \sqcup \tau_2'}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$mscase_1\!\Uparrow$]
+    {\synmark{e}{\chk e}{\tau} & \forall \tau_1,\tau_2.\;\tau \sqcup \gap + \gap \not\equiv \tau_1 + \tau_2 \\
+     \mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_1'}{\Delta';\,\Gamma'}{m} &
+     \synmark{e'}{\chk e'}{\tau_2'}}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,C \mid y.\,e'}{\mathbf{case}\,\marksum[\chk e]\,\mathbf{of}\,x.\,\chk C \mid y.\,\chk e'}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$mscase_1{\not\sim}$]
+    {\synmark{e}{\chk e}{\tau} & \tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \mctxclass[\Delta;\,\Gamma, x{:}\tau_1]{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_1'}{\Delta';\,\Gamma'}{m} &
+     \synmark[\Delta;\,\Gamma, y{:}\tau_2]{e'}{\chk e'}{\tau_2'} & \neg(\tau_1' \sim \tau_2')}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,C \mid y.\,e'}{\mathbf{case}\,\chk e\,\mathbf{of}\,x.\,\chk C \mid y.\,\chk e'}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$mscase_2$]
+    {\synmark{e}{\chk e}{\tau} & \tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \synmark[\Delta;\,\Gamma, x{:}\tau_1]{e'}{\chk e'}{\tau_1'} &
+     \mctxclass[\Delta;\,\Gamma, y{:}\tau_2]{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_2'}{\Delta';\,\Gamma'}{m} & \tau_1' \sim \tau_2'}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,C}{\mathbf{case}\,\chk e\,\mathbf{of}\,x.\,\chk e' \mid y.\,\chk C}{{\color{BrickRed}\Uparrow}\,\tau_1' \sqcup \tau_2'}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$mscase_2\!\Uparrow$]
+    {\synmark{e}{\chk e}{\tau} & \forall \tau_1,\tau_2.\;\tau \sqcup \gap + \gap \not\equiv \tau_1 + \tau_2 \\
+     \synmark{e'}{\chk e'}{\tau_1'} &
+     \mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_2'}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,C}{\mathbf{case}\,\marksum[\chk e]\,\mathbf{of}\,x.\,\chk e' \mid y.\,\chk C}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$mscase_2{\not\sim}$]
+    {\synmark{e}{\chk e}{\tau} & \tau \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \synmark[\Delta;\,\Gamma, x{:}\tau_1]{e'}{\chk e'}{\tau_1'} &
+     \mctxclass[\Delta;\,\Gamma, y{:}\tau_2]{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau_2'}{\Delta';\,\Gamma'}{m} & \neg(\tau_1' \sim \tau_2')}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,C}{\mathbf{case}\,\chk e\,\mathbf{of}\,x.\,\chk e' \mid y.\,\chk C}{{\color{BrickRed}\Uparrow}\,\gap}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Marked context classification: synthesis-mode case.}
+\label{fig:marked-ctx-classification-5}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$macase_1$]
+    {\synmark{e}{\chk e}{\tau_0} & \tau_0 \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \mctxclass[\Delta;\,\Gamma, x{:}\tau_1]{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m} &
+     \anamark[\Delta;\,\Gamma, y{:}\tau_2]{e'}{\chk e'}{\tau}}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,C \mid y.\,e'}{\mathbf{case}\,\chk e\,\mathbf{of}\,x.\,\chk C \mid y.\,\chk e'}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$macase_1\!\Uparrow$]
+    {\synmark{e}{\chk e}{\tau_0} & \forall \tau_1,\tau_2.\;\tau_0 \sqcup \gap + \gap \not\equiv \tau_1 + \tau_2 \\
+     \mctxclass[\Delta;\,\Gamma, x{:}\gap]{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m} &
+     \anamark[\Delta;\,\Gamma, y{:}\gap]{e'}{\chk e'}{\tau}}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,C \mid y.\,e'}{\mathbf{case}\,\marksum[\chk e]\,\mathbf{of}\,x.\,\chk C \mid y.\,\chk e'}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$macase_2$]
+    {\synmark{e}{\chk e}{\tau_0} & \tau_0 \sqcup \gap + \gap \equiv \tau_1 + \tau_2 \\
+     \anamark[\Delta;\,\Gamma, x{:}\tau_1]{e'}{\chk e'}{\tau} &
+     \mctxclass[\Delta;\,\Gamma, y{:}\tau_2]{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,C}{\mathbf{case}\,\chk e\,\mathbf{of}\,x.\,\chk e' \mid y.\,\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$macase_2\!\Uparrow$]
+    {\synmark{e}{\chk e}{\tau_0} & \forall \tau_1,\tau_2.\;\tau_0 \sqcup \gap + \gap \not\equiv \tau_1 + \tau_2 \\
+     \anamark[\Delta;\,\Gamma, x{:}\gap]{e'}{\chk e'}{\tau} &
+     \mctxclass[\Delta;\,\Gamma, y{:}\gap]{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,C}{\mathbf{case}\,\marksum[\chk e]\,\mathbf{of}\,x.\,\chk e' \mid y.\,\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$msdef_1$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau'}{\Delta';\,\Gamma'}{m} & \synmark[\Delta;\,\Gamma, x{:}\tau']{e}{\chk e}{\tau}}
+    {\mctxclass{\mathbf{def}\,C \vdash_1 e}{\mathbf{def}\,\chk C \vdash_1 \chk e}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$msdef_2$]
+    {\synmark{e}{\chk e}{\tau'} & \mctxclass[\Delta;\,\Gamma, x{:}\tau']{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\mathbf{def}\,e \vdash_2 C}{\mathbf{def}\,\chk e \vdash_2 \chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Marked context classification: analysis-mode case and let (synthesis).}
+\label{fig:marked-ctx-classification-6}
+\end{figure}
+
+\begin{figure}[!htbp]
+\small
+\[
+  \inference[$madef_1$]
+    {\mctxclass{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau'}{\Delta';\,\Gamma'}{m} & \anamark[\Delta;\,\Gamma, x{:}\tau']{e}{\chk e}{\tau}}
+    {\mctxclass{\mathbf{def}\,C \vdash_1 e}{\mathbf{def}\,\chk C \vdash_1 \chk e}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$madef_2$]
+    {\synmark{e}{\chk e}{\tau'} & \mctxclass[\Delta;\,\Gamma, x{:}\tau']{C}{\chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\mathbf{def}\,e \vdash_2 C}{\mathbf{def}\,\chk e \vdash_2 \chk C}{{\color{BlueViolet}\Downarrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\[
+  \inference[$ms\Lambda$]
+    {\mctxclass[\Delta,\alpha;\,\Gamma]{C}{\chk C}{{\color{BrickRed}\Uparrow}\,\tau}{\Delta';\,\Gamma'}{m}}
+    {\mctxclass{\Lambda\alpha.\,C}{\Lambda\alpha.\,\chk C}{{\color{BrickRed}\Uparrow}\,\forall\alpha.\,\tau}{\Delta';\,\Gamma'}{m}}
+\]
+\caption{Marked context classification: let (analysis) and type abstraction.}
+\label{fig:marked-ctx-classification-7}
+\end{figure}
+
+%%% Local Variables:
+%%% mode: LaTeX
+%%% TeX-master: "PolymorphicTypeSlicing"
+%%% End:
