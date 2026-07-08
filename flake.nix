@@ -116,8 +116,6 @@
           buildPhase = ''
             export TEXMFVAR=$(mktemp -d)
             export SOURCE_DATE_EPOCH=1700000000
-            export TEXINPUTS=".:$PWD/vendor/acmart:"
-            export BSTINPUTS=".:$PWD/vendor/acmart:"
             latexmk -interaction=nonstopmode -halt-on-error -pdf -lualatex \
               -pretex="\pdfvariable suppressoptionalinfo 512\relax" -usepretex ${name}.tex
           '';
@@ -141,13 +139,7 @@
         };
       });
       devShells = forEachSystem (pkgs: {
-        default = pkgs.mkShell {
-          packages = [ (tex pkgs) ];
-          shellHook = ''
-            export TEXINPUTS=".:$PWD/vendor/acmart:"
-            export BSTINPUTS=".:$PWD/vendor/acmart:"
-          '';
-        };
+        default = pkgs.mkShell { packages = [ (tex pkgs) ]; };
       });
     };
 }
