@@ -39,13 +39,13 @@
 \providecommand{\sPboth}[1]{\stkU{OliveGreen/-1pt,Mulberry/-3.4pt}{#1}}
 
 \bigskip
-\noindent The theory of Sections~\ref{sec:synthesis},\ref{sec:analysis} establishes \textit{which} slices exist, and provide a brute-force algorithm. This section explores these structures further to improve the brute-force algorithm.
+\noindent The theory of \cref{sec:synthesis,sec:analysis} establishes \textit{which} slices exist, and provides a brute-force algorithm. This section explores these structures further to improve the brute-force algorithm.
 
 \subsection{Products of Synthesis Slices}
 \label{sec:product-revisited}
 
 
-\Cref{sec:decompositions} suggested recursively calculating minimal slices of subterms and composing them together. However, you cannot do this naively, the product of two minimal slices is not necessarily minimal. Consider the following if statement:
+\Cref{sec:decompositions} suggested recursively calculating minimal slices of subterms and composing them together. However, you cannot do this naively: the product of two minimal slices is not necessarily minimal. Consider the following if statement:
 \[ \Gamma = (x \mathbin{:} \mathbf{*} \Rightarrow \mathbf{*},\; y \mathbin{:} \mathbf{*} \Rightarrow \mathbf{*}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y, \qquad \tau = \mathbf{*} \Rightarrow \mathbf{*}, \]
 and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \mathbf{*} \Rightarrow \mathbf{*}$. There are \textit{four} incomparable minimal full slices, displayed together as underlines:
 
@@ -79,7 +79,7 @@ Slices (A) and (B) are minimal because each variable is sliced \textit{different
 \end{tikzpicture}
 \end{center}
 
-When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right projection's use of $x$ is strictly stronger than that of slices (A) (B) (D); we are \textit{aliasing} this variable's assumption. Slices (A) (B) are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice (D) is still valid because it doesn't actually use $x$.
+When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right projection's use of $x$ is strictly stronger than that of slices (A), (B), and (D); we are \textit{aliasing} this variable's assumption. Slices (A) and (B) are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice (D) is still valid because it doesn't actually use $x$.
 
 \subsection{Term-Minimal Slices}
 \label{sec:term-minimal-slices}
@@ -115,7 +115,7 @@ read ``the typing $\Gamma \vdash e \Uparrow \tau$ at query $\upsilon$ produces t
 \noindent The cases that deserve commentary are products, the binding constructs, function application, and type application; the \synr{Lam{:}}\ and \synr{Let}\ rules each carry a body re-typing premise (rightmost) which re-derives the body's typing under the binder slice $\gamma(x)$.
 
 \subsubsection{Products}
-With term minimality, we now have that two minimal synthesis slices which are also term minimal can be composed into a term minimal minimal synthesis slice. For a query $\upsilon_1\times \upsilon_2$ on the product, you query the projections with $\upsilon_1$ and $\upsilon_2$ individually:
+With term minimality, we now have that two minimal synthesis slices which are also term-minimal can be composed into a term-minimal, minimal synthesis slice. For a query $\upsilon_1\times \upsilon_2$ on the product, you query the projections with $\upsilon_1$ and $\upsilon_2$ individually:
 
 \[
 \inference[\synr{Pair}]{
@@ -174,7 +174,7 @@ So $e\langle\sigma\rangle \mathbin{{\color{BrickRed}\Uparrow}} (\mathbf{*} \Righ
 \subsection{Case Expressions}
 \label{sec:fixed-point}
 
-The case rule is a difficult case, which appears to require an iterative fixed point algorithm. This is because the two branch types join to produce the resulting type which is being queried upon. As synthesis slices are not exact, you can query two disjoint non-overlapping types, but then find that a minimal slice of one branch actually produces a more precise type than the query (overflows), which is also produced by a sibling branch. The sibling branch could may be able to be sliced further now that it doesn't need to provide this redundant part of the type. Lack of an upwards version of monotonicity (\cref{fig:syn-slice-refinement}) makes this difficult to solve in general without brute force.
+The case rule is the difficult one, appearing to require an iterative fixed point algorithm. This is because the two branch types join to produce the resulting type which is being queried upon. As synthesis slices are not exact, you can query two disjoint non-overlapping types, but then find that a minimal slice of one branch actually produces a more precise type than the query (overflows), which is also produced by a sibling branch. The sibling branch may then admit further slicing now that it doesn't need to provide this redundant part of the type. Lack of an upwards version of monotonicity (\cref{fig:syn-slice-refinement}) makes this difficult to solve in general without brute force.
 
 However, when the branch slices exactly synthesise disjoint type queries, then there is no redundancy and the result is minimal. The scrutinee can be sliced using the join of the minimal assumptions on the branches, much like with let bindings. 
 
@@ -182,21 +182,21 @@ To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1
 
 Then, a disjoint cover of query $\upsilon$ is one such that $\upsilon\heytingminus \upsilon_1 = \upsilon_2$ and $\upsilon \heytingminus \upsilon_2 = \upsilon_1$. The case expression will necessarily synthesise $\upsilon_1 \sqcup \upsilon_2$ which equals $\upsilon$ by standard co-Heyting algebra rules. Note that the lattice is \textit{not} a boolean algebra, so $\upsilon_1 \sqcap \upsilon_2 \neq \gap$ in general.
 
-The Hazel implementation simply does a disjoint split and ignores overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider the aliased variables at the leaves of the branch expressions.
+The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider the aliased variables at the leaves of the branch expressions.
 
 \subsection{Calculating Analysis Slices}
 \label{sec:ana-slice-calculus}
 
-Analysis slices are calculated directly from synthesis slices. The only rule the creates a type checking judgement is function application. Consider the analysis slice of a function argument with query type $\upsilon_1$; it is just the function application and a slice of the function under $\gap \to \upsilon_1$. That is, to explain why a function argument must be a given type, you ask why the corresponding function had that as its domain type.
+Analysis slices are calculated directly from synthesis slices. The only rule that creates a type checking judgement is function application. Consider the analysis slice of a function argument with query type $\upsilon_1$; it is just the function application and a slice of the function under $\gap \to \upsilon_1$. That is, to explain why a function argument must be a given type, you ask why the corresponding function had that as its domain type.
 
-However, to recursively calculate the analysis slice of an applcation when the focus is deep inside the argument, you need to calculate the analysis slice of the argument, but its outer derivation mode is in \textit{analysis}. The analysis slices of \cref{sec:ana-slice-def} do not apply here.
+However, to recursively calculate the analysis slice of an application when the focus is deep inside the argument, you need to calculate the analysis slice of the argument, but its outer derivation mode is in \textit{analysis}. The analysis slices of \cref{sec:ana-slice-def} do not apply here.
 
 We need an additional notion of \textit{inner} analysis slices. Dually to regular (outer) analysis slices, which treat the synthesis mode as an \textit{input}\footnote{Note, this is dual to the modes in typing of expressions!}, the inner slices treat the analysis derivation mode as an \textit{output}, and attempt to minimise it. 
 
-Intuitively, an inner analysis slice gives the the minimal assumptions, context, and additionally the minimum \textit{analysis type} to be imposed on it by the outer context, such that the queried analysis type on its focus. In particular slicing the function in an application would use this minimal outer analysis mode type on the argument to slice the domain type of the function.
+Intuitively, an inner analysis slice gives the minimal assumptions, context, and additionally the minimum \textit{analysis type} to be imposed on it by the outer context, such that the queried analysis type holds at its focus. In particular slicing the function in an application would use this minimal outer analysis mode type on the argument to slice the domain type of the function.
 \begin{definition}
 \label{def:ana-pos-slice}
-An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BlueViolet}\Downarrow}\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaposslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that, for some chosen outer-type $\upsilon_{\mathrm{outer}} \in \lfloor\tau_p\rfloor$ then $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BlueViolet}\Downarrow}\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{{\color{BlueViolet}\Downarrow}\,\upsilon}$.
+An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BlueViolet}\Downarrow}\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaposslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that, for some chosen outer type $\upsilon_{\mathrm{outer}} \in \lfloor\tau_p\rfloor$, $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BlueViolet}\Downarrow}\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{{\color{BlueViolet}\Downarrow}\,\upsilon}$.
 \end{definition}
 
 \section{Full Type Slices -- Slicing Assumption Definitions}
@@ -204,19 +204,19 @@ An astute reader may have noticed that analysis slices do \textit{not} explain a
 
 However, when you actually want to consider a specific term at the focus, in particular, a \textit{synthesising} term, which makes use of variables \textit{provided by the surrounding context}, a full slice of the context can be very meaningful. For example, when debugging a type error, the error itself may be \textit{non-local}, giving one of the used variables the wrong type.
 
-Formally, we refer to such a construct as a \textit{type slice}. A full sliced decomposition of a program around a focus, which can be pieced back together to form a well-typed program which has the same (or stronger) typing properties at the focus than some given query:
+Formally, we refer to such a construct as a \textit{type slice}: a fully sliced decomposition of a program around a focus, which can be pieced back together to form a well-typed program with the same (or stronger) typing properties at the focus as some given query:
 
 \begin{definition}[Type slices]
   \label{def:type-slice}
 A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{{\color{BrickRed}\Uparrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BrickRed}\Uparrow}\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair \\$((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$ synthesises $\phi$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BrickRed}\Uparrow}\,\psi}{\Delta';\,\gamma_f}{{\color{BrickRed}\Uparrow}\,\phi}$ for some $\psi$.
 \end{definition}
 
-Importantly, the pair of slices forms a well-typed program: by context-classification soundness, $\kappa[\varsigma]$ synthesises $\psi$. Then, a \textit{minimal} type slice is one which the context $\kappa$, the focused expression $\varsigma$ are jointly minimised alongside minimal external typing assumptions of the context typing $\gamma$. Notably, we do \textit{not} minimise the assumptions to the focused terms, as its assumptions are now explicitly provided by the surrounding context (and $\gamma$).
+Importantly, the pair of slices forms a well-typed program: by context-classification soundness, $\kappa[\varsigma]$ synthesises $\psi$. Then, a \textit{minimal} type slice is one in which the context $\kappa$ and the focused expression $\varsigma$ are jointly minimised alongside minimal external typing assumptions of the context typing $\gamma$. Notably, we do \textit{not} minimise the assumptions to the focused terms, as its assumptions are now explicitly provided by the surrounding context (and $\gamma$).
 
 An analogous construct is derivable for analysis foci, where simply any slices of the focused term are possible components. However, minimal analysis-focus type slices are equivalent to regular analysis slices paired with the entire focus omitted.\footnote{The empty term will analyse against any type imposed by any context.}
 
 \subsection{Calculating Full Type Slices}
-Calculating a valid synthesis slice part from our previous tools is trivial. Term-minimal slices (\cref{sec:term-minimal-slices}) are always a component of some minimal type slice. On the other hand, non-term-minimal slices are, for similar reasons to the product counterexamples from \cref{sec:product-revisited}, \textit{not necessarily} valid minimal components of any minimal type slice.
+Calculating a valid synthesis slice component from our previous tools is trivial. Term-minimal slices (\cref{sec:term-minimal-slices}) are always a component of some minimal type slice. On the other hand, non-term-minimal slices are, for similar reasons to the product counterexamples from \cref{sec:product-revisited}, \textit{not necessarily} valid minimal components of any minimal type slice.
 
 Calculating the context slice component is very similar to analysis slices. For annotated bindings: just take the corresponding type from the synthesis slice's minimal assumptions. However, for unannotated bindings, you may not actually be able to synthesise exactly the minimal assumption, which may entail that, in the presence of this additional type information, the other used assumptions are non-minimal. The Hazel implementation recursively slices unannotated let bindings, accepting that any `overshoot' in the type provided by this might lead to an \textit{overapproximation} of a minimum.
 
@@ -226,18 +226,18 @@ To find a truly minimal slice of the context you can individually calculate a mi
 \section{Minimum-Size Slices}
 \label{sec:min-size}
 
-Minimal slices are not unique, and some are actually larger than others in pure amount of terms highlighted. So, one might rank them by \textit{size}: the number of highlighted positions, asking for a \textit{minimum-size} slice. For this core calculus, finding such a slice is \textbf{NP-hard} in general. 
+Minimal slices are not unique, and some are actually larger than others in the sheer number of terms highlighted. So, one might rank them by \textit{size}: the number of highlighted positions, asking for a \textit{minimum-size} slice. For this core calculus, finding such a slice is \textbf{NP-hard} in general. 
 
 We can construct a reduction from the NP-hard set cover optimisation problem as follows, and shown in \cref{fig:nphard}:
 \begin{itemize}
   \item Encode a universe $U = \{1,\dots,n\}$ as a type $\tau = * \times \cdots \times *$ ($n$ factors, one position per element)
-\item Encode each of $m$-many sets $S_j$ in the set cover problem by an assumption $x_j : T_j \sqsubseteq \tau$ in $\Gamma$ with $T_j$ defined by the $i$th projection of $T_j$ being $*$ if and only if $n \in S_j$. 
+\item Encode each of $m$-many sets $S_j$ in the set cover problem by an assumption $x_j : T_j \sqsubseteq \tau$ in $\Gamma$ with $T_j$ defined by the $i$th projection of $T_j$ being $*$ if and only if $i \in S_j$.
 \item Construct a case tree with empty scrutinees and placing all $(x_j, I_j)$, defining $I_j$ as the $m$-ary product with $j$th projection being $*$ and all others $\gap$.
 \end{itemize}
 
 Then if you query a synthesis slice on this case tree with $\tau \times * \times \dots \times *$, then each $I_j$ must be retained, so the whole tree structure must be retained, and the only variance in the size of the slices is purely dependent on which variables $x_j$ were retained.
 
-As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^n{T_j} = \tau$, which implies there are $n$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e. $x_j : T'_j \sqsubseteq T_j$} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^nS'_j = U$. Hence, $\bigcup_{j=1}^nS_j$ is a set-cover. Finally, the only variance in the size of the slice was in the number of variable $x_j$ chosen, i.e. the number of sets chosen; hence, a minimum-size synthesis slice corresponds to a minimum set cover.
+As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau$, which implies there are $m$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e. $x_j : T'_j \sqsubseteq T_j$} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^mS'_j = U$. Hence, the retained $S_j$ form a set-cover. Finally, the only variance in the size of the slice was in the number of variable $x_j$ chosen, i.e. the number of sets chosen; hence, a minimum-size synthesis slice corresponds to a minimum set cover.
 
 \begin{figure}[ht]
 \centering

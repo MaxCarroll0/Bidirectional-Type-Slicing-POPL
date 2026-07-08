@@ -36,14 +36,14 @@ A \textit{synthesis slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor
 \label{fig:fundamental-triangle}
 \end{figure}
 
-Many such synthesis slices exist. In particular, the original program $(\Gamma, e)$ is necessarily a synthesis slice; and for $\synslice{D}{\gap}$, every slice of $(\Gamma, e)$ is a valid synthesis slice. We refer to the $\phi \sqsubseteq \upsilon$ condition as \textit{validity}. It is intentional that this is \textit{not} an exact equality, as demonstrated by the counterexample below:
+Many such synthesis slices exist. In particular, the original program $(\Gamma, e)$ is necessarily a synthesis slice; and for $\synslice{D}{\gap}$, every slice of $(\Gamma, e)$ is a valid synthesis slice. We refer to the $\upsilon \sqsubseteq \phi$ condition as \textit{validity}. It is intentional that this is \textit{not} an exact equality, as demonstrated by the counterexample below:
 
 \begin{counterexamplebox}
 %
 \begin{counterexample}[Non-Existence of all Exact Synthesis Slices]\label{lem:exact-not-exist}
 Consider $x \mathbin{:} \mathbf{*} \Rightarrow \mathbf{*} \vdash (x, x) {\color{BrickRed}\Uparrow} (* \Rightarrow *) \times (* \Rightarrow *)$, and query $\upsilon = (\mathbf{*} \Rightarrow \gap) \times (\gap \Rightarrow \mathbf{*})$. 
 
-Any strictly smaller slice of either $x : * \Rightarrow *$ or $(x, x)$ synthesises a type strictly less precise that $\upsilon$. Yet the original program synthesises $(* \Rightarrow *) \times (* \Rightarrow *)$, strictly more precise than $\upsilon$.
+Any strictly smaller slice of either $x : * \Rightarrow *$ or $(x, x)$ synthesises a type strictly less precise than $\upsilon$. Yet the original program synthesises $(* \Rightarrow *) \times (* \Rightarrow *)$, strictly more precise than $\upsilon$.
 \end{counterexample}
 \end{counterexamplebox}
 
@@ -54,7 +54,7 @@ Any strictly smaller slice of either $x : * \Rightarrow *$ or $(x, x)$ synthesis
 Synthesis slices give us \textit{some} explanation of the query, but many are clearly useless, such as the original program itself, which corresponds to fully highlighting the program. We want to find minimal slices: those where further slicing any part of the program makes the slice invalid (synthesising a type insufficient to cover the query).
 \begin{definition}[Minimality]
 \label{def:isminimal}
-For an element $a$ of a poset, $a$ is minimal, $\isMin{a}$, when all $a'$ with $a' \sqsubseteq a$ are in fact equal to $a$, have $a' = a$.
+For an element $a$ of a poset, $a$ is minimal, $\isMin{a}$, when every $a'$ with $a' \sqsubseteq a$ is in fact equal to $a$.
 \end{definition}
 \begin{definition}[Minimal Synthesis Slices]
 A $\minsynslice{D}{\upsilon}$ is a $\synslice{D}{\upsilon}$ minimal in $\synslice{D}{\upsilon}$ under program-slice precision on $\lfloor \Gamma, e\rfloor$.
@@ -73,15 +73,15 @@ For every $s : \synslice{D}{\upsilon}$, there exists $m : \minsynslice{D}{\upsil
 \end{majortheorembox}
 
 \begin{proof}
-The slice lattice $\lfloor \Gamma, e \rfloor$ is finite. Hence, $\{\,s' : \synslice{D}{\upsilon} \mid s' \sqsubseteq s\,\}$ is finite, which can be decided simply by enumerating all $s' : \synslice{D}{\upsilon}$ and deciding $s' \sqsubseteq s$. If this set is empty, then $s'$ is minimal.
+The slice lattice $\lfloor \Gamma, e \rfloor$ is finite. Hence, $\{\,s' : \synslice{D}{\upsilon} \mid s' \sqsubset s\,\}$ is finite and computable by enumeration. If this set is empty, then $s$ is minimal; otherwise, recurse on any of its elements. Each step strictly decreases precision, so finiteness ensures termination.
 \end{proof}
 
 Consequentially, any derivation $D$ has a minimal synthesis slice, as the original program is a trivial inhabitant of $\synslice{D}{\upsilon}$ for all $\upsilon$.
 \paragraph{A Brute-Force Algorithm via Graduality} The proof above is not a practical algorithm. In reality, for any term, you can efficiently compute the list of maximal slices that are strictly less precise than some given term by omitting exactly \textit{one} leaf from the AST. 
 
-Pick the first maximal strict slice that satisfies the query and recurse; if none of the slices satsify the query, then you have found a minimal slice by using graduality (\cref{thm:graduality-syn}). This is $\mathcal{O}(n \times T)$ where $n$ is the program size and $T$ the type checking complexity; type checking is linear in the program size for this calculus, so finding a minimal slice is $\mathcal{O}(n^2)$.
+Pick the first maximal strict slice that satisfies the query and recurse; if none of the slices satisfy the query, then you have found a minimal slice by using graduality (\cref{thm:graduality-syn}). This is $\mathcal{O}(n \times T)$ where $n$ is the program size and $T$ the type checking complexity; type checking is linear in the program size for this calculus, so finding a minimal slice is $\mathcal{O}(n^2)$.
 
-See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend through until descending below the given query, marking all three minima (of which there may be multiple).
+See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend through, stopping just before descending below the given query; all three minima are marked.
 
 \tikzset{
   slprog/.style={draw=latticecolor!55, fill=white, rounded corners=2pt,
@@ -146,7 +146,7 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 \node[anchor=north west, font=\scriptsize\bfseries, OliveGreen!35!black] at (-3.85,9.6) {$\upsilon \sqsubseteq \phi_i$};
 \node[anchor=south west, font=\scriptsize\bfseries, gray!50!black] at (-3.85,0.7) {$\upsilon \not\sqsubseteq \phi_i$};
 \end{tikzpicture}
-\caption{Valid synthesis slices above query $\upsilon$ in the shaded region, with 3 minima consisting of 2 inexact minima (ellipses) and one minima (square) synthesising exactly $\upsilon$.}
+\caption{Valid synthesis slices above query $\upsilon$ in the shaded region, with 3 minima consisting of 2 inexact minima (ellipses) and one minimum (square) synthesising exactly $\upsilon$.}
 \label{fig:syn-slice-existence}
 \end{subfigure}\hfill
 \begin{subfigure}[t]{0.49\linewidth}
@@ -196,16 +196,16 @@ In practice, the user may look at a large query $\upsilon$ getting a large progr
 If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and $m_2 : \minsynslice{D}{\upsilon_2}$, then there exists $m_1 : \minsynslice{D}{\upsilon_1}$ with $m_1 \sqsubseteq m_2$.
 \end{theorem}
 
-This is desirable because the user will not be shown \textit{additional} information after a query refinement which would require further reasoning by the user to understand. \Cref{fig:syn-slice-refinement} illustrates a monotonic refinement path along 3 refined queries on the example lattie. If we did not follow a monotonic path during refinement you would get `branch hopping':
+This is desirable because the user will not be shown \textit{additional} information after a query refinement which would require further reasoning by the user to understand. \Cref{fig:syn-slice-refinement} illustrates a monotonic refinement path along 3 refined queries on the example lattice. If we did not follow a monotonic path during refinement we would get `branch hopping':
 
-\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch there reasoning between the contents in each branch. For example, refining $\upsilon = \mathbf{*}\Rightarrow\mathbf{*}$ to $\upsilon' = \gap\Rightarrow\mathbf{*}$:
+\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. For example, refining $\upsilon = \mathbf{*}\Rightarrow\mathbf{*}$ to $\upsilon' = \gap\Rightarrow\mathbf{*}$:
 \begin{center}
 \fullslice{x : \sli{\mathbf{*} \Rightarrow \mathbf{*}}}{\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}\;x\;\mathbf{else}}\;y}
 \quad$\xrightarrow{\upsilon' \sqsubseteq \upsilon}$\quad
 \fullslice{y : \mathbf{*}\,\sli{\Rightarrow \mathbf{*}}}{\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}}\;x\;\sli{\mathbf{else}\;y}}
 \end{center}
 
-On the other hand, you do not necessarily have monotonicity in the upwards direction. Consider the $\rho_j$ node in \Cref{fig:syn-slice-refinement}, which is a minimal under query $\upsilon_0$, but no minima above $\upsilon_1$ is strictly more precise than $\rho_j$.
+On the other hand, you do not necessarily have monotonicity in the upwards direction. Consider the $\rho_j$ node in \Cref{fig:syn-slice-refinement}, which is minimal under query $\upsilon_0$, but no minimum for query $\upsilon_1$ is strictly more precise than $\rho_j$.
 
 \subsection{Decompositions}
 \label{sec:decompositions}
@@ -229,7 +229,7 @@ However, we shall later see that the converse fails: the product of two minimal 
 \subsubsection{Let Bindings}
 \label{sec:let-decomp}
 
-A more subtle case is of let-bindings, which has difference assumptions for its two premises:
+A more subtle case is that of let-bindings, which have different assumptions for their two premises:
 \[\inference[\synr{Let}]{
   \synthesis{e_1}{\tau_1}
   &
@@ -248,9 +248,9 @@ Let $m : \minsynslice{\synr{Let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_
 \label{sec:join-slices}
 
 
-Finally, a minimal slice only provides an explanation, it does not show you \textit{all} information \textit{contribute} in any way to a query type. The latter is a useful notion when performing refactors which change the type, where quickly identifying the regions of the program which rely on the old type is crucial. 
+Finally, a minimal slice only provides an explanation; it does not show \textit{all} information \textit{contributing} in any way to a query type. The latter is a useful notion when performing refactors which change the type, where quickly identifying the regions of the program which rely on the old type is crucial.
 
-Such a region can be uniquely expressed as the \textit{join} of all minimal slices for the slices. The contribution slice is efficient in the sense that is a \textit{least} upper bound of actual minimal slices. For this to work, synthesis slices must be closed under joins: the joined slice must also be \textit{valid}, which is true:
+Such a region can be uniquely expressed as the \textit{join} of all minimal slices for the query. The contribution slice is efficient in the sense that it is a \textit{least} upper bound of actual minimal slices. For this to work, synthesis slices must be closed under joins: the joined slice must also be \textit{valid}, which is true:
 
 \begin{theorem}[Join Closure of Synthesis Slices]\label{thm:join-syn}
 For $(\gamma_1, \varsigma_1) : \synslice{D}{\upsilon_1}$ and $(\gamma_2, \varsigma_2) : \synslice{D}{\upsilon_2}$, then $(\gamma_1, \varsigma_1) \joinsyn (\gamma_2, \varsigma_2) : \synslice{D}{\upsilon_1 \sqcup \upsilon_2}$, with the joined slice taken pointwise: $(\gamma_1 \sqcup \gamma_2,\; \varsigma_1 \sqcup \varsigma_2)$.

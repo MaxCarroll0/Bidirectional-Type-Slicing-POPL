@@ -1,13 +1,13 @@
-\subsection{Explanation by Example}
-\label{sec:explanation}
+\section{Type Slicing in Hazel by Example}
+\label{sec:slicing-by-example}
 
-This section previews the slicing apparatus formally introduced in later chapters through three worked examples. 
+This section previews the slicing apparatus formally introduced in later sections through three worked examples.
 
 \Cref{fig:parse-digit-slices} demonstrates a small example of a function parsing characters to single digits. In \textbf{(a)} the function is queried for its \textit{synthesised} type, \synsrc{\texttt{Char \textrightarrow\ Option Digit}}, which is explained by just taking a single branch from the function, and the corresponding part of the \synsrc{\texttt{Digit}} type.
 
 Secondly, \textbf{(b)} asks why the argument is \textit{required} to be a \anasrc{\texttt{Char}}, explained by an \textit{analysis} slice retaining just the function application and the \anasrc{\texttt{Char}} annotation on the function.
 
-The formal mathematics of these two concepts are introduced in \cref{sec:synthesis,sec:analysis} explored upon a core calculus specified in \cref{sec:core-calculus} which includes sum types, products, and explicit polymorphism.
+The formal mathematics of these two concepts is introduced in \cref{sec:synthesis,sec:analysis}, developed over a core calculus specified in \cref{sec:core-calculus} which includes sum types, products, and explicit polymorphism.
 
 \begin{figure}[H]
 \centering

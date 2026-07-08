@@ -1,21 +1,22 @@
 \section{Relation to Other Forms of Slicing}
 \label{sec:comparisons}
+\label{sec:related-work}
 
-Program slicing methods have been explored in various different forms for many applications have been studied extensively~\cite{TipSurvey1995}. Here we compare type slicing with these, being loosely related in foundation to \emph{Galois slicing}~\cite{Perera2012}, and in application to \emph{type error slicing}~\cite{Wand1986,HaackWells2003}.
+Program slicing methods have been explored extensively, in various forms and for many applications~\cite{TipSurvey1995}. Here we compare type slicing with these, being loosely related in foundation to \emph{Galois slicing}~\cite{Perera2012}, and in application to \emph{type error slicing}~\cite{Wand1986,HaackWells2003}.
 
 \subsection{Classical Program Slicing}
 \label{sec:cmp-program-slicing}
 
     Classical program slicing~\cite{TipSurvey1995} was first introduced by Weiser~\cite{Weiser1984}. Here, a slice is a subprogram preserving the value of a chosen variable at a chosen program point: a `criterion'. Similarly to type slicing, the subprogram is a syntactically well-formed program which can be analysed (evaluated) accordingly.
 
-The criterion is superficially similar type slicing queries, with two significant differences. First, a type query is itself a slice of a type, which has \textit{compound} structure, rather than a single variable, and type slices cannot in general \textit{preserve} all queries exactly (\cref{lem:exact-not-exist}), so we ask only for \textit{validity} (\cref{def:syn-slice}), which remains a `sufficient' explanation. 
+The criterion is superficially similar to type slicing queries, with two significant differences. First, a type query is itself a slice of a type, which has \textit{compound} structure, rather than a single variable, and type slices cannot in general \textit{preserve} all queries exactly (\cref{lem:exact-not-exist}), so we ask only for \textit{validity} (\cref{def:syn-slice}), which remains a `sufficient' explanation. 
 
 Classical slicing distinguishes \textit{static} slices (preserved over all executions) from \textit{dynamic} slices (over one fixed execution)~\cite{KorelLaski1988}. Type slicing can be viewed as a \textit{dynamic} slicing method, as it fixes a particular typing derivation. However, most type systems, including the type system studied in this paper, have no non-trivial non-determinism, making this distinction irrelevant for most systems.
 
 \subsection{Galois Slicing}
 \label{sec:cmp-galois}
 
-Galois slicing~\cite{Perera2012} is a lattice-theoretic version of type slicing that has subsequently been applied and related to a wide range of calculi and user interfaces~\cite{Ricciotti2017,PereraGarg2016,PereraVis2022,AtkeyPerera2025}. Type slicing shares the foundational use of lattices and precision, but differs decisively in the lack of a \textit{Galois connection}. 
+Galois slicing~\cite{Perera2012} is a lattice-theoretic approach to dynamic program slicing that has been applied and related to a wide range of calculi and user interfaces~\cite{Ricciotti2017,PereraGarg2016,PereraVis2022,AtkeyPerera2025}. Type slicing shares the foundational use of lattices and precision, but differs decisively in the lack of a \textit{Galois connection}. 
 
 In Perera's setting, a program evaluation lifts to a \textit{meet-preserving} map $\mathit{eval}_{\rho,e} : \lfloor \rho, e\rfloor \to \lfloor v\rfloor$ between the slice lattices of partial programs and partial values. By an adjoint functor theorem~\cite[Prop.~7.34]{DaveyPriestley}, a meet-preserving map between complete lattices is the upper adjoint of a (unique) Galois connection and vice versa. The lower adjoint, $\mathit{uneval}$, is the `backward slice function' sending a partial-value query to a \textit{least} program slice evaluating to it.
 
@@ -24,7 +25,7 @@ For total type systems assigning unique types like the core calculus (\cref{sec:
   \phi_D : \lfloor \Gamma, e \rfloor \to \lfloor \tau \rfloor
 \]
 
-However, this `forward map' $\phi_D$ is \textit{not meet-preserving} in general. Consider a case expression in which both branches independently synthesise the same type $\gap \sqsubset \tau$, then we may have:
+However, this `forward map' $\phi_D$ is \textit{not meet-preserving} in general. Consider a case expression in which both branches independently synthesise the same type $\tau \sqsupset \gap$; then we may have:
 \[
   D : \synthesis{(\mathbf{case}\;e\;\mathbf{of}\;x_1.\,e_1 \mid x_2.\,e_2)}{\tau}
 \]
@@ -35,11 +36,16 @@ Then take the two slices $s_1$ keeping only the first branch and the $s_2$ keepi
 
 Type error slicing, like type slicing, is a static analysis on a typing problem. Both share the broad goal of attributing type-level information back to source positions, but differ in language target, the underlying mathematical structure, and the scope.
 
-Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} work in globally inferred Hindley-Milner system; the program is reduced to a system of equality constraints over type variables, and a type error slice is computed as a minimal unsatisfiable subset of the constraint set, projected back to the corresponding minimal subset of source positions.
+Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} work in a globally inferred Hindley-Milner system; the program is reduced to a system of equality constraints over type variables, and a type error slice is computed as a minimal unsatisfiable subset of the constraint set, projected back to the corresponding minimal subset of source positions.
 
-These program slices are not structure preserving programs, they are flat sets of constraints and sources, rather than actual programs. This means the results themselves cannot be type checker nor can they be executed.
+These program slices are not structure-preserving programs; they are flat sets of constraints and sources, rather than actual programs. This means the results themselves cannot be type checked, nor can they be executed.
 
 There is also a difference in scope. Type error slicing answers \emph{``why does this program fail to type-check?''}, whereas type slicing answers \emph{``why does this expression have this type?''}. Via marking (\cref{sec:marking})~\cite{Marking2024}, which elaborates every well-formed expression into a totally typed derivation, type slicing applies also to ill-typed programs. So, here, the question of ``why this type?'' subsumes ``why this fails to type-check?''.
+
+\subsection{Type-Directed Slicing}
+\label{sec:cmp-type-directed}
+
+\citet{TypeDirectedSlicing} recently introduced \emph{type-directed slicing}, implemented for Java in the tool \textsc{Specimin}. Given a target program element and a typechecker specified by its type rules, a type-directed slicer statically computes a smaller program on which the typechecker behaves identically at the target. It does so by inverting the type rules into a \emph{type rule dependency map} that over-approximates the declarations a typing judgement at the target may consult. The aim is complementary to ours: their slices serve the \emph{maintainers of a typechecker} as reduced, compilable test cases reproducing reported bugs (evaluated on historical bugs of \texttt{javac}, NullAway, and the Checker Framework), rather than serving programmers as explanations of types in their own programs. Consequently, type-directed slices are coarser objects: they preserve \emph{all} typing behaviour at a program element and are deliberately over-approximate, whereas type slices answer queries about individual parts of a single type and carry minimality and monotonic-refinement guarantees (\cref{thm:min-exists,thm:mono}). The foundations also differ: the dependency map is derived syntactically from type rules, while type slicing is grounded in a precision lattice and graduality, which is what enables reasoning about minimality.
 
 
 %%% Local Variables:

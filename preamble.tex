@@ -15,6 +15,29 @@
 \let\sqsupseteqOriginal\sqsupseteq
 
 \usepackage{semantic}        % \inference
+
+% --- Fix semantic.sty inference-rule spacing under LuaLaTeX + unicode-math ---
+% infernce.sty spaces the rule bar with `\vskip 4\fontdimen8\textfont3`:
+% fontdimen8 of the legacy cmex10 math-extension font is the default rule
+% thickness (0.4pt). acmart >= v2.16 under LuaLaTeX loads unicode-math, making
+% \textfont3 the OpenType math font (Libertinus), where that fontdimen is
+% ~6.8pt -- inserting ~27pt of glue above AND below every rule bar. Patch the
+% \vskip's (and the nested-inference raise) back to the classic 0.4pt value.
+\makeatletter
+\newdimen\sem@defaultrulethick
+\sem@defaultrulethick=0.4pt
+\patchcmd{\@inferenceBack}
+  {\vskip 4\fontdimen8\textfont3}{\vskip 4\sem@defaultrulethick}
+  {}{\PackageWarning{preamble}{semantic \string\inference\space patch 1 failed}}
+\patchcmd{\@inferenceBack}
+  {\vskip 4\fontdimen8\textfont3}{\vskip 4\sem@defaultrulethick}
+  {}{\PackageWarning{preamble}{semantic \string\inference\space patch 2 failed}}
+\patchcmd{\@processInference}
+  {\advance\dimen3 by \fontdimen8\textfont3}
+  {\advance\dimen3 by \sem@defaultrulethick}
+  {}{\PackageWarning{preamble}{semantic \string\inference\space patch 3 failed}}
+\makeatother
+% ----------------------------------------------------------------------------
 \usepackage{stmaryrd}        % \llbracket, \rrparenthesis, ...
 \providecommand{\Circle}{\bigcirc} % wasysym incompatible with lualatex
 \usepackage{mathtools}
@@ -30,9 +53,15 @@
 
 \usepackage{etoolbox}
 \usepackage{needspace}
-\pretocmd{\subsection}{\needspace{2\baselineskip}}{}{}
+% NOTE: acmart errors on redefining sectioning commands ("An attempt to redefine
+% \subsection detected"), so the \pretocmd{\subsection}{\needspace{...}} hack from
+% the dissertation is removed for the POPL version.
 
 \usepackage{cleveref}
+% Abbreviated section cross-references: \cref -> "Sec. 3" mid-sentence,
+% \Cref -> "Section 3" at sentence start. Sub(sub)sections inherit these.
+\crefname{section}{Sec.}{Secs.}
+\Crefname{section}{Section}{Sections}
 
 % ---------------------------------------------------------------------------
 % Colours

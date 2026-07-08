@@ -1,22 +1,22 @@
 \section{Context Typing}
 \label{sec:context-typing}
 
-Context classification is a novel construction for bidirectional type systems. It is inspired by one-hole contexts (zippers) of algebraic data types~\cite{Huet1997}, decomposing a data structure into a focused element and its surrounding context. We apply the same idea applies to \textit{typing derivations}: given a derivation of an expression $e$ and focusing on a sub-term $e'$ in $e$, we focus on the subderivation of $e'$ and pair it with a `context typing derivation' of the surrounding context.
+Context classification is a novel construction for bidirectional type systems. It is inspired by one-hole contexts (zippers) of algebraic data types~\cite{Huet1997}, decomposing a data structure into a focused element and its surrounding context. We apply the same idea to \textit{typing derivations}: given a derivation of an expression $e$ and focusing on a sub-term $e'$ in $e$, we focus on the subderivation of $e'$ and pair it with a `context typing derivation' of the surrounding context.
 
-A context typing derivation therefore must record the extra assumptions made available at the focus by additional bound variables introduced in the captured context, and the mode of the focus (whether or not the sub-term synthesises a type). These are necessary to type checking the focus (i.e. e') directly from the typing derivation of the context.
+A context typing derivation therefore must record the extra assumptions made available at the focus by additional bound variables introduced in the captured context, and the mode of the focus (whether or not the sub-term synthesises a type). These are necessary for type checking the focus (i.e.\ $e'$) directly from the typing derivation of the context.
 
 \subsection{Context Syntax and Slice Lattice}
 \label{sec:context-syntax}
 
 
-Formally we must first define one-hole contexts on terms themselves (figure~\ref{fig:contexts}). The focus of the context is notated $\cmark$ and is restricted to a single position in an expression. For any context, you can place a term at the focus to produce a complete term. This is notated by $\C[e]$, `plugging $e$ into context $\C$'.
+Formally we must first define one-hole contexts on terms themselves (Figure~\ref{fig:contexts}). The focus of the context is notated $\cmark$ and is restricted to a single position in an expression. For any context, you can place a term at the focus to produce a complete term. This is notated by $\C[e]$, `plugging $e$ into context $\C$'.
 
 \begin{figure}[h]
 \fbox{Syntax}\ \ \ One-hole expression contexts $\C$
 \begin{align*}
 \C &::= \cmark \mid \lambda x \mathbin{:} \tau.\; \C \mid \lambda x.\; \C \mid \C(e) \mid e(\C) \mid \C\langle\tau\rangle \\
   &\quad\mid\; (\C,\; e) \mid (e,\; \C) \mid \iota_1\; \C \mid \iota_2\; \C \mid \pi_1\; \C \mid \pi_2\; \C \\
-  &\quad\mid\; \mathbf{case}\;e\;\mathbf{of}\;x.\;\C \mid y.\;f \mid \mathbf{case}\;e\;\mathbf{of}\;x.\;f \mid y.\;\C \\
+  &\quad\mid\; \mathbf{case}\;e\;\mathbf{of}\;x.\;\C \mid y.\;e \mid \mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;\C \\
   &\quad\mid\; \Lambda\alpha.\; \C \mid \mathbf{let}\;x = \C\;\mathbf{in}\;e \mid \mathbf{let}\;x = e\;\mathbf{in}\;\C
 \end{align*}
 \fbox{$\C[e]$}\ \ \ Plug expression $e$ into the hole $\cmark$
@@ -26,12 +26,12 @@ Formally we must first define one-hole contexts on terms themselves (figure~\ref
 (\lambda x \mathbin{:} \tau.\; \C)[e] &= \lambda x \mathbin{:} \tau.\; \C[e] \\
 (\C_1(e_2))[e] &= \C_1[e](e_2) \qquad\qquad \text{(similarly for all other constructors)}
 \end{align*}
-\fbox{$\gap_\C$}\ \ \ Purely structural context: replace all sub-terms with $\gap$, preserving structure
+\fbox{$\gap_{\C}$}\ \ \ Purely structural context: replace all sub-terms with $\gap$, preserving structure
 \vspace{-0.5em}
 \begin{align*}
-\gap_\cmark &= \cmark &
-\gap_{\lambda x \mathbin{:} \tau.\; \C} &= \lambda x \mathbin{:} \gap.\; \gap_\C &
-\gap_{\C(e)} &= \gap_\C(\gap) \quad \text{etc.}
+\gap_{\cmark} &= \cmark &
+\gap_{\lambda x \mathbin{:} \tau.\; \C} &= \lambda x \mathbin{:} \gap.\; \gap_{\C} &
+\gap_{\C(e)} &= \gap_{\C}(\gap) \quad \text{etc.}
 \end{align*}
 \caption{One-hole expression contexts. $\cmark$ marks the hole; $\C[e]$ plugs it.}
 \label{fig:contexts}
@@ -42,7 +42,7 @@ Formally we must first define one-hole contexts on terms themselves (figure~\ref
 Precision extends to contexts, $\C' \sqsubseteq \C$, additionally requiring the focus to be in the same structural position. This is required so that plugging context preserves precision:
 
 \begin{lemma}[Plug Preserves Precision]\label{lem:plug-precision}
-If\/ $\C' \sqsubseteq \C$ and $e' \sqsubseteq e$, then $\C'[e]' \sqsubseteq \C[e]$.
+If\/ $\C' \sqsubseteq \C$ and $e' \sqsubseteq e$, then $\C'[e'] \sqsubseteq \C[e]$.
 \end{lemma}
 
 This lemma allows slicing to independently slice the \textit{external} type information from the context and the \textit{internal} type information of the focused term, whilst ensuring the whole program slice (plugging the two together) remains a valid slice of the original program.
@@ -50,9 +50,9 @@ This lemma allows slicing to independently slice the \textit{external} type info
 \subsection{The Context Typing Judgement}
 \label{sec:context-classification}
 
-Then, we notate context typing by a judgement $\ctxclass{\C}{d}{\Delta';\ \Gamma'}{m}$. Reading as: ``under assumptions $\Delta, \Gamma$, context $\C$ in a derivation of outer mode $d$ has its focus typed under $\Delta';\,\Gamma'$ in focus mode $m$''.
+Then, we notate context typing by a judgement $\ctxclass{\C}{d}{\Delta';\ \Gamma'}{m}$, read as: ``under assumptions $\Delta, \Gamma$, context $\C$ in a derivation of outer mode $d$ has its focus typed under $\Delta';\,\Gamma'$ in focus mode $m$''.
 
-The \textit{outer derivation mode} $d$ records whether the whole expression $\C[e]$ is in a synthesis derivation producing type $\tau$ ($d = {\color{BrickRed}\Uparrow}\;\tau$) or an analysis derivation against $\tau$ ($d = {\color{BlueViolet}\Downarrow}\;\tau$). The \textit{focus mode} $m$ records what the focus $e$ is must synthesise ($m = {\color{BrickRed}\Uparrow}\;\tau'$), or the type it is checked against ($m = {\color{BlueViolet}\Downarrow}\;\tau'$). Finally, $\Gamma'$ records the \textit{focus assumptions}. Each rule in these derivations is subject to \textit{additional premises} matching the corresponding term typing rules.
+The \textit{outer derivation mode} $d$ records whether the whole expression $\C[e]$ is in a synthesis derivation producing type $\tau$ ($d = {\color{BrickRed}\Uparrow}\;\tau$) or an analysis derivation against $\tau$ ($d = {\color{BlueViolet}\Downarrow}\;\tau$). The \textit{focus mode} $m$ records the type the focus $e$ must synthesise ($m = {\color{BrickRed}\Uparrow}\;\tau'$), or the type it is checked against ($m = {\color{BlueViolet}\Downarrow}\;\tau'$). Finally, $\Gamma'$ records the \textit{focus assumptions}. Each rule in these derivations is subject to \textit{additional premises} matching the corresponding term typing rules.
 
 \paragraph{Example.} Consider the derivation of $\synthesis{e_1(e_2)}{\tau_2}$ via \synr{App}, where $\synthesis{e_1}{\tau}$, $\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2$, and $\analysis{e_2}{\tau_1}$.
 \begin{itemize}
@@ -60,7 +60,7 @@ The \textit{outer derivation mode} $d$ records whether the whole expression $\C[
 \item \textbf{Argument position} ($e_2$ is the focus, $\C = e_1(\cmark)$): The corresponding classification is: $\ctxclass{e_1(\cmark)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta;\,\Gamma}{{\color{BlueViolet}\Downarrow}\;\tau_1}$. The focus analyses against $\tau_1$ as per the focus mode, with the extra premises being: $\synthesis{e_1}{\tau}$ and $\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2$.
 \end{itemize}
 
-Specifying these rules is systematic, one for each typing rule and focus location. I give a few representative rules in Figure~\ref{fig:context-classification}. The only additional rules are for identity contexts $\texttt{s}\cmark$ and $\texttt{a}\cmark$ (the base cases) where the focus mode must match the outer derivation mode.
+Specifying these rules is systematic, one for each typing rule and focus location. We give a few representative rules in Figure~\ref{fig:context-classification}. The only additional rules are for identity contexts $\texttt{s}\cmark$ and $\texttt{a}\cmark$ (the base cases) where the focus mode must match the outer derivation mode.
 
 \begin{figure}[h]
 \small
@@ -102,7 +102,7 @@ For any context $\C$, expression $e$, outer mode $d$, and focus mode $m$: if\/ $
 \end{theorem}
 \end{majortheorembox}
 
-In order to apply the same ideas as synthesis slices, we also prove a substantial static gradual guarantee (\cref{sec:core-typing}) for context typings, defining precision on modes $m' \sqsubseteq m$ by lifting: ${\color{BrickRed}\Uparrow}\,\tau' \sqsubseteq {\color{BrickRed}\Uparrow}\,\tau$ iff $\tau' \sqsubseteq \tau$, and likewise for ${\color{BlueViolet}\Downarrow}$. The focus modes class itself (analysis or synthesis) is propagated unchanged through every classification rule.
+In order to apply the same ideas as synthesis slices, we also prove a substantial static gradual guarantee (\cref{sec:core-typing}) for context typings, defining precision on modes $m' \sqsubseteq m$ by lifting: ${\color{BrickRed}\Uparrow}\,\tau' \sqsubseteq {\color{BrickRed}\Uparrow}\,\tau$ iff $\tau' \sqsubseteq \tau$, and likewise for ${\color{BlueViolet}\Downarrow}$. The focus mode's class itself (analysis or synthesis) is propagated unchanged through every classification rule.
 
 \begin{majortheorembox}
 \begin{theorem}[Static Gradual Guarantee -- Context, Synthesis Position]\label{thm:graduality-syn-cls}

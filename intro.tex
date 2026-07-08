@@ -2,23 +2,29 @@
 \label{sec:intro}
 \label{firstcontentpage}
 
-Programmers report that debugging and testing consumes 20--60\% of their development time~\cite{DebugTimeSelfReport}, with a small fraction of difficult bugs absorbing a disproportionate share of that effort~\cite{DebugSkew}. In statically typed languages, many such bugs are caught statically at compile time by \textit{type errors}. 
+Programming often involves reasoning about static types.
+Development tools assist programmers in limited ways with this task, 
+e.g. by reporting the type of an expression when hovering over it, or reporting the expected and actual type when there is a type error.
+However, these services only report \emph{what} the type of an expression is, not \emph{why} it is that type 
+in the context of the surrounding program.
+Programmers must hunt through the program themselves to answer these questions, and the program often contains a large volume of code irrelevant to their query.
 
-These type errors are conventionally reported at a single location, yet most errors genuinely involve more than one source location~\cite{StudentTypeErrorFixes}. The reported location is often imprecise in \textit{two} directions: often including code that does \textit{not} directly contribute to the error, yet at the same time misses regions of the surrounding context that \textit{do} (for example, non-local type information sourced from bindings). As a result, existing highlighting systems show both too much and too little context to the programmer for any given error. The error itself states only that the term has a differing type that was \textit{expected}, not \textit{why} the system expected it.
+This {paper} develops the theory of \textit{type slicing} from type-theoretic first principles. Type slices allow developers to ask ``why questions''~\cite{developers-ask-why-questions} about type information reported about arbitrary terms within a (possibly incomplete or erroneous) program.   
+The answers are given in the form of a minimal slice of the original program (i.e. a program with unrelated terms folded away) that suffices to reproduce the queried type. Type slicing builds on prior work on dynamic program slicing, reviewed in \cref{sec:related-work}, bringing it to the static setting.
 
-This {paper} develops the theory of \textit{type slicing}: a decomposable highlighting system that allows terms to be selected and the type explained in a \textit{bidirectional} locally inferred type system. A programmer selects an expression and queries a part of the type, $\upsilon$, that they wish to explain. The explanation picks out a minimal portion of the program that suffices to justify the queried type. 
+More specifically, we consider the problem of type slicing in the context of \emph{bidirectional type systems}~\cite{BidirectionalTypes}, which distinguish \emph{type synthesis} (which type does this term have) from \emph{type analysis} (which type is expected).
+Correspondingly, a \textit{synthesis slice} (\cref{sec:synthesis}) of a selected term answers ``which parts of the program caused it to have type $\tau$?'' and an \textit{analysis slice} (\cref{sec:analysis}) answers the complementary question, ``which parts of the surrounding program enforced that this term have type $\tau$?''
 
-A \textit{synthesis slice} (\cref{sec:synthesis}) of a selected term answers ``which parts of the term caused it to have type $\upsilon$?''; an \textit{analysis slice} (\cref{sec:analysis}) of a selected term answers the complementary question, ``which parts of the surrounding program enforced that this term have type $\upsilon$?''.
+Queries can be \textit{refined}, say from an entire function type to just its codomain, resulting in a smaller slice. This allows a programmer to incrementally focus on sub-parts of the type that are of interest. For example, maybe after some exploration, the programmer determines that only a small region of a large record type involved in a type error is erroneous.
 
-Slices can be \textit{refined}: refining a query, say from an entire function type to just its codomain, gives a smaller highlighted region for the refined query, supporting interactive exploration complex types, where the programmer can incrementally focus into sub-parts of the type that are of interest. For example, maybe only a small region of a large type involed in a type error is erroneous.
+The type slicing machinery applies equally well to well-typed and ill-typed terms. In the case of ill-typed terms, it provides a mechanism that may aid in debugging type errors.
 
-The type slicing machinery applies even beyond errors (\cref{sec:marking}); it is possible to query any program regions responsible for any type information of interest, even well-typed code. Hence, type slicing is a tool to explain \textit{any} types in a program.
-
-\subsection{Scope}
+\subsection{Contributions}
 \label{sec:scope}
-The theory presented in this paper applies to \textit{bidirectional type systems} with any form of \textit{downwards static graduality} (\cref{sec:core-calculus}) on expressions, inspired by the gradual typing literature~\cite{GradualRefined} extended to incomplete programs, like those of the Hazel calculus~\cite{HazelLivePaper}. Notably, we do \textit{not} require any cast dynamics like in gradual type systems, meaning type slicing is applicable to any bidirectional system only by assigning an appropriate precision relation on types and terms (\cref{sec:core-lattice}).
+The theory contributed by this paper applies to \textit{bidirectional type systems} with any form of \textit{downwards static graduality} (\cref{sec:gradual-types}) on expressions, inspired by the gradual typing literature~\cite{GradualRefined} extended to incomplete programs, i.e. programs with holes and marked errors. In particular, the formal development is based on the Hazelnut calculus~\cite{Hazelnut2017} and subsequent work on the marked lambda calculus~\cite{Marking2024}. Notably, we do \textit{not} require any cast dynamics like in gradual type systems, meaning type slicing is applicable to any bidirectional system only by assigning an appropriate precision relation on types and terms (\cref{sec:core-lattice}).
+The core calculus for type slicing and accompanying metatheory developed in this paper has been mechanized in Agda. This development is available in the supplemental material.
 
-An example language which satisfies these conditions is the Hazel calculus~\cite{HazelLivePaper}, whose implementation we have extended with an efficient linear-time approximation of type slicing~\cite{CarrollEtAl2025}. This implementation is currently accessible at [TODO: url to interactive web version].
+An example full-scale language which satisfies these conditions is Hazel~\cite{hazel-website}, whose implementation we have extended with an efficient linear-time approximation of type slicing. This implementation, which we introduce by example in \cref{sec:slicing-by-example}, is available in the supplemental material. We do not make any specific claims about the usability of the prototype user interface presented in this paper; it is intended only as an initial proof of concept. We expect the theory contributed by this paper to allow a variety of user interfaces for type debugging and explanation to be developed and evaluated in practice. We suggest several avenues for exploration by the community in \cref{sec:further-work}. For example, recent work~\cite{TypeDirectedSlicing} developed a \emph{type-directed} slicer for Java and evaluated it as an aid for debugging type checkers \emph{themselves}, by reducing bug reports against large codebases to small type-behaviour-preserving test cases; we discuss how this relates to type slicing in \cref{sec:related-work}.
 
 %%% Local Variables:
 %%% mode: LaTeX

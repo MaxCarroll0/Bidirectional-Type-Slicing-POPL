@@ -1,7 +1,7 @@
 \section{Language Scope}
 \label{sec:background}
 
-This section introduces the key characteristics of the languages for which type slicing can be applied to.
+This section introduces the key characteristics of the languages to which type slicing can be applied.
 
 \subsection{Bidirectional Types}
 \label{sec:bidirectional-types}
@@ -10,7 +10,7 @@ Type slicing is formalised for \textit{bidirectional type systems}~\cite{Bidirec
 
 This is achieved by specifying the \textit{mode} of the type parameter in a typing judgement, distinguishing when it is an \textit{input} (type analysis/checking) and when it is an \textit{output} (type synthesis):
 \[\synthesis{e}{\tau}\]
-Read as: \textit{$e$ synthesises type $\tau$ under typing assumptions $\Gamma$ and type varaible assumptions $\Delta$}. The type $\tau$ is an \textit{output}.
+Read as: \textit{$e$ synthesises type $\tau$ under typing assumptions $\Gamma$ and type variable assumptions $\Delta$}. The type $\tau$ is an \textit{output}.
 \[\analysis{e}{\tau}\]
 Read as: \textit{$e$ analyses against type $\tau$ under typing assumptions $\Delta, \Gamma$}. The type $\tau$ is an \textit{input}. This is where the terminology of \textit{synthesis / analysis} slices is derived from.
 
@@ -22,16 +22,16 @@ Variables synthesise their type from the typing assumptions. Subsumption bridges
 \subsection{Downwards Static Graduality}
 \label{sec:gradual-types}
 
-To calculate a type slice we will need a way to \textit{gradually} omit sub-expressions from the program, and type check these less \textit{`precise'} partial programs into less or equally `precise' type. Formally, precision must form a two partial orders (notated $\sqsubseteq$) over types and expressions, which can be lifted onto typing assumptions $\Gamma$.
+To calculate a type slice we will need a way to \textit{gradually} omit sub-expressions from the program, and type check these less \textit{`precise'} partial programs at less or equally `precise' types. Formally, precision must form two partial orders (notated $\sqsubseteq$) over types and expressions, which can be lifted onto typing assumptions $\Gamma$.
 
-\begin{definition} A bidirectional calculus satisfies \textit{downwards static graduality} if, for all $\Delta, \Gamma', \Gamma, e', e, \tau$, such that, $\Gamma' \sqsubseteq \Gamma$, $e' \sqsubseteq e$, and $\tau' \sqsubseteq \tau$, both:
+\begin{definition} A bidirectional calculus satisfies \textit{downwards static graduality} if, for all $\Delta, \Gamma', \Gamma, e', e, \tau$ such that $\Gamma' \sqsubseteq \Gamma$ and $e' \sqsubseteq e$, both:
 \begin{itemize}
   \item If $\synthesis{e}{\tau}$ then there exists $\tau' \sqsubseteq \tau$ such that $\synthesis[\Delta;\ \Gamma']{e'}{\tau'}$.
-\item For all $\tau' \sqsubseteq \tau$ such that $\analysis{e}{\tau}$, then $\analysis[\Delta; \Gamma']{e'}{\tau'}$.
+\item For all $\tau' \sqsubseteq \tau$, if $\analysis{e}{\tau}$ then $\analysis[\Delta; \Gamma']{e'}{\tau'}$.
 \end{itemize}
 \end{definition}
 
-For example, this precision order can correspond to the precision relation on types in a gradually typed system \cite{GradualFunctional}. In this situation this graduality theorem corresponds to the downwards static case\footnote{Hence the name.} of the graduality theorem in the refined criteria for graul types \cite{GradualRefined}, adapted to a bidirectional setting. The calculus we demonstrate type slicing on in this paper goes even further by allow maximally incomplete programs by omitting any program sub-expression, based upon the Hazel calculus~\cite{HazelLivePaper}.
+For example, this precision order can correspond to the precision relation on types in a gradually typed system \cite{GradualFunctional}. In this situation this graduality theorem corresponds to the downwards static case\footnote{Hence the name.} of the graduality theorem in the refined criteria for gradual types \cite{GradualRefined}, adapted to a bidirectional setting. The calculus we demonstrate type slicing on in this paper goes even further by allowing maximally incomplete programs, omitting any program sub-expression, based upon the Hazel calculus~\cite{HazelLivePaper}.
 
 Although not necessary, it is also useful that precision forms a lattice with meets and joins to perform optimisations to type slicing calculation (\cref{sec:algorithms}).
 

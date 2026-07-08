@@ -79,7 +79,7 @@ Precision (Figure~\ref{fig:precision}) is a partial order that organises terms b
 That is, a less precise type assumptions set either assumes fewer variables' types, or assumes less precise types on the present variables.
 
 \begin{remark}\label{rem:assms-mechanisation}
-Typical literature refers to these \textit{typing assumptions} as `typing contexts'. I avoid this terminology as I use the \textit{context} to refer to the syntactic context around a subterm, i.e. in the same sense as used in contextual dynamics (\textcite[Chapter~5]{Harper2016}).
+Typical literature refers to these \textit{typing assumptions} as `typing contexts'. We avoid this terminology as we use the \textit{context} to refer to the syntactic context around a subterm, i.e. in the same sense as used in contextual dynamics (\textcite[Chapter~5]{Harper2016}).
 \end{remark}
 
 \subsection{Lattice Properties}
@@ -88,7 +88,7 @@ Typical literature refers to these \textit{typing assumptions} as `typing contex
 \subsubsection{Meets and Joins}
 \label{sec:core-meets-joins}
 
-The \textit{meet} $\tau_1 \sqcap \tau_2$ is the greatest lower bound (GLB), ommiting all sub-terms from both terms. The \textit{join} $\tau_1 \sqcup \tau_2$ the least upper bound (LUB) under precision, omitting only subterms omitted in both components. For example:
+The \textit{meet} $\tau_1 \sqcap \tau_2$ is the greatest lower bound (GLB) under precision, retaining only sub-terms present in both terms. The \textit{join} $\tau_1 \sqcup \tau_2$ is the least upper bound (LUB) under precision, omitting only subterms omitted in both components. For example:
 \[(* \Rightarrow \gap) \sqcap (\gap \Rightarrow *) \;=\; \gap \Rightarrow \gap, \qquad\quad (* \Rightarrow \gap) \sqcup (\gap \Rightarrow *) \;=\; * \Rightarrow *.\]
 Meets are \textit{total}, but joins are defined only between \textit{consistent} types.
 
@@ -97,20 +97,20 @@ Meets are \textit{total}, but joins are defined only between \textit{consistent}
 
 For a fixed type $\tau$, the \textit{slice lattice} of $\tau$ is the \textit{lower set} under precision:
 \[\lfloor\tau\rfloor \;=\; \{\,\upsilon \mid \upsilon \sqsubseteq \tau\,\}\]
-$\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ are defined analogously for expressions, contexts, and assumptions. Each slice lattice has top $\top = \tau$ and bottom $\bot = \gap$. Then precision, meets, and joins are simply lift unchanged into the slice lattice. Importantly all terms in the slice lattice are consistent, so joins are always defined:
+$\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ are defined analogously for expressions, contexts, and assumptions. Each slice lattice has top $\top = \tau$ and bottom $\bot = \gap$. Then precision, meets, and joins simply lift unchanged into the slice lattice. Importantly all terms in the slice lattice are consistent, so joins are always defined:
 
 \begin{lemma}[Slices are Mutually Consistent]\label{lem:slices-consistent}
 If\/ $\upsilon_1 \sqsubseteq \tau$ and $\upsilon_2 \sqsubseteq \tau$, then $\upsilon_1 \sim \upsilon_2$.
 \end{lemma}
 
-Hence, all terms in the slice lattice are consistent, making it a well-defined \textit{bounded lattices}. The meet and join are also distributive. Further, they are trivially finite:
+Hence, all terms in the slice lattice are consistent, making it a well-defined \textit{bounded lattice}. The meet and join are also distributive. Further, slice lattices are trivially finite:
 
 \begin{theorem}\label{thm:slice-finite}
 Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ is finite.
 \end{theorem}
 
 \begin{theorem}\label{thm:slice-lattices}
-Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ is a bounded distributive lattice:
+Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ is a bounded distributive lattice.
 \end{theorem}
 Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{DaveyPriestley}. We will later introduce and use co-Heyting subtraction to represent `disjoint' types in \cref{sec:algorithms}.
 
@@ -134,7 +134,7 @@ The bidirectional typing judgements are mostly standard; the complete synthesis 
 \label{fig:typing-rules-excerpt}
 \end{figure}
 
-Of note is the use of joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \Rightarrow \tau_2$.} $\tau \equiv \tau_1 \Rightarrow \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expression can synthesise a type when their branch synthesis \textit{consistent} types. There is a dedicated rule for unannotated let binding, which differ from function applications in a bidirectional setting due to type information flowing from the binding (argument) into the body (function). The typing rules satisfy graduality (\cref{sec:scope}).
+Of note is the use of joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \Rightarrow \tau_2$.} $\tau \equiv \tau_1 \Rightarrow \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding (argument) into the body (function). The typing rules satisfy graduality (\cref{sec:gradual-types}).
 \begin{theorem}\label{thm:graduality-syn}
 The synthesis judgement $\synthesis[\_]{\_}{\_}$ and analysis judgement $\analysis[\_]{\_}{\_}$ satisfy downwards static graduality.
 \end{theorem}

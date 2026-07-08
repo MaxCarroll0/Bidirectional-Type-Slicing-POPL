@@ -4,7 +4,7 @@
 \subsection{Implicit Polymorphism}
 \label{sec:future-implicit}
 
-Globally inferred languages typically have much more confusing typing derivations and type errors than locally inferred languages. Extending the calculus to implicit polymorphism in a bidirectional setting would expand the application significantly. In particular, the ability to explain even well-typed code is particularly useful here as error marks are often localised to the wrong location, resulting the real error being in well-typed code whose types may be inconsistent with the programmers intuitive expectation. Adapting the constraint slicing systems of Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} to integrate with type slicing is worth exploring.
+Globally inferred languages typically have much more confusing typing derivations and type errors than locally inferred languages. Extending the calculus to implicit polymorphism in a bidirectional setting would expand the application significantly. In particular, the ability to explain even well-typed code is particularly useful here as error marks are often localised to the wrong location, resulting in the real error being in well-typed code whose types may be inconsistent with the programmer's intuitive expectation. Adapting the constraint slicing systems of Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} to integrate with type slicing is worth exploring.
 
 \subsection{Cast Slicing \& Dynamics}
 \label{sec:cast-dynamics}
@@ -15,14 +15,19 @@ Approximate minimal slices can be tagged directly onto types allowing them to be
 
 However, the strong theoretical properties of slices being slices of the original program is not maintained during dynamic execution as reductions are performed. Tracking dynamic execution, perhaps integrating ideas from Perera~\cite{Perera2012,PereraGarg2016}, would allow users to trace back casts to source code with stronger guarantees.
 
+\subsection{Type Debugging Interfaces}
+\label{sec:future-ui}
+
+The Hazel interface presented in \cref{sec:slicing-by-example} is an initial proof of concept; the theory admits a broader design space of interfaces. Possibilities include hover-based ``why this type?'' explanations integrated into editor services, incremental query refinement by selecting sub-parts of a reported type, and contribution slices (\cref{sec:join-slices}) for previewing the impact of a type-changing refactor. Which of these interaction techniques help programmers in practice, and for which tasks, are empirical questions that we leave to future user studies.
+
 \section{Conclusions}
 \label{sec:conclusions}
 
 This paper presented the type slicing theory for a bidirectional calculus with explicit System~F polymorphism, bindings, products, and sums, mechanising a large majority of the theory in Agda.
 
-We formally integrated this with the error-marking calculus of Zhao et al. \textcite{Marking2024}, which applies type slicing to ill-typed programs, justifying its \textit{sound} use in debugging \textit{all} static type errors of a program.
+We formally integrated this with the error-marking calculus of \citet{Marking2024}, which applies type slicing to ill-typed programs, justifying its \textit{sound} use in debugging \textit{all} static type errors of a program.
 
-Type slicing was discussed to be substantially different from previous program slicing techniques, of which there are several varieties, none of which being directly applicable to the problem of explaining types in bidirectional type systems. This provides a solid foundations, which with some extensions, place type slicing as a promising tool for use in practical languages, especially gradually typed ones, for explaining both static \textit{and dynamic} types.
+We discussed how type slicing differs substantially from previous program slicing techniques, of which there are several varieties, none of which are directly applicable to the problem of explaining types in bidirectional type systems. This provides a solid foundation which, with some extensions, positions type slicing as a promising tool for use in practical languages, especially gradually typed ones, for explaining both static \textit{and dynamic} types.
 
 \label{lastcontentpage}
 

@@ -18,6 +18,14 @@
             natbib
             libertine
             newtx
+            # acmart checks for libertine.sty, zi4.sty (inconsolata), and
+            # newtxmath.sty; if ANY is missing it silently falls back to
+            # Computer Modern / Latin Modern instead of the ACM fonts. Under
+            # LuaLaTeX its real font path is unicode-math + Libertinus Math
+            # (+ latinmodern-math for \mathcal), so include those too.
+            inconsolata
+            libertinus-fonts
+            lm-math
             xstring
             totpages
             environ
