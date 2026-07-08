@@ -1,9 +1,9 @@
 \clearpage
-\section{Context Classification: Full Rule Set}
+\section{Context Typing: Full Rule Set}
 \label{app:ctx-classification}
 
 
-\fbox{$\ctxclass{\C}{d}{\Delta';\,\Gamma'}{m}$}\ \ \ Context $\C$ at outer derivation mode $d$ classifies its focus under $\Delta';\,\Gamma'$ in focus mode $m$
+\fbox{$\ctxclass{\C}{d}{\Delta';\,\Gamma'}{m}$}\ \ \ Context $\C$ at outer derivation mode $d$ types its focus under $\Delta';\,\Gamma'$ in focus mode $m$
 
 \begin{figure}[!htbp]
 \small
@@ -36,7 +36,7 @@
      \ctxclass[\Delta;\,\Gamma, x{:}\tau_1]{\C}{\anamode\;\tau_2}{\Delta';\,\Gamma'}{m}}
     {\ctxclass{\lambda x.\,\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Unmarked context classification: holes, subsumption, and lambdas.}
+\caption{Unmarked context typing: holes, subsumption, and lambdas.}
 \label{fig:unmarked-ctx-classification-1}
 \end{figure}
 
@@ -72,7 +72,7 @@
     {\ctxclass[\Delta,\alpha;\,\Gamma]{\C}{\synmode\;\tau}{\Delta';\,\Gamma'}{m}}
     {\ctxclass{\Lambda\alpha.\,\C}{\synmode\;\forall\alpha.\,\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Unmarked context classification: application, type application, projections, type abstraction.}
+\caption{Unmarked context typing: application, type application, projections, type abstraction.}
 \label{fig:unmarked-ctx-classification-2}
 \end{figure}
 
@@ -122,7 +122,7 @@
      \ctxclass{\C}{\anamode\;\tau_2}{\Delta';\,\Gamma'}{m}}
     {\ctxclass{\iota_2\,\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Unmarked context classification: pairs and injections.}
+\caption{Unmarked context typing: pairs and injections.}
 \label{fig:unmarked-ctx-classification-3}
 \end{figure}
 
@@ -156,7 +156,7 @@
      \ctxclass[\Delta;\,\Gamma, y{:}\tau_2]{\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}}
     {\ctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Unmarked context classification: case.}
+\caption{Unmarked context typing: case.}
 \label{fig:unmarked-ctx-classification-4}
 \end{figure}
 
@@ -182,13 +182,13 @@
     {\synthesis{e}{\tau'} & \ctxclass[\Delta;\,\Gamma, x{:}\tau']{\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}}
     {\ctxclass{\mathbf{def}\,e \vdash_2 \C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Unmarked context classification: let (def).}
+\caption{Unmarked context typing: let (def).}
 \label{fig:unmarked-ctx-classification-5}
 \end{figure}
 
 \clearpage
 
-\fbox{$\mctxclass{C}{\chk C}{p}{\Delta';\,\Gamma'}{m}$}\ \ \ Marked context $C \marksto \chk C$ at outer position $p$ classifies its focus under $\Delta';\,\Gamma'$ in focus mode $m$
+\fbox{$\mctxclass{C}{\chk C}{p}{\Delta';\,\Gamma'}{m}$}\ \ \ Marked context $C \marksto \chk C$ at outer position $p$ types its focus under $\Delta';\,\Gamma'$ in focus mode $m$
 
 \begin{figure}[!htbp]
 \small
@@ -220,7 +220,7 @@
      \wf{\tau_1} & \mctxclass[\Delta;\,\Gamma, x{:}\tau_1]{C}{\chk C}{\anamode\,\tau_2}{\Delta';\,\Gamma'}{m}}
     {\mctxclass{\lambda x{:}\tau_1.\,C}{\lambda x{:}\tau_1.\,\chk C}{\anamode\,\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Marked context classification: holes, subsumption, annotated lambda.}
+\caption{Marked context typing: holes, subsumption, annotated lambda.}
 \label{fig:marked-ctx-classification-1}
 \end{figure}
 
@@ -263,7 +263,7 @@
     {\synmark{e}{\chk e}{\tau} & \forall \tau_1,\tau_2.\;\tau \sqcup \gap \funarr \gap \not\equiv \tau_1 \funarr \tau_2 & \mctxclass{C}{\chk C}{\anamode\,\gap}{\Delta';\,\Gamma'}{m}}
     {\mctxclass{e \circ_2 C}{\markarrow[\chk e] \circ_2 \chk C}{\synmode\,\gap}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Marked context classification: unannotated lambda and application.}
+\caption{Marked context typing: unannotated lambda and application.}
 \label{fig:marked-ctx-classification-2}
 \end{figure}
 
@@ -301,7 +301,7 @@
      \anamark{e}{\chk e}{\tau_1} & \mctxclass{C}{\chk C}{\anamode\,\tau_2}{\Delta';\,\Gamma'}{m}}
     {\mctxclass{e \mathbin{\&_2} C}{\chk e \mathbin{\&_2} \chk C}{\anamode\,\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Marked context classification: type application and pairs.}
+\caption{Marked context typing: type application and pairs.}
 \label{fig:marked-ctx-classification-3}
 \end{figure}
 
@@ -349,7 +349,7 @@
     {\mctxclass{C}{\chk C}{\synmode\,\tau}{\Delta';\,\Gamma'}{m} & \forall \tau_1,\tau_2.\;\tau \sqcup \gap \times \gap \not\equiv \tau_1 \times \tau_2}
     {\mctxclass{\pi_2\,C}{\pi_2\,\markprod[\chk C]}{\synmode\,\gap}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Marked context classification: injections and projections.}
+\caption{Marked context typing: injections and projections.}
 \label{fig:marked-ctx-classification-4}
 \end{figure}
 
@@ -397,7 +397,7 @@
      \mctxclass[\Delta;\,\Gamma, y{:}\tau_2]{C}{\chk C}{\synmode\,\tau_2'}{\Delta';\,\Gamma'}{m} & \neg(\tau_1' \sim \tau_2')}
     {\mctxclass{\mathbf{case}\,e\,\mathbf{of}\,x.\,e' \mid y.\,C}{\mathbf{case}\,\chk e\,\mathbf{of}\,x.\,\chk e' \mid y.\,\chk C}{\synmode\,\gap}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Marked context classification: synthesis-mode case.}
+\caption{Marked context typing: synthesis-mode case.}
 \label{fig:marked-ctx-classification-5}
 \end{figure}
 
@@ -441,7 +441,7 @@
     {\synmark{e}{\chk e}{\tau'} & \mctxclass[\Delta;\,\Gamma, x{:}\tau']{C}{\chk C}{\synmode\,\tau}{\Delta';\,\Gamma'}{m}}
     {\mctxclass{\mathbf{def}\,e \vdash_2 C}{\mathbf{def}\,\chk e \vdash_2 \chk C}{\synmode\,\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Marked context classification: analysis-mode case and let (synthesis).}
+\caption{Marked context typing: analysis-mode case and let (synthesis).}
 \label{fig:marked-ctx-classification-6}
 \end{figure}
 
@@ -462,7 +462,7 @@
     {\mctxclass[\Delta,\alpha;\,\Gamma]{C}{\chk C}{\synmode\,\tau}{\Delta';\,\Gamma'}{m}}
     {\mctxclass{\Lambda\alpha.\,C}{\Lambda\alpha.\,\chk C}{\synmode\,\forall\alpha.\,\tau}{\Delta';\,\Gamma'}{m}}
 \]
-\caption{Marked context classification: let (analysis) and type abstraction.}
+\caption{Marked context typing: let (analysis) and type abstraction.}
 \label{fig:marked-ctx-classification-7}
 \end{figure}
 
