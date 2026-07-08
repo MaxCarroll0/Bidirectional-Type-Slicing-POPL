@@ -62,8 +62,8 @@ Queries may target \emph{part} of a reported type: asking only about the domain 
   {\includegraphics[width=\linewidth, trim={0 28pt 170pt 0}, clip]{media/synslice-parse-digit-no-result.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[synco] (d1) at (0.64,0.32) {result type folded};
-  \draw[synl] (d1.south east) -- (0.72,0.10);
+  \node[synco] (d1) at (0.66,0.31) {result type folded};
+  \draw[synl] (d1.south east) -- (0.78,0.06);
 \end{scope}
 \end{tikzpicture}
 \caption{Querying only the domain of \synsrc{\texttt{parse\_digit}}.}
@@ -120,9 +120,9 @@ and the domain annotation.}
   {\includegraphics[width=0.88\linewidth]{media/extended-explained-error.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[anaco] (f1) at (0.62,0.60) {source of the expected type:\\
+  \node[anaco] (f1) at (0.68,0.64) {source of the expected type:\\
     \texttt{seq}'s annotation \texttt{A → Option((String, B))}};
-  \draw[anal] (f1.west) -- (0.30,0.585);
+  \draw[anal] (f1.west) -- (0.36,0.585);
   \node[errco] (f2) at (0.60,0.245) {the error: a mis-shaped literal};
   \draw[errl] (f2.west) -- (0.37,0.245);
   \node[foldco] (f3) at (0.70,0.43) {everything else\\folds away};
