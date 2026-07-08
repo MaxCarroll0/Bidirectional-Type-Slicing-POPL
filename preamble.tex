@@ -44,6 +44,15 @@
 \providecommand{\Circle}{\bigcirc} % wasysym incompatible with lualatex
 \usepackage{mathtools}
 
+% acmart >= v2.16 loads unicode-math with Libertinus Math, whose stretchy
+% horizontal braces (U+23DE/U+23DF) render as solid black bars under
+% \underbrace/\overbrace. Pull just those two glyphs from Latin Modern Math.
+\makeatletter
+\@ifpackageloaded{unicode-math}{%
+  \setmathfont{latinmodern-math.otf}[range={"023DE,"023DF},Scale=MatchLowercase]%
+}{}
+\makeatother
+
 \usepackage{soul}             % \hl
 \usepackage[most]{tcolorbox}
 \usepackage[normalem]{ulem}
