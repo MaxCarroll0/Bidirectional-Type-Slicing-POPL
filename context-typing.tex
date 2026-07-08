@@ -16,6 +16,7 @@ Formally we must first define one-hole contexts on terms themselves (Figure~\ref
 \begin{align*}
 \C &::= \cmark \mid \lambda x \mathbin{:} \tau.\; \C \mid \lambda x.\; \C \mid \C(e) \mid e(\C) \mid \C\langle\tau\rangle \\
   &\quad\mid\; (\C,\; e) \mid (e,\; \C) \mid \iota_1\; \C \mid \iota_2\; \C \mid \pi_1\; \C \mid \pi_2\; \C \\
+  &\quad\mid\; \mathbf{case}\;\C\;\mathbf{of}\;x.\;e \mid y.\;e \\
   &\quad\mid\; \mathbf{case}\;e\;\mathbf{of}\;x.\;\C \mid y.\;e \mid \mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;\C \\
   &\quad\mid\; \Lambda\alpha.\; \C \mid \mathbf{let}\;x = \C\;\mathbf{in}\;e \mid \mathbf{let}\;x = e\;\mathbf{in}\;\C
 \end{align*}
