@@ -20,6 +20,8 @@ e &::= \gap \mid * \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\;
 \label{fig:syntax}
 \end{figure}
 
+Base types such as booleans are omitted from the core syntax, being encoded using sums in the usual way (e.g.\ $\mathit{Bool} \triangleq * + *$); we use them freely in examples.
+
 \subsubsection{Consistency}
 
 Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in standard gradual type systems (\cref{sec:gradual-types}). That is, a weakening of equality, where every type is consistent with $\gap$, and compound types are consistent when their components are. Consistency is reflexive and symmetric but \textit{not} transitive.
