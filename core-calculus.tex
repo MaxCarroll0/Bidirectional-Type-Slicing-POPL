@@ -11,7 +11,7 @@ The syntax of the core calculus is given in Figure~\ref{fig:syntax}. $*$ is the 
 \begin{figure}[H]
 \fbox{Syntax}\ \ \ Types $\tau$ and expressions $e$
 \begin{align*}
-\tau &::= \gap \mid * \mid \tau \Rightarrow \tau \mid \tau \times \tau \mid \tau + \tau \mid \forall\alpha.\;\tau \mid \alpha \\[4pt]
+\tau &::= \gap \mid * \mid \tau \funarr \tau \mid \tau \times \tau \mid \tau + \tau \mid \forall\alpha.\;\tau \mid \alpha \\[4pt]
 e &::= \gap \mid * \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\; e \mid e(e) \mid (e,\; e) \mid \pi_1\; e \mid \pi_2\; e \\
   &\quad\mid\; \iota_1\; e \mid \iota_2\; e \mid (\mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;e) \mid \Lambda\alpha.\; e \mid e\langle\tau\rangle \mid \mathbf{let}\;x = e\;\mathbf{in}\;e
 \end{align*}
@@ -30,7 +30,7 @@ Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in stand
 \[\inference[$\sim\gap_1$]{}{\tau \sim \gap} \qquad
   \inference[$\sim\gap_2$]{}{\gap \sim \tau} \qquad
   \inference[$\sim{*}$]{}{* \sim *} \qquad
-  \inference[$\sim{\Rightarrow}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \Rightarrow \tau_2 \sim \tau_1' \Rightarrow \tau_2'}\]
+  \inference[$\sim{\funarr}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \funarr \tau_2 \sim \tau_1' \funarr \tau_2'}\]
 \[\inference[$\sim{\times}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \times \tau_2 \sim \tau_1' \times \tau_2'} \qquad
   \inference[$\sim{+}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 + \tau_2 \sim \tau_1' + \tau_2'} \qquad
   \inference[$\sim{\forall}$]{\tau \sim \tau'}{\forall\alpha.\;\tau \sim \forall\alpha.\;\tau'}\]
@@ -47,7 +47,7 @@ Precision (Figure~\ref{fig:precision}) is a partial order that organises terms b
 \[\inference[$\sqsubseteq\gap$]{}{\gap \sqsubseteq \tau} \qquad
   \inference[$\sqsubseteq{*}$]{}{* \sqsubseteq *} \qquad
   \inference[$\sqsubseteq{\alpha}$]{}{\alpha \sqsubseteq \alpha} \qquad
-  \inference[$\sqsubseteq{\Rightarrow}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 \Rightarrow \tau_2 \sqsubseteq \tau_1' \Rightarrow \tau_2'}\]
+  \inference[$\sqsubseteq{\funarr}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 \funarr \tau_2 \sqsubseteq \tau_1' \funarr \tau_2'}\]
 \[\inference[$\sqsubseteq{\times}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 \times \tau_2 \sqsubseteq \tau_1' \times \tau_2'} \qquad
   \inference[$\sqsubseteq{+}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 + \tau_2 \sqsubseteq \tau_1' + \tau_2'} \qquad
   \inference[$\sqsubseteq{\forall}$]{\tau \sqsubseteq \tau'}{\forall\alpha.\;\tau \sqsubseteq \forall\alpha.\;\tau'}\]
@@ -89,7 +89,7 @@ Typical literature refers to these \textit{typing assumptions} as `typing contex
 \label{sec:core-meets-joins}
 
 The \textit{meet} $\tau_1 \sqcap \tau_2$ is the greatest lower bound (GLB) under precision, retaining only sub-terms present in both terms. The \textit{join} $\tau_1 \sqcup \tau_2$ is the least upper bound (LUB) under precision, omitting only subterms omitted in both components. For example:
-\[(* \Rightarrow \gap) \sqcap (\gap \Rightarrow *) \;=\; \gap \Rightarrow \gap, \qquad\quad (* \Rightarrow \gap) \sqcup (\gap \Rightarrow *) \;=\; * \Rightarrow *.\]
+\[(* \funarr \gap) \sqcap (\gap \funarr *) \;=\; \gap \funarr \gap, \qquad\quad (* \funarr \gap) \sqcup (\gap \funarr *) \;=\; * \funarr *.\]
 Meets are \textit{total}, but joins are defined only between \textit{consistent} types.
 
 \subsubsection{The Slice Lattice}
@@ -114,7 +114,7 @@ Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloo
 \end{theorem}
 Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{DaveyPriestley}. We will later introduce and use co-Heyting subtraction to represent `disjoint' types in \cref{sec:algorithms}.
 
-\paragraph{Notation: Slice Lattices as Highlighted Terms.} An element of a slice lattice can be notated as a highlight of the original (top) term with omitted regions (the \gap{}s) left unhighlighted. For instance, the slice $\mathit{Int} \Rightarrow \gap$ in $\lfloor\mathit{Int} \Rightarrow \mathit{Bool}\rfloor$ can be represented as $\sli{\mathit{Int} \Rightarrow}\, \mathit{Bool}$.
+\paragraph{Notation: Slice Lattices as Highlighted Terms.} An element of a slice lattice can be notated as a highlight of the original (top) term with omitted regions (the \gap{}s) left unhighlighted. For instance, the slice $\mathit{Int} \funarr \gap$ in $\lfloor\mathit{Int} \funarr \mathit{Bool}\rfloor$ can be represented as $\sli{\mathit{Int} \funarr}\, \mathit{Bool}$.
 
 \subsection{Typing Rules}
 \label{sec:core-typing}
@@ -124,17 +124,17 @@ The bidirectional typing judgements are mostly standard; the complete synthesis 
 \begin{figure}[H]
 \small
 \[\inference[\synr{Var}]{x : \tau \in \Gamma}{\synthesis{x}{\tau}} \qquad
-  \inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \Rightarrow \tau_2}}\]
+  \inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \funarr \tau_2}}\]
 \[\inference[\synr{let}]{\synthesis{e_1}{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_2}{\tau_2}}{\synthesis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}} \qquad
   \inference[\synr{$\Lambda$}]{\synthesis[\Delta, \alpha;\,\Gamma]{e}{\tau}}{\synthesis{\Lambda\alpha.\; e}{\forall\alpha.\;\tau}}\]
-\[\inference[\synr{App}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \analysis{e_2}{\tau_1}}{\synthesis{e_1(e_2)}{\tau_2}}\]
+\[\inference[\synr{App}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \analysis{e_2}{\tau_1}}{\synthesis{e_1(e_2)}{\tau_2}}\]
 \[\inference[\synr{TApp}]{\wf{\sigma} & \synthesis{e}{\tau} & \tau \sqcup \forall\alpha.\;\gap \equiv \forall\alpha.\;\tau'}{\synthesis{e\langle\sigma\rangle}{[\alpha \mapsto \sigma]\,\tau'}}\]
 \[\inference[\synr{case}]{\synthesis{e}{\tau} & \tau \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 & \tau_1' \sim \tau_2' \\ \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_1}{\tau_1'} & \synthesis[\Delta;\,\Gamma, y \mathbin{:} \tau_2]{e_2}{\tau_2'}}{\synthesis{\mathbf{case}\;e\;\mathbf{of}\;x.\;e_1 \mid y.\;e_2}{\tau_1' \sqcup \tau_2'}}\]
 \caption{Selected synthesis rules.}
 \label{fig:typing-rules-excerpt}
 \end{figure}
 
-Of note is the use of joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \Rightarrow \tau_2$.} $\tau \equiv \tau_1 \Rightarrow \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding (argument) into the body (function). The typing rules satisfy graduality (\cref{sec:gradual-types}).
+Of note is the use of joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding (argument) into the body (function). The typing rules satisfy graduality (\cref{sec:gradual-types}).
 \begin{theorem}\label{thm:graduality-syn}
 The synthesis judgement $\synthesis[\_]{\_}{\_}$ and analysis judgement $\analysis[\_]{\_}{\_}$ satisfy downwards static graduality.
 \end{theorem}

@@ -3,14 +3,14 @@
 
 \providecommand{\tmslice}[2]{\mathit{TermMin}\;#1 \mathbin{\blacktriangleleft} #2}
 \providecommand{\mintmslice}[2]{\mathit{MinTermMin}\;#1 \mathbin{\blacktriangleleft} #2}
-\providecommand{\syntypeslice}[2]{\mathit{TypeSlice}^{{\color{BrickRed}\Uparrow}}\;#1 \mathbin{\blacktriangleleft} #2}
-\providecommand{\anatypeslice}[2]{\mathit{TypeSlice}^{{\color{BlueViolet}\Downarrow}}\;#1 \mathbin{\blacktriangleleft} #2}
-\providecommand{\tmcalc}[5]{#1 \mathbin{{\color{BrickRed}\blacktriangleleft}} #2 \;{\color{BrickRed}\rightsquigarrow}\; #3 \mathbin{{\color{BrickRed}\Uparrow}} #4 \,\dashv\, #5}
+\providecommand{\syntypeslice}[2]{\mathit{TypeSlice}^{\synmode}\;#1 \mathbin{\blacktriangleleft} #2}
+\providecommand{\anatypeslice}[2]{\mathit{TypeSlice}^{\anamode}\;#1 \mathbin{\blacktriangleleft} #2}
+\providecommand{\tmcalc}[5]{#1 \mathbin{{\color{BrickRed}\blacktriangleleft}} #2 \;{\color{BrickRed}\rightsquigarrow}\; #3 \mathbin{\synmode} #4 \,\dashv\, #5}
 \providecommand{\tmrule}[7][\Delta;\,\Gamma]{%
-  #1 \vdash #2 \mathbin{{\color{BrickRed}\Uparrow}} #3
+  #1 \vdash #2 \mathbin{\synmode} #3
   \mathbin{{\color{BrickRed}\blacktriangleleft}} #4
   \;{\color{BrickRed}\rightsquigarrow}\; #5
-  \mathbin{{\color{BrickRed}\Uparrow}} #6
+  \mathbin{\synmode} #6
   \,\dashv\, #7%
 }
 
@@ -46,14 +46,14 @@
 
 
 \Cref{sec:decompositions} suggested recursively calculating minimal slices of subterms and composing them together. However, you cannot do this naively: the product of two minimal slices is not necessarily minimal. Consider the following if statement:
-\[ \Gamma = (x \mathbin{:} \mathbf{*} \Rightarrow \mathbf{*},\; y \mathbin{:} \mathbf{*} \Rightarrow \mathbf{*}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y, \qquad \tau = \mathbf{*} \Rightarrow \mathbf{*}, \]
-and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \mathbf{*} \Rightarrow \mathbf{*}$. There are \textit{four} incomparable minimal full slices, displayed together as underlines:
+\[ \Gamma = (x \mathbin{:} \mathbf{*} \funarr \mathbf{*},\; y \mathbin{:} \mathbf{*} \funarr \mathbf{*}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y, \qquad \tau = \mathbf{*} \funarr \mathbf{*}, \]
+and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \mathbf{*} \funarr \mathbf{*}$. There are \textit{four} incomparable minimal full slices, displayed together as underlines:
 
 \begin{center}
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
   \node[draw, line width=0.9pt, rounded corners,
         label={[font=\scriptsize\itshape]above:assumptions}] (a)
-        {$x : \sAC{\mathbf{*}} \mathrel{\sABC{\Rightarrow}} \sBC{\mathbf{*}},\quad y : \sBD{\mathbf{*}} \mathrel{\sABD{\Rightarrow}} \sAD{\mathbf{*}}$};
+        {$x : \sAC{\mathbf{*}} \mathrel{\sABC{\funarr}} \sBC{\mathbf{*}},\quad y : \sBD{\mathbf{*}} \mathrel{\sABD{\funarr}} \sAD{\mathbf{*}}$};
   \node[below=12pt of a] (t)
        {$\sABCD{\mathbf{if}}\tokensp\mathbf{true}\tokensp\sABCD{\mathbf{then}}\tokensp\sABC{x}\tokensp\sABCD{\mathbf{else}}\tokensp\sABD{y}$};
 \end{tikzpicture}
@@ -61,7 +61,7 @@ and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \m
 
 The four colours encode four minimal slices of $D$ at $\upsilon$:
 \begin{description}
-\item[(A) {\color{BrickRed}Red}]: Both branches are retained; the assumption slice keeps $x$'s domain only and $y$'s codomain only (joining to $* \Rightarrow *$).
+\item[(A) {\color{BrickRed}Red}]: Both branches are retained; the assumption slice keeps $x$'s domain only and $y$'s codomain only (joining to $* \funarr *$).
 \item[(B) {\color{NavyBlue}Blue}]: Symmetric to (A), taking the opposite choices for the assumption slice
 \item[(C) {\color{OliveGreen}Green}]: \textbf{Else}-branch omitted.
 \item[(D) {\color{Mulberry}Mulberry}]: Symmetric to (C): \textbf{then}-branch omitted.
@@ -73,7 +73,7 @@ Slices (A) and (B) are minimal because each variable is sliced \textit{different
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
   \node[draw, line width=0.9pt, rounded corners,
         label={[font=\scriptsize\itshape]above:assumptions}] (a)
-        {$x : \sPboth{\mathbf{*}\Rightarrow\mathbf{*}},\quad y : \sPtwo{\mathbf{*}\Rightarrow\mathbf{*}}$};
+        {$x : \sPboth{\mathbf{*}\funarr\mathbf{*}},\quad y : \sPtwo{\mathbf{*}\funarr\mathbf{*}}$};
   \node[below=12pt of a] (t)
        {$\sPboth{(}\tokensp\sPboth{\mathbf{if}}\tokensp\mathbf{true}\tokensp\sPboth{\mathbf{then}}\tokensp\sPone{x}\tokensp\sPboth{\mathbf{else}}\tokensp\sPtwo{y}\tokensp\sPboth{\mathbf{,}}\tokensp\sPboth{x}\tokensp\sPboth{)}$};
 \end{tikzpicture}
@@ -88,7 +88,7 @@ To rule out the slices like (A) and (B) of Section~\ref{sec:product-revisited}, 
 
 \begin{definition}[Term-minimal slice]
 \label{def:term-minimal-slice}
-A \textit{term-minimal slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\tmslice{D}{\upsilon}$, is a term slice $\varsigma \in \lfloor e \rfloor$ such that $\Delta;\,\Gamma \vdash \varsigma\;{\color{BrickRed}\Uparrow}\;\psi$ for some $\psi \sqsupseteq \upsilon$ (with $\psi \in \lfloor \tau \rfloor$ by graduality, \cref{thm:graduality-syn}).
+A \textit{term-minimal slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\tmslice{D}{\upsilon}$, is a term slice $\varsigma \in \lfloor e \rfloor$ such that $\Delta;\,\Gamma \vdash \varsigma\;\synmode\;\psi$ for some $\psi \sqsupseteq \upsilon$ (with $\psi \in \lfloor \tau \rfloor$ by graduality, \cref{thm:graduality-syn}).
 \end{definition}
 
 Minimality lifts directly from the slice lattice on $e$ alone, and existence and monotonicity follow analogously to synthesis slices (\cref{thm:min-exists,thm:mono}).
@@ -109,8 +109,8 @@ Slices (A) and (B) of Section~\ref{sec:product-revisited} are minimal synthesis 
 \subsection{Calculating Term-Minimal Slices}
 \label{sec:term-minimal-calculus}
 The rest of this chapter develops a structural calculus that characterises minimal term slices via a judgement:
-\[ \Gamma \vdash e \mathbin{{\color{BrickRed}\Uparrow}} \tau \mathbin{\blacktriangleleft} \upsilon \;{\color{BrickRed}\rightsquigarrow}\; \varsigma \mathbin{{\color{BrickRed}\Uparrow}} \psi \dashv \gamma, \]
-read ``the typing $\Gamma \vdash e \Uparrow \tau$ at query $\upsilon$ produces term slice $\varsigma$, synthesises $\psi$, and uses assumptions $\gamma$''. The fourth output $\gamma$ is a minimal assumption slice to retrieve a minimal slice corresponding to the term-minimal slice.
+\[ \Gamma \vdash e \mathbin{\synmode} \tau \mathbin{\blacktriangleleft} \upsilon \;{\color{BrickRed}\rightsquigarrow}\; \varsigma \mathbin{\synmode} \psi \dashv \gamma, \]
+read ``the typing $\Gamma \vdash e \synmode \tau$ at query $\upsilon$ produces term slice $\varsigma$, synthesises $\psi$, and uses assumptions $\gamma$''. The fourth output $\gamma$ is a minimal assumption slice to retrieve a minimal slice corresponding to the term-minimal slice.
 
 \noindent The cases that deserve commentary are products, the binding constructs, function application, and type application; the \synr{Lam{:}}\ and \synr{Let}\ rules each carry a body re-typing premise (rightmost) which re-derives the body's typing under the binder slice $\gamma(x)$.
 
@@ -128,14 +128,14 @@ With term minimality, we now have that two minimal synthesis slices which are al
 \subsubsection{Function Application}
 \label{sec:term-min-app}
 
-All the synthesised type information from a function application is derived from the function itself. We may simply omit the argument, and slice the function by $\gap \Rightarrow \upsilon$:
+All the synthesised type information from a function application is derived from the function itself. We may simply omit the argument, and slice the function by $\gap \funarr \upsilon$:
 \[
 \inference[\synr{App}]{
   \analysis{e_2}{\tau_1}
   &
   \upsilon \neq \gap
   &
-  \tmrule{e_1}{\tau_1 \Rightarrow \tau_2}{\gap \Rightarrow \upsilon}{\varsigma_{\mathit{fn}}}{\psi_1}{\gamma}
+  \tmrule{e_1}{\tau_1 \funarr \tau_2}{\gap \funarr \upsilon}{\varsigma_{\mathit{fn}}}{\psi_1}{\gamma}
 }{\tmrule{e_1\,e_2}{\tau_2}{\upsilon}{\varsigma_{\mathit{fn}}(\gap)}{\mathsf{cod}(\psi_1)}{\gamma}}
 \]
 
@@ -153,19 +153,19 @@ Type application works by matching the type function's type against the query to
 
 \begin{figure}[H]
 \centering
-$e \mathbin{{\color{BrickRed}\Uparrow}} \forall\alpha.\,(\alpha \times \alpha \times \mathbf{Bool})$,\quad applied at\quad $\sigma = \mathbf{*} \Rightarrow (\mathbf{Bool} \times \mathbf{Bool})$:
+$e \mathbin{\synmode} \forall\alpha.\,(\alpha \times \alpha \times \mathbf{Bool})$,\quad applied at\quad $\sigma = \mathbf{*} \funarr (\mathbf{Bool} \times \mathbf{Bool})$:
 
 \medskip
 
-So $e\langle\sigma\rangle \mathbin{{\color{BrickRed}\Uparrow}} (\mathbf{*} \Rightarrow (\mathbf{Bool} \times \mathbf{Bool})) \times (\mathbf{*} \Rightarrow (\mathbf{Bool} \times \mathbf{Bool})) \times \mathbf{Bool}$.
+So $e\langle\sigma\rangle \mathbin{\synmode} (\mathbf{*} \funarr (\mathbf{Bool} \times \mathbf{Bool})) \times (\mathbf{*} \funarr (\mathbf{Bool} \times \mathbf{Bool})) \times \mathbf{Bool}$.
 
 \medskip
 
 \begin{tabular}{r@{\;\;}l}
-\textbf{Query}             & $\upsilon \;=\; \underbrace{\sli[teal]{\mathbf{*} \Rightarrow \gap}}_{\alpha} \;\times\; \underbrace{\sli[teal]{\gap \Rightarrow (\mathbf{Bool} \times \gap)}}_{\alpha} \;\times\; \gap$ \\[16pt]
+\textbf{Query}             & $\upsilon \;=\; \underbrace{\sli[teal]{\mathbf{*} \funarr \gap}}_{\alpha} \;\times\; \underbrace{\sli[teal]{\gap \funarr (\mathbf{Bool} \times \gap)}}_{\alpha} \;\times\; \gap$ \\[16pt]
 \textbf{Matched query}     & $\widehat{\upsilon} \;=\; \alpha \;\times\; \alpha \;\times\; \gap$ \\[8pt]
-\textbf{Constraints}       & $\mathbf{*} \Rightarrow \gap \;\sqsubseteq\; \alpha \qquad \gap \Rightarrow (\mathbf{Bool} \times \gap) \;\sqsubseteq\; \alpha$ \\[8pt]
-\textbf{Constraints Join}  & $\hat\sigma \;=\; \mathbf{*} \Rightarrow (\mathbf{Bool} \times \gap)$ \\
+\textbf{Constraints}       & $\mathbf{*} \funarr \gap \;\sqsubseteq\; \alpha \qquad \gap \funarr (\mathbf{Bool} \times \gap) \;\sqsubseteq\; \alpha$ \\[8pt]
+\textbf{Constraints Join}  & $\hat\sigma \;=\; \mathbf{*} \funarr (\mathbf{Bool} \times \gap)$ \\
 \end{tabular}
 \caption{Type application query constraints.}
 \label{fig:tapp-minsub}
@@ -196,7 +196,7 @@ We need an additional notion of \textit{inner} analysis slices. Dually to regula
 Intuitively, an inner analysis slice gives the minimal assumptions, context, and additionally the minimum \textit{analysis type} to be imposed on it by the outer context, such that the queried analysis type holds at its focus. In particular slicing the function in an application would use this minimal outer analysis mode type on the argument to slice the domain type of the function.
 \begin{definition}
 \label{def:ana-pos-slice}
-An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BlueViolet}\Downarrow}\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaposslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that, for some chosen outer type $\upsilon_{\mathrm{outer}} \in \lfloor\tau_p\rfloor$, $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BlueViolet}\Downarrow}\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{{\color{BlueViolet}\Downarrow}\,\upsilon}$.
+An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\anamode\,\tau_p}{\Delta';\,\Gamma'}{\anamode\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaposslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that, for some chosen outer type $\upsilon_{\mathrm{outer}} \in \lfloor\tau_p\rfloor$, $\ctxclass[\Delta;\,\gamma]{\kappa}{\anamode\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{\anamode\,\upsilon}$.
 \end{definition}
 
 \section{Full Type Slices -- Slicing Assumption Definitions}
@@ -208,7 +208,7 @@ Formally, we refer to such a construct as a \textit{type slice}: a fully sliced 
 
 \begin{definition}[Type slices]
   \label{def:type-slice}
-A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{{\color{BrickRed}\Uparrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BrickRed}\Uparrow}\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair \\$((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$ synthesises $\phi$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BrickRed}\Uparrow}\,\psi}{\Delta';\,\gamma_f}{{\color{BrickRed}\Uparrow}\,\phi}$ for some $\psi$.
+A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\synmode\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair \\$((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$ synthesises $\phi$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta';\,\gamma_f}{\synmode\,\phi}$ for some $\psi$.
 \end{definition}
 
 Importantly, the pair of slices forms a well-typed program: by context-classification soundness, $\kappa[\varsigma]$ synthesises $\psi$. Then, a \textit{minimal} type slice is one in which the context $\kappa$ and the focused expression $\varsigma$ are jointly minimised alongside minimal external typing assumptions of the context typing $\gamma$. Notably, we do \textit{not} minimise the assumptions to the focused terms, as its assumptions are now explicitly provided by the surrounding context (and $\gamma$).
@@ -220,7 +220,7 @@ Calculating a valid synthesis slice component from our previous tools is trivial
 
 Calculating the context slice component is very similar to analysis slices. For annotated bindings: just take the corresponding type from the synthesis slice's minimal assumptions. However, for unannotated bindings, you may not actually be able to synthesise exactly the minimal assumption, which may entail that, in the presence of this additional type information, the other used assumptions are non-minimal. The Hazel implementation recursively slices unannotated let bindings, accepting that any `overshoot' in the type provided by this might lead to an \textit{overapproximation} of a minimum.
 
-To find a truly minimal slice of the context you can individually calculate a minimal assumption for the binding given all outer bound assumptions are fully utilised and slice the definition using this. However, this naively requires re-analysing the body of each unannotated binding. This could be made more efficient in real programs by incrementalising slice calculation; Hazel already has work on formal theory behind incremental type checking~\cite{PorterEtAl2025}. \edited{TODO: I think there might even be a way to cleverly pick a minimal assumptions set which avoids this re-typechecking at all. Consider ordering the assumptions by outerbinding first: then calculate the minimum for the \textit{first} variable while maximising the latter. Then using this value for the first, do the same for the second (maximising the 3rd binding onwards) etc. Then overshooting an inner-binding will not compromise minimality. However, I need to work out if such an idea can actually be implemented in linear time / efficiently enough to be justifiable.}
+To find a truly minimal slice of the context you can individually calculate a minimal assumption for the binding given all outer bound assumptions are fully utilised and slice the definition using this. However, this naively requires re-analysing the body of each unannotated binding. This could be made more efficient in real programs by incrementalising slice calculation; Hazel already has work on formal theory behind incremental type checking~\cite{PorterEtAl2025}.
 
 
 \section{Minimum-Size Slices}

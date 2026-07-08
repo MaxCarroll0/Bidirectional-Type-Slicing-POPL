@@ -20,16 +20,16 @@ Consider a `program' $P = (\Gamma, e)$, that is, typing assumptions and an expre
 
 Given the derivation $D$, we may \textit{query} the type $\tau$ by taking a slice $\upsilon$ in $\lfloor \tau \rfloor$. A synthesis slice is a `program slice' $\rho = (\gamma, \varsigma)$ in $\lfloor \Gamma , e\rfloor$ which synthesises a type at least as precise as the query $\upsilon$; this corresponds to a highlighted version of the original program. 
 
-Intuitively, $\upsilon$ specifies the part of $\tau$ we wish to explain; for example, querying $\upsilon = \mathit{Int} \Rightarrow \gap$ for $\tau = \mathit{Int} \Rightarrow \mathit{Bool}$ asks ``which parts of the program account for the domain being $\mathit{Int}$?''. The slice might not include \textit{all} the program regions relevant to the query type, but will necessarily provide a consistent subset which suffices to totally \textit{explain} (independently synthesise) the query.
+Intuitively, $\upsilon$ specifies the part of $\tau$ we wish to explain; for example, querying $\upsilon = \mathit{Int} \funarr \gap$ for $\tau = \mathit{Int} \funarr \mathit{Bool}$ asks ``which parts of the program account for the domain being $\mathit{Int}$?''. The slice might not include \textit{all} the program regions relevant to the query type, but will necessarily provide a consistent subset which suffices to totally \textit{explain} (independently synthesise) the query.
 
 \begin{definition}[Synthesis slice]
 \label{def:syn-slice}
-A \textit{synthesis slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\synslice{D}{\upsilon}$, is a pair $(\gamma, \varsigma) \in \lfloor \Gamma, e\rfloor$ such that $\Delta;\gamma \vdash \varsigma\;{\color{BrickRed}\Uparrow}\;\phi$ for some $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor \tau \rfloor$ by graduality, \cref{thm:graduality-syn}).
+A \textit{synthesis slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\synslice{D}{\upsilon}$, is a pair $(\gamma, \varsigma) \in \lfloor \Gamma, e\rfloor$ such that $\Delta;\gamma \vdash \varsigma\;\synmode\;\phi$ for some $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor \tau \rfloor$ by graduality, \cref{thm:graduality-syn}).
 \end{definition}
 \begin{figure}[H]
 \centering
 \begin{tikzcd}[column sep=large, row sep=large]
-& \rho \arrow[r, "\sqsubseteq" {sloped}] \arrow[d, "{\color{BrickRed}\Uparrow}"'] & (\Gamma, e) \arrow[d, "{\color{BrickRed}\Uparrow}"] \\
+& \rho \arrow[r, "\sqsubseteq" {sloped}] \arrow[d, "\synmode"'] & (\Gamma, e) \arrow[d, "\synmode"] \\
 \upsilon \arrow[r, "\sqsubseteq" {sloped}] & \phi \arrow[r, induced, "\sqsubseteq" {sloped}, "\text{(by graduality)}"', dashed] & \tau
 \end{tikzcd}
 \caption{Diagram of a synthesis slice; $\upsilon \sqsubseteq \phi$ is the validity witness.}
@@ -41,9 +41,9 @@ Many such synthesis slices exist. In particular, the original program $(\Gamma, 
 \begin{counterexamplebox}
 %
 \begin{counterexample}[Non-Existence of all Exact Synthesis Slices]\label{lem:exact-not-exist}
-Consider $x \mathbin{:} \mathbf{*} \Rightarrow \mathbf{*} \vdash (x, x) {\color{BrickRed}\Uparrow} (* \Rightarrow *) \times (* \Rightarrow *)$, and query $\upsilon = (\mathbf{*} \Rightarrow \gap) \times (\gap \Rightarrow \mathbf{*})$. 
+Consider $x \mathbin{:} \mathbf{*} \funarr \mathbf{*} \vdash (x, x) \synmode (* \funarr *) \times (* \funarr *)$, and query $\upsilon = (\mathbf{*} \funarr \gap) \times (\gap \funarr \mathbf{*})$. 
 
-Any strictly smaller slice of either $x : * \Rightarrow *$ or $(x, x)$ synthesises a type strictly less precise than $\upsilon$. Yet the original program synthesises $(* \Rightarrow *) \times (* \Rightarrow *)$, strictly more precise than $\upsilon$.
+Any strictly smaller slice of either $x : * \funarr *$ or $(x, x)$ synthesises a type strictly less precise than $\upsilon$. Yet the original program synthesises $(* \funarr *) \times (* \funarr *)$, strictly more precise than $\upsilon$.
 \end{counterexample}
 \end{counterexamplebox}
 
@@ -198,11 +198,11 @@ If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and $m_2 : \minsy
 
 This is desirable because the user will not be shown \textit{additional} information after a query refinement which would require further reasoning by the user to understand. \Cref{fig:syn-slice-refinement} illustrates a monotonic refinement path along 3 refined queries on the example lattice. If we did not follow a monotonic path during refinement we would get `branch hopping':
 
-\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. For example, refining $\upsilon = \mathbf{*}\Rightarrow\mathbf{*}$ to $\upsilon' = \gap\Rightarrow\mathbf{*}$:
+\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. For example, refining $\upsilon = \mathbf{*}\funarr\mathbf{*}$ to $\upsilon' = \gap\funarr\mathbf{*}$:
 \begin{center}
-\fullslice{x : \sli{\mathbf{*} \Rightarrow \mathbf{*}}}{\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}\;x\;\mathbf{else}}\;y}
+\fullslice{x : \sli{\mathbf{*} \funarr \mathbf{*}}}{\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}\;x\;\mathbf{else}}\;y}
 \quad$\xrightarrow{\upsilon' \sqsubseteq \upsilon}$\quad
-\fullslice{y : \mathbf{*}\,\sli{\Rightarrow \mathbf{*}}}{\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}}\;x\;\sli{\mathbf{else}\;y}}
+\fullslice{y : \mathbf{*}\,\sli{\funarr \mathbf{*}}}{\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}}\;x\;\sli{\mathbf{else}\;y}}
 \end{center}
 
 On the other hand, you do not necessarily have monotonicity in the upwards direction. Consider the $\rho_j$ node in \Cref{fig:syn-slice-refinement}, which is minimal under query $\upsilon_0$, but no minimum for query $\upsilon_1$ is strictly more precise than $\rho_j$.
@@ -259,7 +259,7 @@ For $(\gamma_1, \varsigma_1) : \synslice{D}{\upsilon_1}$ and $(\gamma_2, \varsig
 \begin{figure}[H]
 \centering
 \begin{tikzcd}[column sep=large, row sep=large]
-\rho_1 \arrow[r, "\sqsubseteq"] \arrow[d, "{\color{BrickRed}\Uparrow}"'] & {\color{induced} \rho^{\sqcup}} \arrow[d, "{\color{BrickRed}\Uparrow}"] & \rho_2 \arrow[l, "\sqsupseteq"'] \arrow[d, "{\color{BrickRed}\Uparrow}"] \\
+\rho_1 \arrow[r, "\sqsubseteq"] \arrow[d, "\synmode"'] & {\color{induced} \rho^{\sqcup}} \arrow[d, "\synmode"] & \rho_2 \arrow[l, "\sqsupseteq"'] \arrow[d, "\synmode"] \\
 \phi_1 & {\color{induced} \phi'} & \phi_2 \\
 \upsilon_1 \arrow[u, "\sqsubseteq" {sloped}] \arrow[r, "\sqsubseteq"] & {\color{induced} \upsilon_1 \sqcup \upsilon_2} \arrow[u, induced, "\sqsubseteq"' {sloped}, dashed] & \upsilon_2 \arrow[u, "\sqsubseteq"' {sloped}] \arrow[l, "\sqsupseteq"']
 \end{tikzcd}

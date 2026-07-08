@@ -16,7 +16,7 @@ Structurally, analysis slices are identical to synthesis slices (\cref{sec:syn-s
 
 \begin{definition}
 \label{def:ana-slice}
-An \textit{analysis slice} of $\mathit{Cls} : \ctxclass{\C}{{\color{BrickRed}\Uparrow}\,\tau_p}{\Delta';\,\Gamma'}{{\color{BlueViolet}\Downarrow}\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that $\ctxclass[\Delta;\,\gamma]{\kappa}{{\color{BrickRed}\Uparrow}\,\psi}{\Delta'';\,\Gamma''}{{\color{BlueViolet}\Downarrow}\,\upsilon}$ for some outer-type witness $\psi \sqsupseteq \upsilon$ (with $\psi \in \lfloor\tau_p\rfloor$ by graduality, \cref{thm:graduality-syn-cls}).
+An \textit{analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\anamode\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta'';\,\Gamma''}{\anamode\,\upsilon}$ for some outer-type witness $\psi \sqsupseteq \upsilon$ (with $\psi \in \lfloor\tau_p\rfloor$ by graduality, \cref{thm:graduality-syn-cls}).
 \end{definition}
 
 

@@ -52,12 +52,12 @@ This lemma allows slicing to independently slice the \textit{external} type info
 
 Then, we notate context typing by a judgement $\ctxclass{\C}{d}{\Delta';\ \Gamma'}{m}$, read as: ``under assumptions $\Delta, \Gamma$, context $\C$ in a derivation of outer mode $d$ has its focus typed under $\Delta';\,\Gamma'$ in focus mode $m$''.
 
-The \textit{outer derivation mode} $d$ records whether the whole expression $\C[e]$ is in a synthesis derivation producing type $\tau$ ($d = {\color{BrickRed}\Uparrow}\;\tau$) or an analysis derivation against $\tau$ ($d = {\color{BlueViolet}\Downarrow}\;\tau$). The \textit{focus mode} $m$ records the type the focus $e$ must synthesise ($m = {\color{BrickRed}\Uparrow}\;\tau'$), or the type it is checked against ($m = {\color{BlueViolet}\Downarrow}\;\tau'$). Finally, $\Gamma'$ records the \textit{focus assumptions}. Each rule in these derivations is subject to \textit{additional premises} matching the corresponding term typing rules.
+The \textit{outer derivation mode} $d$ records whether the whole expression $\C[e]$ is in a synthesis derivation producing type $\tau$ ($d = \synmode\;\tau$) or an analysis derivation against $\tau$ ($d = \anamode\;\tau$). The \textit{focus mode} $m$ records the type the focus $e$ must synthesise ($m = \synmode\;\tau'$), or the type it is checked against ($m = \anamode\;\tau'$). Finally, $\Gamma'$ records the \textit{focus assumptions}. Each rule in these derivations is subject to \textit{additional premises} matching the corresponding term typing rules.
 
-\paragraph{Example.} Consider the derivation of $\synthesis{e_1(e_2)}{\tau_2}$ via \synr{App}, where $\synthesis{e_1}{\tau}$, $\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2$, and $\analysis{e_2}{\tau_1}$.
+\paragraph{Example.} Consider the derivation of $\synthesis{e_1(e_2)}{\tau_2}$ via \synr{App}, where $\synthesis{e_1}{\tau}$, $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$, and $\analysis{e_2}{\tau_1}$.
 \begin{itemize}
-\item \textbf{Function position} ($e_1$ is the focus, $\C = \cmark(e_2)$): The corresponding classification is: $\ctxclass{\cmark(e_2)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta;\,\Gamma}{{\color{BrickRed}\Uparrow}\;\tau}$. The focus must synthesise type $\tau$ as per the focus mode, with the extra premises being $\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2$ and $\analysis{e_2}{\tau_1}$.
-\item \textbf{Argument position} ($e_2$ is the focus, $\C = e_1(\cmark)$): The corresponding classification is: $\ctxclass{e_1(\cmark)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta;\,\Gamma}{{\color{BlueViolet}\Downarrow}\;\tau_1}$. The focus analyses against $\tau_1$ as per the focus mode, with the extra premises being: $\synthesis{e_1}{\tau}$ and $\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2$.
+\item \textbf{Function position} ($e_1$ is the focus, $\C = \cmark(e_2)$): The corresponding classification is: $\ctxclass{\cmark(e_2)}{\synmode\;\tau_2}{\Delta;\,\Gamma}{\synmode\;\tau}$. The focus must synthesise type $\tau$ as per the focus mode, with the extra premises being $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ and $\analysis{e_2}{\tau_1}$.
+\item \textbf{Argument position} ($e_2$ is the focus, $\C = e_1(\cmark)$): The corresponding classification is: $\ctxclass{e_1(\cmark)}{\synmode\;\tau_2}{\Delta;\,\Gamma}{\anamode\;\tau_1}$. The focus analyses against $\tau_1$ as per the focus mode, with the extra premises being: $\synthesis{e_1}{\tau}$ and $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$.
 \end{itemize}
 
 Specifying these rules is systematic, one for each typing rule and focus location. We give a few representative rules in Figure~\ref{fig:context-classification}. The only additional rules are for identity contexts $\texttt{s}\cmark$ and $\texttt{a}\cmark$ (the base cases) where the focus mode must match the outer derivation mode.
@@ -68,17 +68,17 @@ Specifying these rules is systematic, one for each typing rule and focus locatio
 
 \bigskip
 \fbox{Base cases}\ \ \ identity contexts (focus mode matches outer derivation mode):
-\[\inference[\texttt{s$\cmark$}]{}{\ctxclass{\cmark}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta;\,\Gamma}{{\color{BrickRed}\Uparrow}\;\tau}} \qquad
-  \inference[\texttt{a$\cmark$}]{}{\ctxclass{\cmark}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta;\,\Gamma}{{\color{BlueViolet}\Downarrow}\;\tau}}\]
+\[\inference[\texttt{s$\cmark$}]{}{\ctxclass{\cmark}{\synmode\;\tau}{\Delta;\,\Gamma}{\synmode\;\tau}} \qquad
+  \inference[\texttt{a$\cmark$}]{}{\ctxclass{\cmark}{\anamode\;\tau}{\Delta;\,\Gamma}{\anamode\;\tau}}\]
 
 \medskip
-\fbox{Synthesis mode: $d = {\color{BrickRed}\Uparrow}\;\tau$}\ \ \ the overall expression $\C[e]$ synthesises:
-\[\inference[\texttt{s$\circ_1$}]{\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \analysis{e_2}{\tau_1}}{\ctxclass{\C(e_2)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}\]
-\[\inference[\texttt{s$\circ_2$}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau_1}{\Delta';\,\Gamma'}{m}}{\ctxclass{e_1(\C)}{{\color{BrickRed}\Uparrow}\;\tau_2}{\Delta';\,\Gamma'}{m}}\]
+\fbox{Synthesis mode: $d = \synmode\;\tau$}\ \ \ the overall expression $\C[e]$ synthesises:
+\[\inference[\texttt{s$\circ_1$}]{\ctxclass{\C}{\synmode\;\tau}{\Delta';\,\Gamma'}{m} & \tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \analysis{e_2}{\tau_1}}{\ctxclass{\C(e_2)}{\synmode\;\tau_2}{\Delta';\,\Gamma'}{m}}\]
+\[\inference[\texttt{s$\circ_2$}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \ctxclass{\C}{\anamode\;\tau_1}{\Delta';\,\Gamma'}{m}}{\ctxclass{e_1(\C)}{\synmode\;\tau_2}{\Delta';\,\Gamma'}{m}}\]
 
 \medskip
-\fbox{Subsumption: ${\color{BrickRed}\Uparrow}\;\tau' \;\leadsto\; {\color{BlueViolet}\Downarrow}\;\tau$}\ \ \ the unique bridge from synthesis to analysis derivation mode:
-\[\inference[\texttt{aSub}]{\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau'}{\Delta';\,\Gamma'}{m} & \tau \sim \tau'}{\ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}}\]
+\fbox{Subsumption: $\synmode\;\tau' \;\leadsto\; \anamode\;\tau$}\ \ \ the unique bridge from synthesis to analysis derivation mode:
+\[\inference[\texttt{aSub}]{\ctxclass{\C}{\synmode\;\tau'}{\Delta';\,\Gamma'}{m} & \tau \sim \tau'}{\ctxclass{\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}}\]
 \caption{Selected context classification rules.}
 \label{fig:context-classification}
 \end{figure}
@@ -89,10 +89,10 @@ Correctness of context classification is formalised via a \textit{totality} theo
 \begin{theorem}[Plug Decomposition -- Totality]\label{thm:plug-decomposition}
 For any context $\C$, expression $e$, and outer derivation mode $d$:
 \begin{itemize}
-\item If\/ $\synthesis{\C[e]}{\tau}$, then there exist $\Delta'$, $\Gamma'$, and $m$ such that\\ $\ctxclass{\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$.
-\item If\/ $\analysis{\C[e]}{\tau}$, then there exist $\Delta'$, $\Gamma'$, and $m$ such that\\ $\ctxclass{\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$.
+\item If\/ $\synthesis{\C[e]}{\tau}$, then there exist $\Delta'$, $\Gamma'$, and $m$ such that\\ $\ctxclass{\C}{\synmode\;\tau}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$.
+\item If\/ $\analysis{\C[e]}{\tau}$, then there exist $\Delta'$, $\Gamma'$, and $m$ such that\\ $\ctxclass{\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$.
 \end{itemize}
-Here ``$e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$'' means: if $m = {\color{BrickRed}\Uparrow}\;\tau'$ then $\Delta';\,\Gamma' \vdash e\;{\color{BrickRed}\Uparrow}\;\tau'$; if $m = {\color{BlueViolet}\Downarrow}\;\tau'$ then $\Delta';\,\Gamma' \vdash e\;{\color{BlueViolet}\Downarrow}\;\tau'$.
+Here ``$e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$'' means: if $m = \synmode\;\tau'$ then $\Delta';\,\Gamma' \vdash e\;\synmode\;\tau'$; if $m = \anamode\;\tau'$ then $\Delta';\,\Gamma' \vdash e\;\anamode\;\tau'$.
 \end{theorem}
 \end{majortheorembox}
 
@@ -102,14 +102,14 @@ For any context $\C$, expression $e$, outer mode $d$, and focus mode $m$: if\/ $
 \end{theorem}
 \end{majortheorembox}
 
-In order to apply the same ideas as synthesis slices, we also prove a substantial static gradual guarantee (\cref{sec:core-typing}) for context typings, defining precision on modes $m' \sqsubseteq m$ by lifting: ${\color{BrickRed}\Uparrow}\,\tau' \sqsubseteq {\color{BrickRed}\Uparrow}\,\tau$ iff $\tau' \sqsubseteq \tau$, and likewise for ${\color{BlueViolet}\Downarrow}$. The focus mode's class itself (analysis or synthesis) is propagated unchanged through every classification rule.
+In order to apply the same ideas as synthesis slices, we also prove a substantial static gradual guarantee (\cref{sec:core-typing}) for context typings, defining precision on modes $m' \sqsubseteq m$ by lifting: $\synmode\,\tau' \sqsubseteq \synmode\,\tau$ iff $\tau' \sqsubseteq \tau$, and likewise for $\anamode$. The focus mode's class itself (analysis or synthesis) is propagated unchanged through every classification rule.
 
 \begin{majortheorembox}
 \begin{theorem}[Static Gradual Guarantee -- Context, Synthesis Position]\label{thm:graduality-syn-cls}
-If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{{\color{BrickRed}\Uparrow}\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\tau_p'$, $\Gamma_f'$, and $m'$ with $\tau_p' \sqsubseteq \tau_p$, $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{{\color{BrickRed}\Uparrow}\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.
+If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{\synmode\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\tau_p'$, $\Gamma_f'$, and $m'$ with $\tau_p' \sqsubseteq \tau_p$, $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{\synmode\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.
 \end{theorem}
 \begin{theorem}[Static Gradual Guarantee -- Context, Analysis Position]\label{thm:graduality-ana-cls}
-If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, $\tau_p' \sqsubseteq \tau_p$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{{\color{BlueViolet}\Downarrow}\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\Gamma_f'$ and $m'$ with $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{{\color{BlueViolet}\Downarrow}\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.
+If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, $\tau_p' \sqsubseteq \tau_p$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{\anamode\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\Gamma_f'$ and $m'$ with $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{\anamode\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.
 \end{theorem}
 \end{majortheorembox}
 

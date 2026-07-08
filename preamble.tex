@@ -44,6 +44,22 @@
 \providecommand{\Circle}{\bigcirc} % wasysym incompatible with lualatex
 \usepackage{mathtools}
 
+% Self-citations are anonymised exactly when acmart is in anonymous mode.
+\makeatletter
+\newcommand{\priorDissertationSelfCite}{%
+  \if@ACM@anonymous
+    \cite{AnonymousDissertation2025}%
+  \else
+    \cite{Carroll2025}%
+  \fi}
+\newcommand{\hatraSelfCite}{%
+  \if@ACM@anonymous
+    \cite{AnonymousHATRA2025}%
+  \else
+    \cite{CarrollEtAl2025}%
+  \fi}
+\makeatother
+
 % acmart >= v2.16 loads unicode-math with Libertinus Math, whose stretchy
 % horizontal braces (U+23DE/U+23DF) render as solid black bars under
 % \underbrace/\overbrace. Pull just those two glyphs from Latin Modern Math.
@@ -161,26 +177,29 @@
 \newcommand{\wf}[2][\Delta]{#1 \vdash #2\;\mathsf{wf}}
 
 % Synthesis / analysis judgements
-\newcommand{\synthesis}[3][\Delta;\,\Gamma]{#1 \vdash #2 {\color{BrickRed}\ \Uparrow}\ #3}
-\newcommand{\analysis}[3][\Delta;\,\Gamma]{#1 \vdash #2 {\color{BlueViolet}\ \Downarrow}\ #3}
+\newcommand{\funarr}{\mathbin{\to}}
+\newcommand{\synmode}{\mathrel{{\color{BrickRed}\Rightarrow}}}
+\newcommand{\anamode}{\mathrel{{\color{BlueViolet}\Leftarrow}}}
+\newcommand{\synthesis}[3][\Delta;\,\Gamma]{#1 \vdash #2 \synmode #3}
+\newcommand{\analysis}[3][\Delta;\,\Gamma]{#1 \vdash #2 \anamode #3}
 
 % Rule-name labels
-\newcommand{\synr}[1]{\textnormal{{\color{BrickRed}$\Uparrow$}\texttt{#1}}}
-\newcommand{\anar}[1]{\textnormal{{\color{BlueViolet}$\Downarrow$}\texttt{#1}}}
+\newcommand{\synr}[1]{\textnormal{$\synmode$\texttt{#1}}}
+\newcommand{\anar}[1]{\textnormal{$\anamode$\texttt{#1}}}
 \newcommand{\cnsr}[1]{\textnormal{$#1$}}
 
 \newcommand{\typeassignment}[3][\Delta;\Gamma]{#1 \vdash #2 : #3}
 
 % Slice judgements
-\newcommand{\synthesisslice}[4][\Gamma]{#1 \vdash #2 {\color{BrickRed}\ \Rightarrow}\ #3 \mid #4}
-\newcommand{\analysisslice}[5][\Gamma]{#1; #2 \vdash #3 {\color{BlueViolet}\ \Leftarrow}\ #4 \mid #5}
+\newcommand{\synthesisslice}[4][\Gamma]{#1 \vdash #2 \synmode #3 \mid #4}
+\newcommand{\analysisslice}[5][\Gamma]{#1; #2 \vdash #3 \anamode #4 \mid #5}
 
 % Term-minimal slice judgement (used in the Optimising section and the supplement).
 \providecommand{\tmrule}[7][\Delta;\,\Gamma]{%
-  #1 \vdash #2 \mathbin{{\color{BrickRed}\Uparrow}} #3
+  #1 \vdash #2 \mathbin{\synmode} #3
   \mathbin{{\color{BrickRed}\blacktriangleleft}} #4
   \;{\color{BrickRed}\rightsquigarrow}\; #5
-  \mathbin{{\color{BrickRed}\Uparrow}} #6
+  \mathbin{\synmode} #6
   \,\dashv\, #7%
 }
 
@@ -195,18 +214,18 @@
 \newcommand{\forallmatch}{\blacktriangleright_\forall}
 
 % Elaboration judgements
-\newcommand{\elaborationSynthesis}[5][\Gamma]{#1 \vdash #2 {\color{BrickRed}\ \Uparrow\ } #3 \leadsto #4 \dashv #5}
-\newcommand{\elaborationAnalysis}[6][\Gamma]{#1 \vdash #2 {\color{BlueViolet}\ \Downarrow\ } #3 \leadsto #4 : #5 \dashv #6}
-\newcommand{\elaborationSynthesisSlice}[6][\Gamma]{#1 \vdash #2 {\color{BrickRed}\ \Rightarrow\ } #3 \mid #4 \leadsto #5 \dashv #6}
-\newcommand{\elaborationAnalysisSlice}[9][\Gamma]{#1;\ #2 \vdash #3 {\color{BlueViolet}\ \Leftarrow\ } #4 \mid #5 \leadsto #6 : #7 \mid #8 \dashv #9}
+\newcommand{\elaborationSynthesis}[5][\Gamma]{#1 \vdash #2 \synmode #3 \leadsto #4 \dashv #5}
+\newcommand{\elaborationAnalysis}[6][\Gamma]{#1 \vdash #2 \anamode #3 \leadsto #4 : #5 \dashv #6}
+\newcommand{\elaborationSynthesisSlice}[6][\Gamma]{#1 \vdash #2 \synmode #3 \mid #4 \leadsto #5 \dashv #6}
+\newcommand{\elaborationAnalysisSlice}[9][\Gamma]{#1;\ #2 \vdash #3 \anamode #4 \mid #5 \leadsto #6 : #7 \mid #8 \dashv #9}
 
 % Context classification
 \newcommand{\ctxclass}[5][\Delta;\,\Gamma]{#1 \vdash #2\;\mathbf{at}\;#3\;\triangleright\;#4\;[\,#5\,]}
 
 % Marking
 \newcommand{\marksto}{\looparrowright}
-\newcommand{\synmark}[4][\Delta;\,\Gamma]{#1 \vdash #2 \marksto #3 {\color{BrickRed}\ \Uparrow}\ #4}
-\newcommand{\anamark}[4][\Delta;\,\Gamma]{#1 \vdash #2 \marksto #3 {\color{BlueViolet}\ \Downarrow}\ #4}
+\newcommand{\synmark}[4][\Delta;\,\Gamma]{#1 \vdash #2 \marksto #3 \synmode #4}
+\newcommand{\anamark}[4][\Delta;\,\Gamma]{#1 \vdash #2 \marksto #3 \anamode #4}
 \newcommand{\mctxclass}[6][\Delta;\,\Gamma]{#1 \vdash #2 \marksto #3\;\mathbf{at}\;#4\;\triangleright\;#5\;[\,#6\,]}
 \newcommand{\chk}[1]{\check{#1}}
 
@@ -215,13 +234,13 @@
 \newcommand{\markopen}{{\color{markcolor}\llparenthesis}}
 \newcommand{\markclose}{{\color{markcolor}\rrparenthesis}}
 \newcommand{\markincon}[3][\cdot]{{\markopen #1 \markclose}_{#2 \not\sim #3}}
-\newcommand{\markarrow}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright \Rightarrow}}
+\newcommand{\markarrow}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright \funarr}}
 \newcommand{\marksum}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright +}}
 \newcommand{\markprod}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright \times}}
 \newcommand{\markforall}[1][\cdot]{{\markopen #1 \markclose}_{\blacktriangleright \forall}}
-\newcommand{\marklam}[1][\cdot]{{\markopen #1 \markclose}_{\sim \Rightarrow}}
+\newcommand{\marklam}[1][\cdot]{{\markopen #1 \markclose}_{\sim \funarr}}
 \newcommand{\markprodsim}[1][\cdot]{{\markopen #1 \markclose}_{\sim \times}}
-\newcommand{\markvar}[1]{{\color{markcolor}\langle} #1 {\color{markcolor}\rangle}\!\Uparrow}
+\newcommand{\markvar}[1]{{\color{markcolor}\langle} #1 {\color{markcolor}\rangle}\!\synmode}
 
 \newcommand{\markbox}[1]{%
   \tikz[baseline=(N.base)]{%

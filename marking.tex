@@ -74,8 +74,8 @@ In this style, we extend context typing (\cref{sec:context-typing}) to \textit{m
 We may now relate the tools developed over the last four sections to explain type errors:
 \begin{enumerate}
 \item Place the focus (cursor) at some marked term. This splits the marked program into a marked context $\chk C$ and marked focus $\chk e$, with $\chk C[\chk e]$ recovering the program; a marked context classification at the focus is then derivable by totality of marked context classification (supplementary material).
-\item Synthesis slice the internal type information, the term at the \emph{focus}, $\chk e$, if the focus mode $m$ is in synthesis (${\color{BrickRed}\Uparrow}\;\tau$).
-\item Analysis slice the external type information, the \emph{context classification} itself, if the focus mode $m$ is in analysis (${\color{BlueViolet}\Downarrow}\;\tau$).
+\item Synthesis slice the internal type information, the term at the \emph{focus}, $\chk e$, if the focus mode $m$ is in synthesis ($\synmode\;\tau$).
+\item Analysis slice the external type information, the \emph{context classification} itself, if the focus mode $m$ is in analysis ($\anamode\;\tau$).
 \item Pick queries to explore the error. For type-inconsistency marks \textit{both} the synthesis and analysis slices exist (two context classifications exist from step 1). From these, you can query \textit{only} the inconsistent parts. For shape errors, simply query just the outermost shape of the synthesised type; mode-limitation errors are analogous on the analysis side.
 \end{enumerate}
 
@@ -86,28 +86,28 @@ We give some worked examples, notating with a \markbox{\text{marked term}}, a \s
 
 Consider the program
 \[
-  \mathbf{let}\;p : * \Rightarrow * = (\texttt{true},\,\texttt{false})\;\mathbf{in}\;p.
+  \mathbf{let}\;p : * \funarr * = (\texttt{true},\,\texttt{false})\;\mathbf{in}\;p.
 \]
-The RHS $(\texttt{true},\,\texttt{false})$ synthesises $\texttt{Bool} \times \texttt{Bool}$ but is analysed against $* \Rightarrow *$. Marking inserts
-$\markincon{\texttt{Bool} \times \texttt{Bool}}{* \Rightarrow *}$
+The RHS $(\texttt{true},\,\texttt{false})$ synthesises $\texttt{Bool} \times \texttt{Bool}$ but is analysed against $* \funarr *$. Marking inserts
+$\markincon{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}$
 around the RHS:
 \[
-  \mathbf{let}\;p : * \Rightarrow * = \markbox{\markincon[(\texttt{true},\,\texttt{false})]{\texttt{Bool} \times \texttt{Bool}}{* \Rightarrow *}}\;\mathbf{in}\;p.
+  \mathbf{let}\;p : * \funarr * = \markbox{\markincon[(\texttt{true},\,\texttt{false})]{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}}\;\mathbf{in}\;p.
 \]
-Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \texttt{Bool}}{* \Rightarrow *}$ with the entire red term highlighted. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
+Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}$ with the entire red term highlighted. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
 
 \noindent\paragraph{\textbf{Decomposition}}
 The (context, focus) pair the marking factors into is
 \[
-  C \;=\; \mathbf{let}\;p : * \Rightarrow * = \cmark\;\mathbf{in}\;p,
+  C \;=\; \mathbf{let}\;p : * \funarr * = \cmark\;\mathbf{in}\;p,
   \qquad
   e \;=\; (\texttt{true},\,\texttt{false}),
 \]
-with the focus at ${\color{BlueViolet}\Downarrow}\,(* \Rightarrow *)$. The two
+with the focus at $\anamode\,(* \funarr *)$. The two
 debugging queries run on the two sides of this split.
 
 \noindent\paragraph{\textbf{Synthesis Slice}}
-$\mathit{MinSynSlice}$ at the minimal type-slice $\upsilon \sqsubseteq \texttt{Bool} \times \texttt{Bool}$ that still witnesses $\upsilon \not\sim (* \Rightarrow *)$:
+$\mathit{MinSynSlice}$ at the minimal type-slice $\upsilon \sqsubseteq \texttt{Bool} \times \texttt{Bool}$ that still witnesses $\upsilon \not\sim (* \funarr *)$:
 \[
   e \;\rightsquigarrow\; (\,\texttt{true}\,\sli{,}\,\texttt{false}\,)
   \qquad\text{with}\qquad
@@ -115,20 +115,20 @@ $\mathit{MinSynSlice}$ at the minimal type-slice $\upsilon \sqsubseteq \texttt{B
 \]
 
 \noindent\paragraph{\textbf{Analysis Slice}}
-$\mathit{MinAnaSlice}$ at the minimal $\psi \sqsubseteq * \Rightarrow *$ that still witnesses $(* \times *) \not\sim \psi$:
+$\mathit{MinAnaSlice}$ at the minimal $\psi \sqsubseteq * \funarr *$ that still witnesses $(* \times *) \not\sim \psi$:
 \[
   C \;\rightsquigarrow\;
-  \slist{\mathbf{let}}\;p\,\slist{:}\,*\,\sli[OliveGreen]{\Rightarrow}\,*\,\slist{=}\,\cmark\,\slist{\mathbf{in}}\;p
+  \slist{\mathbf{let}}\;p\,\slist{:}\,*\,\sli[OliveGreen]{\funarr}\,*\,\slist{=}\,\cmark\,\slist{\mathbf{in}}\;p
   \qquad\text{with}\qquad
-  \psi = \gap\,\sli[OliveGreen]{\Rightarrow}\,\gap.
+  \psi = \gap\,\sli[OliveGreen]{\funarr}\,\gap.
 \]
 
 \paragraph{\textbf{Full view:}} The slices pick out exactly what each side contributes to the failure.
 
-\queryblock{\texttt{Bool}\sli{\times}\texttt{Bool}\;\;(\equiv\;\gap \times \gap)}{\texttt{*}\sli[OliveGreen]{\Rightarrow}\texttt{*}\;\;(\equiv\;\gap \Rightarrow \gap)}
+\queryblock{\texttt{Bool}\sli{\times}\texttt{Bool}\;\;(\equiv\;\gap \times \gap)}{\texttt{*}\sli[OliveGreen]{\funarr}\texttt{*}\;\;(\equiv\;\gap \funarr \gap)}
 \[
-  \slist{\mathbf{let}}\;p\,\slist{:}\,*\,\sli[OliveGreen]{\Rightarrow}\,*\,\slist{=}\,
-  \markbox{\markincon[(\,\texttt{true}\,\sli{,}\,\texttt{false}\,)]{\texttt{Bool} \times \texttt{Bool}}{* \Rightarrow *}}\,
+  \slist{\mathbf{let}}\;p\,\slist{:}\,*\,\sli[OliveGreen]{\funarr}\,*\,\slist{=}\,
+  \markbox{\markincon[(\,\texttt{true}\,\sli{,}\,\texttt{false}\,)]{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}}\,
   \slist{\mathbf{in}}\;p.
 \]
 
@@ -141,7 +141,7 @@ However, type slicing is flexible. A user who \emph{does} want to trust the surr
 
 The shape-mismatch marks all occur in similar situations: the syntactic position of the focus requires a type kind, but the focus's synthesised type does not match this.
 
-A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$. Where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \Rightarrow \gap$. We can therefore query just why it is a product, and not a function.
+A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$. Where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
 \queryblock{\texttt{*}\sli{\times}\texttt{*}}{\text{---}}
 \[
   \markbox{\markarrow[(\texttt{*}\sli,\texttt{*})]}\,(\,\texttt{true}\,).

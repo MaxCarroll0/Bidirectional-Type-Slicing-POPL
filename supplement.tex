@@ -31,11 +31,11 @@ marked) context-classification rules, and the marked-context metatheory.
 \[\inference[\synr{$\gap$}]{}{\synthesis{\gap}{\gap}} \qquad
   \inference[\synr{*}]{}{\synthesis{*}{*}}\]
 \[\inference[\synr{Var}]{x : \tau \in \Gamma}{\synthesis{x}{\tau}}\]
-\[\inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \Rightarrow \tau_2}} \qquad
+\[\inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \funarr \tau_2}} \qquad
   \inference[\synr{let}]{\synthesis{e_1}{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_2}{\tau_2}}{\synthesis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}}\]
 \[\inference[\synr{$\Lambda$}]{\synthesis[\Delta, \alpha;\,\Gamma]{e}{\tau}}{\synthesis{\Lambda\alpha.\; e}{\forall\alpha.\;\tau}} \qquad
   \inference[\synr{TApp}]{\wf{\sigma} & \synthesis{e}{\tau} & \tau \sqcup \forall\alpha.\;\gap \equiv \forall\alpha.\;\tau'}{\synthesis{e\langle\sigma\rangle}{[\alpha \mapsto \sigma]\,\tau'}}\]
-\[\inference[\synr{App}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \analysis{e_2}{\tau_1}}{\synthesis{e_1(e_2)}{\tau_2}}\]
+\[\inference[\synr{App}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \analysis{e_2}{\tau_1}}{\synthesis{e_1(e_2)}{\tau_2}}\]
 \[\inference[\synr{\&}]{\synthesis{e_1}{\tau_1} & \synthesis{e_2}{\tau_2}}{\synthesis{(e_1,\; e_2)}{\tau_1 \times \tau_2}}\]
 \[\inference[\synr{$\pi_1$}]{\synthesis{e}{\tau} & \tau \sqcup (\gap \times \gap) \equiv \tau_1 \times \tau_2}{\synthesis{\pi_1\; e}{\tau_1}} \qquad
   \inference[\synr{$\pi_2$}]{\synthesis{e}{\tau} & \tau \sqcup (\gap \times \gap) \equiv \tau_1 \times \tau_2}{\synthesis{\pi_2\; e}{\tau_2}}\]
@@ -50,8 +50,8 @@ marked) context-classification rules, and the marked-context metatheory.
 \small
 \fbox{$\analysis{e}{\tau}$}\ \ \ $e$ analyses against type $\tau$ under $\Delta$ and $\Gamma$
 \[\inference[\anar{Sub}]{\synthesis{e}{\tau'} & \tau \sim \tau'}{\analysis{e}{\tau}}\]
-\[\inference[\anar{$\lambda$}]{\tau \sqcup (\gap \Rightarrow \gap) \equiv \tau_1 \Rightarrow \tau_2 & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\analysis{\lambda x.\; e}{\tau}}\]
-\[\inference[\anar{$\lambda$Ann}]{\wf{\tau_1} & \tau \sim \tau_1 \Rightarrow \gap \\ \tau \sqcup \tau_1 \Rightarrow \gap \equiv \tau_1' \Rightarrow \tau_2 & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\analysis{\lambda x \mathbin{:} \tau_1.\; e}{\tau}}\]
+\[\inference[\anar{$\lambda$}]{\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\analysis{\lambda x.\; e}{\tau}}\]
+\[\inference[\anar{$\lambda$Ann}]{\wf{\tau_1} & \tau \sim \tau_1 \funarr \gap \\ \tau \sqcup \tau_1 \funarr \gap \equiv \tau_1' \funarr \tau_2 & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\analysis{\lambda x \mathbin{:} \tau_1.\; e}{\tau}}\]
 \[\inference[\anar{case}]{\synthesis{e}{\tau'} & \tau' \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 \\ \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_1}{\tau} & \analysis[\Delta;\,\Gamma, y \mathbin{:} \tau_2]{e_2}{\tau}}{\analysis{\mathbf{case}\;e\;\mathbf{of}\;x.\;e_1 \mid y.\;e_2}{\tau}}\]
 \[\inference[\anar{$\iota_1$}]{\tau \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 & \analysis{e}{\tau_1}}{\analysis{\iota_1\; e}{\tau}} \qquad
   \inference[\anar{$\iota_2$}]{\tau \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 & \analysis{e}{\tau_2}}{\analysis{\iota_2\; e}{\tau}}\]
@@ -67,7 +67,7 @@ marked) context-classification rules, and the marked-context metatheory.
 \begin{figure}[H]
 \centering
 \scriptsize
-\fbox{\normalsize $\Delta;\,\Gamma \vdash e \Uparrow \tau \mathbin{\blacktriangleleft} \upsilon \rightsquigarrow \varsigma \Uparrow \psi \dashv \gamma$}
+\fbox{\normalsize $\Delta;\,\Gamma \vdash e \synmode \tau \mathbin{\blacktriangleleft} \upsilon \rightsquigarrow \varsigma \synmode \psi \dashv \gamma$}
 \bigskip
 
 \inference[\synr{Var}]{
@@ -105,7 +105,7 @@ marked) context-classification rules, and the marked-context metatheory.
   &
   \upsilon \neq \gap
   &
-  \tmrule{e_1}{\tau_1 \Rightarrow \tau_2}{\gap \Rightarrow \upsilon}{\varsigma_{\mathit{fn}}}{\psi_1}{\gamma}
+  \tmrule{e_1}{\tau_1 \funarr \tau_2}{\gap \funarr \upsilon}{\varsigma_{\mathit{fn}}}{\psi_1}{\gamma}
 }{\tmrule{e_1\,e_2}{\tau_2}{\upsilon}{\varsigma_{\mathit{fn}}(\gap)}{\mathsf{cod}(\psi_1)}{\gamma}}
 
 \bigskip
@@ -114,7 +114,7 @@ marked) context-classification rules, and the marked-context metatheory.
   \tmrule[\Delta;\,\Gamma, x{:}\tau_1]{e_2}{\tau_2}{\upsilon_2}{\varsigma_2}{\psi_2}{\gamma, x{:}\phi_1}
   &
   \synthesis[\Delta;\,\Gamma, x{:}(\phi_1 \sqcup \upsilon_1)]{\varsigma_2}{\psi_2'}
-}{\tmrule{\lambda x{:}\tau_1.\,e_2}{\tau_1 \Rightarrow \tau_2}{\upsilon_1 \Rightarrow \upsilon_2}{\lambda x{:}(\phi_1 \sqcup \upsilon_1).\;\varsigma_2}{(\phi_1 \sqcup \upsilon_1) \Rightarrow \psi_2'}{\gamma}}
+}{\tmrule{\lambda x{:}\tau_1.\,e_2}{\tau_1 \funarr \tau_2}{\upsilon_1 \funarr \upsilon_2}{\lambda x{:}(\phi_1 \sqcup \upsilon_1).\;\varsigma_2}{(\phi_1 \sqcup \upsilon_1) \funarr \psi_2'}{\gamma}}
 
 \bigskip
 
@@ -154,10 +154,10 @@ soundness theorems.
 \begin{theorem}[Marked Plug Decomposition -- Totality]\label{supp:thm:mplug-decompose}
 For any context $\C$, expression $e$, and outer derivation mode $d$:
 \begin{itemize}
-\item If\/ $\synmark{\C[e]}{\chk{e_\star}}{\tau}$, then there exist $\Delta'$, $\Gamma'$, $\chk\C$, $\chk e$, and $m$ such that $\mctxclass{\C}{\chk\C}{{\color{BrickRed}\Uparrow}\;\tau}{\Delta';\,\Gamma'}{m}$, $e$ marks to $\chk e$ at focus mode $m$, and $\chk{e_\star} = \chk\C[\chk e]$.
-\item If\/ $\anamark{\C[e]}{\chk{e_\star}}{\tau}$, then there exist $\Delta'$, $\Gamma'$, $\chk\C$, $\chk e$, and $m$ such that $\mctxclass{\C}{\chk\C}{{\color{BlueViolet}\Downarrow}\;\tau}{\Delta';\,\Gamma'}{m}$, $e$ marks to $\chk e$ at focus mode $m$, and $\chk{e_\star} = \chk\C[\chk e]$.
+\item If\/ $\synmark{\C[e]}{\chk{e_\star}}{\tau}$, then there exist $\Delta'$, $\Gamma'$, $\chk\C$, $\chk e$, and $m$ such that $\mctxclass{\C}{\chk\C}{\synmode\;\tau}{\Delta';\,\Gamma'}{m}$, $e$ marks to $\chk e$ at focus mode $m$, and $\chk{e_\star} = \chk\C[\chk e]$.
+\item If\/ $\anamark{\C[e]}{\chk{e_\star}}{\tau}$, then there exist $\Delta'$, $\Gamma'$, $\chk\C$, $\chk e$, and $m$ such that $\mctxclass{\C}{\chk\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}$, $e$ marks to $\chk e$ at focus mode $m$, and $\chk{e_\star} = \chk\C[\chk e]$.
 \end{itemize}
-Here ``$e$ marks to $\chk e$ at focus mode $m$'' means: if $m = {\color{BrickRed}\Uparrow}\;\tau'$ then $\synmark[\Delta';\,\Gamma']{e}{\chk e}{\tau'}$; if $m = {\color{BlueViolet}\Downarrow}\;\tau'$ then $\anamark[\Delta';\,\Gamma']{e}{\chk e}{\tau'}$.
+Here ``$e$ marks to $\chk e$ at focus mode $m$'' means: if $m = \synmode\;\tau'$ then $\synmark[\Delta';\,\Gamma']{e}{\chk e}{\tau'}$; if $m = \anamode\;\tau'$ then $\anamark[\Delta';\,\Gamma']{e}{\chk e}{\tau'}$.
 \end{theorem}
 
 \begin{theorem}[Marked Plug Composition -- Soundness]\label{supp:thm:mplug-compose}
