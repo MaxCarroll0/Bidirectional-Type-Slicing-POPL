@@ -1,184 +1,153 @@
 \section{Type Slicing in Hazel by Example}
 \label{sec:slicing-by-example}
 
-This section previews the slicing apparatus formally introduced in later sections through three worked examples.
-
-\Cref{fig:parse-digit-slices} demonstrates a small example of a function parsing characters to single digits. In \textbf{(a)} the function is queried for its \textit{synthesised} type, \synsrc{\texttt{Char \textrightarrow\ Option Digit}}, which is explained by just taking a single branch from the function, and the corresponding part of the \synsrc{\texttt{Digit}} type.
-
-Secondly, \textbf{(b)} asks why the argument is \textit{required} to be a \anasrc{\texttt{Char}}, explained by an \textit{analysis} slice retaining just the function application and the \anasrc{\texttt{Char}} annotation on the function.
-
-The formal mathematics of these two concepts is introduced in \cref{sec:synthesis,sec:analysis}, developed over a core calculus specified in \cref{sec:core-calculus} which includes sum types, products, and explicit polymorphism.
-
-\begin{figure}[H]
-\centering
-
-\providecommand{\fold}{\gap}
-% Sources of the queried type: synthesis (red) and analysis (blue).
-\providecommand{\synsrc}[1]{\textcolor{BrickRed!60!gray}{#1}}
-\providecommand{\anasrc}[1]{\textcolor{NavyBlue!60!gray}{#1}}
-\providecommand{\synsrcS}[1]{\textcolor{red!85!black}{\textbf{\boldmath\addfontfeature{FakeBold=4.5}#1}}}
-\providecommand{\anasrcS}[1]{\textcolor{blue!85!black}{\textbf{\boldmath\addfontfeature{FakeBold=4.5}#1}}}
-% Purely structural skeleton: single middle shade of green.
-\providecommand{\strN}[1]{\textcolor{OliveGreen!65!black}{#1}}
-\providecommand{\strM}[1]{\textcolor{black!85}{#1}}
-\providecommand{\strF}[1]{\textcolor{black!85}{#1}}
-% Selected (focused) sub-term: soft yellow highlight
-\providecommand{\focusbox}[1]{%
-  \tikz[baseline=(N.base)]{%
-    \node[draw=black!30, line width=0.3pt, rounded corners=2pt,
-          inner sep=2pt, fill=black!10, anchor=base, align=left] (N)
-         {\strut\ttfamily\bfseries #1};%
-  }%
-}
-\providecommand{\offslice}[1]{\textcolor{black!42}{#1}}
+{This section previews type slicing, formally developed in \cref{sec:synthesis,sec:analysis} over the core calculus of \cref{sec:core-calculus}, through two worked examples in the Hazel implementation. Type slicing answers with a \synsrc{synthesis} slice explains why the term \emph{has} its type and an \anasrc{analysis} slice explains why its context \emph{demands} one. Hazel renders each answer by folding away every fragment the queried type does not require.}
 
 \tikzset{
-  codebox/.style={
-    draw=black!55, line width=0.5pt, dotted,
-    rounded corners=2.5pt, inner sep=5pt,
-    align=left, anchor=north,
-    font=\ttfamily\scriptsize,
-  },
-  querybox/.style={
-    draw=black!55, line width=0.5pt, dotted,
-    rounded corners=2.5pt, inner sep=5pt,
-    font=\scriptsize, align=center,
-    fill=black!2,
-  },
-  artyarrow/.style={
-    -{Stealth[length=2.8mm, width=2.2mm]},
-    line width=0.7pt, color=black!55,
-    decorate, decoration={
-      snake, amplitude=0.6mm, segment length=2.7mm,
-      pre length=2mm, post length=2.5mm,
-    },
-  },
-  arrowlbl/.style={
-    font=\itshape\scriptsize, color=black!60,
-    fill=white, inner sep=1.5pt,
-  },
+  cobase/.style={font=\scriptsize\sffamily, align=left, inner sep=2pt,
+    rounded corners=1.5pt, fill=white, fill opacity=0.9, text opacity=1,
+    line width=0.5pt},
+  synco/.style={cobase, draw=NavyBlue, text=NavyBlue!75!black},
+  anaco/.style={cobase, draw=OliveGreen!70!black, text=OliveGreen!45!black},
+  foldco/.style={cobase, draw=black!45, text=black!55},
+  errco/.style={cobase, draw=BrickRed, text=BrickRed!85!black},
+  synl/.style={-{Stealth[length=1.5mm]}, line width=0.5pt, NavyBlue},
+  anal/.style={-{Stealth[length=1.5mm]}, line width=0.5pt, OliveGreen!70!black},
+  foldl/.style={-{Stealth[length=1.5mm]}, line width=0.5pt, black!45},
+  errl/.style={-{Stealth[length=1.5mm]}, line width=0.5pt, BrickRed},
 }
+\newcommand{\foldarrow}[1]{\par\vspace{0.7mm}%
+  {\footnotesize\sffamily\color{black!55}$\big\Downarrow$\ \ #1}\par\vspace{0.7mm}}
 
-\begin{subfigure}[t]{0.48\textwidth}
+\begin{figure}[t]
 \centering
-{\textsc{\large\bfseries Synthesis slice}}\par
-\smallskip
 
 \begin{tikzpicture}
-\node[codebox] (orig) at (0,0.0) {%
-\strN{type} \asmref{Option}\synsrc{(A)} \strN{=} \synsrc{Some(A)} \strM{|} \offslice{None}\\
-\strN{type} \asmref{Digit} \strN{=} \synsrc{Zero} \strM{|} \offslice{One | Two | $\cdots$ | Nine}\\
-\strN{let} \asmref{parse\_digit} \strN{=} \synsrcS{fun} \offslice{c} \strM{:} \synsrcS{Char} \synsrcS{-\textgreater}\\
-\quad\strM{case} \offslice{c} \strM{of}\\
-\qquad\strF{|} \offslice{'0'} \strF{=\textgreater} \synsrcS{Some Zero}\\
-\qquad\offslice{| '1' =\textgreater\ Some One}\\
-\qquad\offslice{$\;\;\vdots$}\\
-\qquad\offslice{| '9' =\textgreater\ Some Nine}\\
-\qquad\offslice{| \_\ \ =\textgreater\ None}\\
-\strN{in} \focusbox{\synsrc{parse\_digit}}\strN{(}\offslice{'5'}\strN{)}%
-};
-
-\path let \p1=(orig.north west), \p2=(orig.north east) in
-  node[querybox, anchor=south west, text width={\x2-\x1-10pt}]
-    (queryBox) at (\p1)
-    {{\bfseries\itshape\color{black!55}select }\synsrc{\texttt{parse\_digit}}\\
-     {\bfseries\itshape\color{black!55}query }$\upsilon$ = \synsrc{\texttt{Char \textrightarrow\ Option Digit}}};
-
-\node[codebox, below=14mm of orig] (fold) {%
-\strN{type} \asmref{Option}\synsrc{(A)} \strN{=} \synsrc{Some(A)} \strM{|} \fold\\
-\strN{type} \asmref{Digit} \strN{=} \synsrc{Zero} \strM{|} \fold\\
-\strN{let} \asmref{parse\_digit} \strN{=} \synsrcS{fun} \fold{} \strM{:} \synsrcS{Char} \synsrcS{-\textgreater}\\
-\quad\strM{case} \fold{} \strM{of}\\
-\qquad\strF{|} \fold{} \strF{=\textgreater} \synsrcS{Some Zero}\\
-\qquad\strF{|} \fold\\
-\strN{in} \focusbox{\synsrc{parse\_digit}}\strN{(}\fold\strN{)}%
-};
-
-\draw[artyarrow] (orig.south) -- node[arrowlbl] {fold} (fold.north);
-
-% Enforce a fixed bounding box; identical coords in both subfigures guarantee
-% the code segments and captions line up horizontally.
-\useasboundingbox (-3.8,1.5) rectangle (3.8,-8.0);
+\node[anchor=south west, inner sep=0] (img) at (0,0)
+  {\includegraphics[width=0.9\linewidth]{media/syn-parse-digit.png}};
+\draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
+\begin{scope}[x={(img.south east)},y={(img.north west)}]
+  \node[synco] (a1) at (0.72,0.205) {select \texttt{parse\_digit}};
+  \draw[synl] (a1.west) -- (0.155,0.205);
+  \node[synco] (a2) at (0.75,0.125) {synthesised type};
+  \draw[synl] (a2) -- (0.52,0.05);
+\end{scope}
 \end{tikzpicture}
 
-\caption{\texttt{parse\_digit} synthesises type \synsrc{\texttt{Char → Option Digit}}.}\label{fig:syn-parse-digit}
-\end{subfigure}\hfill
-\begin{subfigure}[t]{0.48\textwidth}
-\centering
-{\textsc{\large\bfseries Analysis slice}}\par
-\smallskip
+\foldarrow{fold to the synthesis slice}
 
 \begin{tikzpicture}
-\node[codebox] (orig) at (0,0) {%
-\offslice{type Option(A) = Some(A) | None}\\
-\offslice{type Digit = Zero | One | Two | $\cdots$ | Nine}\\
-\strN{let} \asmref{parse\_digit} \strN{=} \anasrc{fun} \offslice{c} \strM{:} \anasrcS{Char} \anasrc{-\textgreater}\\
-\quad\offslice{case c of}\\
-\qquad\offslice{| '0' =\textgreater\ Some Zero}\\
-\qquad\offslice{| '1' =\textgreater\ Some One}\\
-\qquad\offslice{$\;\;\vdots$}\\
-\qquad\offslice{| '9' =\textgreater\ Some Nine}\\
-\qquad\offslice{| \_\ \ =\textgreater\ None}\\
-\strN{in} \anasrc{parse\_digit}\anasrc{(}\focusbox{'5'}\anasrc{)}%
-};
-
-\path let \p1=(orig.north west), \p2=(orig.north east) in
-  node[querybox, anchor=south west, text width={\x2-\x1-10pt}]
-    (queryBox) at (\p1)
-    {{\bfseries\itshape\color{black!55}select }\anasrc{\texttt{'5'}}\\
-     {\bfseries\itshape\color{black!55}query }$\upsilon$ = \anasrc{\texttt{Char}}};
-
-\node[codebox, below=14mm of orig] (fold) {%
-\fold\\
-\fold\\
-\strN{let} \asmref{parse\_digit} \strN{=} \anasrc{fun} \fold{} \strM{:} \anasrcS{Char} \anasrc{-\textgreater} \fold\\
-\strN{in} \anasrc{parse\_digit}\anasrc{(}\focusbox{\fold{}}\anasrc{)}%
-};
-
-\draw[artyarrow] (orig.south) -- node[arrowlbl] {fold} (fold.north);
-
-% Same bounding box
-\useasboundingbox (-3.8,1.5) rectangle (3.8,-8.0);
+\node[anchor=south west, inner sep=0] (img) at (0,0)
+  {\includegraphics[width=0.9\linewidth]{media/synslice-parse-digit.png}};
+\draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \end{tikzpicture}
 
-\caption{\texttt{'5'} analyses against type \anasrcS{\texttt{Char}}.}\label{fig:ana-parse-digit}
+\caption{Synthesis slicing for \synsrc{\texttt{parse\_digit}}. Selecting the
+reference and querying its synthesised type \synsrc{\texttt{String → Option
+Digit}} folds the function to the fragments that \emph{source} that type.}
+\label{fig:parse-digit-slices}
+\label{fig:parse-digit-synthesis}
+\end{figure}
+
+\Cref{fig:parse-digit-synthesis} slice a small character parser. The synthesis slice folds the whole function to just the \texttt{String} domain annotation, and the first branch determining the result option type, discarding all other branches.
+
+Queries may target \emph{part} of a reported type: asking only about the domain \synsrc{\texttt{String → \fold}} shrinks the slice to exclude the entire function body. This is the minimal \textit{analysis} slice which enforces \anasrc{\texttt{String}} on the argument (\cref{fig:parse-digit-analysis}).
+\begin{figure}[h]
+\centering
+
+\begin{subfigure}[t]{0.49\linewidth}
+\centering
+\begin{tikzpicture}
+\node[anchor=south west, inner sep=0] (img) at (0,0)
+  {\includegraphics[width=\linewidth, trim={0 28pt 170pt 0}, clip]{media/synslice-parse-digit-no-result.png}};
+\draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
+\begin{scope}[x={(img.south east)},y={(img.north west)}]
+  \node[synco] (d1) at (0.64,0.32) {result type folded};
+  \draw[synl] (d1.south east) -- (0.72,0.10);
+\end{scope}
+\end{tikzpicture}
+\caption{Querying only the domain of \synsrc{\texttt{parse\_digit}}.}
+\label{fig:parse-digit-domain-query}
+\end{subfigure}\hfill%
+\begin{subfigure}[t]{0.49\linewidth}
+\centering
+\begin{tikzpicture}
+\node[anchor=south west, inner sep=0] (img) at (0,0)
+  {\includegraphics[width=\linewidth]{media/anaslice-arg.png}};
+\draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
+\begin{scope}[x={(img.south east)},y={(img.north west)}]
+  \node[anaco] (c1) at (0.80,0.42) {selected argument};
+  \draw[anal] (c1.west) -- (0.30,0.42);
+  \draw[anal, {Stealth[length=1.5mm]}-, out=-90, in=-90, looseness=1.4]
+    (0.57,0.585) to (0.30,0.44);
+  \node[anaco] (c2) at (0.72,0.66) {expected \texttt{String}\\ from the annotation};
+  \draw[anal] (c2.west) -- (0.575,0.60);
+\end{scope}
+\end{tikzpicture}
+\caption{Explaining the expected type of the argument.}
+\label{fig:parse-digit-argument-analysis}
 \end{subfigure}
 
-\medskip
+\caption{Partial synthesis and analysis slicing for \synsrc{\texttt{parse\_digit}}.
+Querying only the function domain folds the result type; selecting the argument
+and querying why it must be a \anasrc{\texttt{String}} keeps only the application
+and the domain annotation.}
+\label{fig:parse-digit-analysis}
+\end{figure}
+\begin{figure}[t]
+\centering
+
 \begin{tikzpicture}
-\node[draw=black!40, line width=0.4pt, rounded corners=2.5pt,
-      inner sep=5pt, fill=black!2, font=\scriptsize] (lg2) {%
-  \begin{tabular}{@{}r@{\,:\ }>{\raggedright\arraybackslash}p{5.2cm}@{}}
-    \focusbox{selected}          & The selected term \\
-    \synsrc{\texttt{synthesis}}  & Slice explaining why the selected term\newline has queried type parts. \\
-    \anasrc{\texttt{analysis}}   & Slice explaining why the surrounding context enforces queried type parts. \\
-    \offslice{\texttt{omitted}}  & Omitted from slice (shown) \\
-    \fold                        & Omitted from slice (folded) \\
-  \end{tabular}%
-};
-\node[draw=black!40, line width=0.4pt, rounded corners=2.5pt,
-      inner sep=5pt, fill=black!2, font=\scriptsize,
-      anchor=north west] (lg1) at ([xshift=8pt]lg2.north east) {%
-  \begin{tabular}{@{}r@{\,:\ }>{\raggedright\arraybackslash}p{5.2cm}@{}}
-    \strN{\texttt{structural}}\,\textsuperscript{\ref{fn:typesrc}} & Required to form a valid program slice,\newline but irrelevant to the type. \\
-    \asmref{binding}            & Used assumptions whose bodies are recursively sliced. \\
-    \synsrcS{bold}\,/\,\anasrcS{bold}\,\textsuperscript{\ref{fn:typesrc}} & Root sources of queried type information. \\
-  \end{tabular}%
-};
+\node[anchor=south west, inner sep=0] (img) at (0,0)
+  {\includegraphics[width=0.98\linewidth]{media/extended-error.png}};
+\draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
+\begin{scope}[x={(img.south east)},y={(img.north west)}]
+  \node[errco] (e1) at (0.83,0.32) {selected literal synthesises\\
+    \texttt{Digit → String → Option(\ldots)}};
+  \draw[errl] (e1) -- (0.575,0.195);
+  \node[anaco] (e2) at (0.45,0.135) {\ldots but its position demands\\
+    \texttt{Digit → Option((String, Pin))}};
+  \draw[anal] (e2) -- (0.66,0.035);
+  \node[errco] (e3) at (0.77,0.135) {press \emph{Explain error}};
+  \draw[errl] (e3) -- (0.925,0.035);
+\end{scope}
 \end{tikzpicture}
 
-\caption{Parsing a character into an \synsrc{\texttt{Option Digit}}.}
-\label{fig:parse-digit-slices}
+\foldarrow{explain the error}
+
+\begin{tikzpicture}
+\node[anchor=south west, inner sep=0] (img) at (0,0)
+  {\includegraphics[width=0.88\linewidth]{media/extended-explained-error.png}};
+\draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
+\begin{scope}[x={(img.south east)},y={(img.north west)}]
+  \node[anaco] (f1) at (0.62,0.60) {source of the expected type:\\
+    \texttt{seq}'s annotation \texttt{A → Option((String, B))}};
+  \draw[anal] (f1.west) -- (0.30,0.585);
+  \node[errco] (f2) at (0.60,0.245) {the error: a mis-shaped literal};
+  \draw[errl] (f2.west) -- (0.37,0.245);
+  \node[foldco] (f3) at (0.70,0.43) {everything else\\folds away};
+  \draw[foldl] (f3.west) -- (0.52,0.45);
+\end{scope}
+\end{tikzpicture}
+
+\caption{Explaining a type error in a twenty-line parser combinator. The inner
+function literal is marked because its synthesised \synsrc{\texttt{Digit → String →
+Option(\ldots)}} is inconsistent with the \anasrc{\texttt{Digit → Option((String,
+Pin))}} its position demands. \emph{Explain error} collapses the program to the
+offending literal and the annotation on \texttt{seq} that is the source of the
+expectation.}
+\label{fig:explain-error}
 \end{figure}
-\refstepcounter{footnote}\label{fn:typesrc}%
-\footnotetext{The distinction between purely structural parts of a slice and bolded type sources is not formalised, but is easy to implement in practice by tagging the leaves of the derivations during slicing.}
 
-TODO: Simplify example 2 from dissertation into a more visual Hazel example with less prose. Max one page
+{\Cref{fig:explain-error} considers a much more complex error where a sequencing parser combinator has been defined incorrectly, but used correctly. As is usual, the error has been incorrectly localised to the usage site, trusting the (incorrect) annotation. Specifically, \texttt{seq}'s continuation is annotated as if it returns an \texttt{Option} immediately, rather than first accepting the remaining \texttt{String} threaded out of the previous parser. The use site provides the intended parser continuation.
 
-\Cref{sec:marking} concerns the formal theory applying type slicing to ill-typed programs with error marks, allowing for debugging of static type errors.
+\emph{Explain error} queries the slices by taking the outermost inconsistency in the types (the function vs the option in the return type). The resulting slice collapses the program to include only the function shape of the continuation and the offending annotation.
 
+Crucially, the slice did not assume the annotation is ground truth. It shows the user why both the expectation's \emph{source} (the annotation) and the \emph{usage} (the function), leaving the programmer to judge which is wrong. This is justified as programmers often add annotations incorrectly to existing code (49\% of the time~\cite{TypeAnnotationStudy}).} Should the user instead wish to trust the context unilaterally, they can simply only consider the synthesis slice (ignoring the annotations). \Cref{sec:marking} makes this precise, applying slicing to marked ill-typed programs.
+
+{The user interface is relatively primitive, only folding sliced-away code. Further directions are considered in \cref{sec:future-ui}, such as highlighting \textit{sources} of type information (i.e. the annotation) in order to distinguish these from the `spine' of the program around the selected term (required only to make it syntactically well-formed).}
 
 %%% Local Variables:
 %%% mode: LaTeX
-%%% TeX-master: "PolymorphicTypeSlicing"
+%%% TeX-master: "main"
 %%% End:
