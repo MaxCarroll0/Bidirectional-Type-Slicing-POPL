@@ -8,6 +8,8 @@
 
 % acmart loads amsmath but not amssymb; we need \triangleq, \blacktriangleright,
 % \Box, \boxdot, \nRightarrow, ... throughout.
+% acmart's newtxmath already defines \Bbbk; clear it so amssymb won't abort.
+\let\Bbbk\relax
 \usepackage{amssymb}
 
 % Save \sqsubseteq before semantic redefines it (needed for tikz-cd labels).
