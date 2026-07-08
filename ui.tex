@@ -42,9 +42,7 @@
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \end{tikzpicture}
 
-\caption{Synthesis slicing for \synsrc{\texttt{parse\_digit}}. Selecting the
-reference and querying its synthesised type \synsrc{\texttt{String → Option
-Digit}} folds the function to the fragments that \emph{source} that type.}
+\caption{Synthesis slice for \synsrc{\texttt{parse\_digit}}.}
 \label{fig:parse-digit-slices}
 \label{fig:parse-digit-synthesis}
 \end{figure}
@@ -66,7 +64,7 @@ Queries may target \emph{part} of a reported type: asking only about the domain 
   \draw[synl] (d1.south east) -- (0.78,0.06);
 \end{scope}
 \end{tikzpicture}
-\caption{Querying only the domain of \synsrc{\texttt{parse\_digit}}.}
+\caption{Domain-only synthesis slice.}
 \label{fig:parse-digit-domain-query}
 \end{subfigure}\hfill%
 \begin{subfigure}[t]{0.49\linewidth}
@@ -84,14 +82,11 @@ Queries may target \emph{part} of a reported type: asking only about the domain 
   \draw[anal] (c2.west) -- (0.575,0.60);
 \end{scope}
 \end{tikzpicture}
-\caption{Explaining the expected type of the argument.}
+\caption{Argument analysis slice.}
 \label{fig:parse-digit-argument-analysis}
 \end{subfigure}
 
-\caption{Partial synthesis and analysis slicing for \synsrc{\texttt{parse\_digit}}.
-Querying only the function domain folds the result type; selecting the argument
-and querying why it must be a \anasrc{\texttt{String}} keeps only the application
-and the domain annotation.}
+\caption{Synthesis and analysis slices for \synsrc{\texttt{parse\_digit}}.}
 \label{fig:parse-digit-analysis}
 \end{figure}
 \begin{figure}[t]
@@ -130,12 +125,7 @@ and the domain annotation.}
 \end{scope}
 \end{tikzpicture}
 
-\caption{Explaining a type error in a twenty-line parser combinator. The inner
-function literal is marked because its synthesised \synsrc{\texttt{Digit → String →
-Option(\ldots)}} is inconsistent with the \anasrc{\texttt{Digit → Option((String,
-Pin))}} its position demands. \emph{Explain error} collapses the program to the
-offending literal and the annotation on \texttt{seq} that is the source of the
-expectation.}
+\caption{Explain-error slice for the parser combinator.}
 \label{fig:explain-error}
 \end{figure}
 
