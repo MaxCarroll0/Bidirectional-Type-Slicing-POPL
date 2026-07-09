@@ -230,6 +230,7 @@ An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\anamode\,\tau
 \vspace{-0.5em}
 
 \section{Full Type Slices -- Slicing Assumption Definitions}
+\label{sec:full-slices}
 Synthesis slices are explained using a set of \textit{minimal assumptions}. However, in real code, these are actually \textit{provided by the surrounding context} (or from external code). Providing these minimal assumptions via a full slice of this context can be very meaningful. For example, when debugging a type error, the error itself may be \textit{non-local}, within a variable definition elsewhere, giving one of the used variables the wrong type. In this situation the error is in the definition, and we could debug it by inspecting (and slicing) that definition.
 
 A \textit{full type slice} is a fully sliced decomposition of a program around a focus, which can be pieced back together to form a well-typed program with the same (or stronger) typing properties at the focus as some given query:

@@ -1,8 +1,8 @@
-\section{Type Slicing in Hazel by Example}
+\subsection{Type Slicing in Hazel by Example}
 \label{sec:slicing-by-example}
 
-{This section previews type slicing, formally developed later (\S\ref{sec:synthesis}, \S\ref{sec:analysis}) over the core calculus (\S\ref{sec:core-calculus}), through two worked examples in the Hazel implementation.
-
+%{This section previews type slicing, formally developed later (\S\ref{sec:synthesis}, \S\ref{sec:analysis}) over the core calculus (\S\ref{sec:core-calculus}), through two worked examples in the Hazel implementation.
+{This section previews type slicing through two worked examples in the Hazel implementation.
 The Hazel UI has a cursor inspector at the bottom of the screen which details which type the selected term \textit{has}, and what it \textit{expects}, these are the respective types to calculate a \synsrc{synthesis} slice and an \anasrc{analysis} slice for. 
 
 Hazel renders each slice by folding away every fragment the queried type does not require. The user can refine their slice by themselves folding away part of the type being sliced, which will correspondingly fold away additional fragments of the program.}
@@ -140,11 +140,11 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 
 {\Cref{fig:explain-error} considers a much more complex error where a sequencing parser combinator has been defined incorrectly, but used correctly. As is usual, the error has been incorrectly localised to the usage site, trusting the (incorrect) annotation. Specifically, \texttt{seq}'s continuation is annotated as if it returns an \texttt{Option} immediately, rather than first accepting the remaining \texttt{String} threaded out of the previous parser. The use site provides the intended parser continuation.
 
-\emph{Explain error} queries the slices by taking only the outermost inconsistency in the types (the function vs the option in the return type). The resulting slice collapses the program to include only the function shape of the continuation and the offending annotation.
+\emph{Explain error} queries the slices on only the outermost inconsistency in the types (the function vs the option in the return type); the resulting slice collapses the program to just the function shape of the continuation and the offending annotation.
 
-Crucially, the slice did not assume the annotation is the ground truth. It shows the user why both the expectation's \emph{source} (the annotation) and the \emph{usage} (the function), leaving the programmer to judge which is wrong. This is justified as programmers often add annotations incorrectly to existing code (49\% of the time~\cite{TypeAnnotationStudy}).} Should the user instead wish to trust the context unilaterally, they can simply only consider the synthesis slice (omitting the analysis slice entirely). We later make slicing of type errors precise, applying slicing to marked ill-typed programs (\S\ref{sec:marking}).
+Crucially, the slice did not assume the annotation is the ground truth. It shows the user both the expectation's \emph{source} (the annotation) and its \emph{usage} (the function), leaving the programmer to judge which is wrong. This is justified as programmers often add annotations incorrectly to existing code (49\% of the time~\cite{TypeAnnotationStudy}).} A user who instead wishes to trust the context unilaterally can consider only the synthesis slice, omitting the analysis slice entirely. We make slicing of type errors precise later (\S\ref{sec:marking}).
 
-{The user interface is relatively primitive, only folding sliced-away code. Minor improvements could include: highlighting \textit{sources} of type information (e.g. annotations) in order to distinguish these from the `spine' of the program around the selected term (required only to make it syntactically well-formed), or extensions to folds to allow folding entire unused let expressions, or case branches\footnote{As shown in figure 1.}. Additionally, more radical changes could show the minimal types required for each variable used in slice, combined with features like jump-to-definition to quickly navigate within the slice.}
+{The user interface is relatively primitive, only folding sliced-away code. Minor improvements could include highlighting \textit{sources} of type information (e.g. annotations) to distinguish them from the program's `spine' (required only for syntactic well-formedness), or folding entire unused let expressions or case branches (as in \cref{fig:parse-digit-synthesis}). More radical changes could show the minimal types required for each variable in the slice, with jump-to-definition to navigate within it.}
 
 
 %%% Local Variables:
