@@ -16,7 +16,7 @@ Type slicing is inspired in principle by prior work on program slicing (reviewed
 We consider the problem of type slicing in the context of \emph{bidirectional type systems}~\cite{BidirectionalTypes}, which distinguish \emph{type synthesis} (which type does this term have) from \emph{type analysis} (which type is expected).
 Correspondingly, a \textit{synthesis slice} (\cref{sec:synthesis}) of a selected term answers ``which parts of the program caused it to have type $\tau$?'' and an \textit{analysis slice} (\cref{sec:analysis}) answers the complementary question, ``which parts of the surrounding program enforced that this term have type $\tau$?''
 
-Queries can be \textit{refined}, say from an entire function type to just its codomain, resulting in a smaller slice. This allows a programmer to incrementally focus on sub-parts of the type that are of interest. For example, maybe after some exploration, the programmer determines that only a small region of a large record type involved in a type error is erroneous.
+Queries can be \textit{refined}, say from an entire function type to just its codomain, resulting in a smaller slice. This allows a programmer to incrementally focus on sub-parts of the type that are of interest. For example, perhaps after some exploration, the programmer could determine that only a small region of a large record type involved in a type error is erroneous.
 
 \paragraph{Type Error Debugging} The type slicing machinery applies equally well to well-typed and ill-typed terms. In the case of ill-typed terms, it provides a mechanism that may aid in debugging type errors, subsuming the question of ``why is this term a type error?''
 
