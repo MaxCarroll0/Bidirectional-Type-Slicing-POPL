@@ -143,8 +143,6 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 
 Crucially, the slice did not assume the annotation is the ground truth. It shows the user both the expectation's \emph{source} (the annotation) and the \emph{usage} (the function), leaving the programmer to judge which is wrong. This is justified as programmers often add annotations incorrectly to existing code (49\% of the time~\cite{TypeAnnotationStudy}).} Should the user instead wish to trust the context unilaterally, they can simply only consider the synthesis slice (omitting the analysis slice entirely). We later make slicing of type errors precise, applying slicing to marked ill-typed programs (\S\ref{sec:marking}).
 
-{The user interface is relatively primitive, only folding sliced-away code. Minor improvements could include: highlighting \textit{sources} of type information (e.g. annotations) in order to distinguish these from the `spine' of the program around the selected term (required only to make it syntactically well-formed), or extensions to folds to allow folding entire unused let expressions, or case branches\footnote{As shown in \cref{fig:parse-digit-synthesis}.}. Additionally, more radical changes could show the minimal types required for each variable used in the slice, combined with features like jump-to-definition to quickly navigate within the slice.}
-
 
 %%% Local Variables:
 %%% mode: LaTeX
