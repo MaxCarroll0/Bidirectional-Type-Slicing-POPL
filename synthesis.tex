@@ -94,12 +94,12 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
                 ellipse, minimum height=0.95cm, inner xsep=2pt, inner ysep=2pt, font=\scriptsize},
   slexact/.style={draw=OliveGreen!75!black, fill=white, line width=1.2pt,
                   rectangle, minimum width=0.85cm, minimum height=0.85cm, inner sep=2pt, font=\scriptsize},
-  slhi/.style={draw=orange!85!black, fill=white, line width=1.3pt, rounded corners=2pt,
+  slhi/.style={draw=RoyalBlue!85!black, fill=white, line width=1.3pt, rounded corners=2pt,
                inner sep=2.2pt, font=\scriptsize},
   slprogarr/.style={->, latticecolor!75, line width=0.95pt},
   slsyn/.style={->, BrickRed, line width=0.6pt, dashed,
                 dash pattern=on 3pt off 2pt, shorten >=2.5pt, shorten <=2.5pt},
-  slpath/.style={orange, opacity=0.5, line width=6.5pt,
+  slpath/.style={RoyalBlue, opacity=0.5, line width=6.5pt,
                  line cap=round, line join=round},
   slfront/.style={OliveGreen!55!black, line width=1.5pt, line cap=round},
   sldot/.style={OliveGreen!55!black, line width=0.5pt, dotted},
@@ -177,14 +177,14 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 \node[slhi] at (B) {$(\rho_b,\;\phi_b)$};
 \node[slhi] at (I) {$(\rho_i,\;\upsilon_1)$};
 \node[slhi] at (K) {$(\rho_k,\;\phi_k)$};
-\node[anchor=west, font=\scriptsize\bfseries, orange!80!black] at ([xshift=3pt]B.east) {$m_2$};
-\node[anchor=east, font=\scriptsize\bfseries, orange!80!black] at ([xshift=-3pt]I.west) {$m_1$};
-\node[anchor=east, font=\scriptsize\bfseries, orange!80!black] at ([xshift=-3pt]K.west) {$m_0$};
-\node[anchor=west, font=\scriptsize, OliveGreen!40!black] at (3.95,6.7) {$\upsilon_2$};
-\node[anchor=west, font=\scriptsize, OliveGreen!40!black] at (3.95,4.3) {$\upsilon_1$};
-\node[anchor=west, font=\scriptsize, OliveGreen!40!black] at (3.95,2.2) {$\upsilon_0$};
+\node[anchor=west, font=\normalsize\bfseries, RoyalBlue!80!black] at ([xshift=3pt]B.east) {$m_2$};
+\node[anchor=east, font=\normalsize\bfseries, RoyalBlue!80!black] at ([xshift=-3pt]I.west) {$m_1$};
+\node[anchor=east, font=\normalsize\bfseries, RoyalBlue!80!black] at ([xshift=-3pt]K.west) {$m_0$};
+\node[anchor=west, font=\normalsize, OliveGreen!40!black] at (3.95,6.7) {$\upsilon_2$};
+\node[anchor=west, font=\normalsize, OliveGreen!40!black] at (3.95,4.3) {$\upsilon_1$};
+\node[anchor=west, font=\normalsize, OliveGreen!40!black] at (3.95,2.2) {$\upsilon_0$};
 \end{tikzpicture}
-\caption{Monotonically descending minima $m_2, m_1, m_0$ for query refinements $\upsilon_2 \to \upsilon_1 \to \upsilon_0$, calculated by descending along the \textcolor{orange!85!black}{highlighted} path.}
+\caption{Monotonically descending minima $m_2, m_1, m_0$ for query refinements $\upsilon_2 \to \upsilon_1 \to \upsilon_0$, calculated by descending along the \textcolor{RoyalBlue!85!black}{highlighted} path.}
 \label{fig:syn-slice-refinement}
 \end{subfigure}
 \caption{Two similar Hasse diagrams of program slices $\rho_i \in \lfloor P \rfloor$, ordered by {\color{latticecolor}strict program precision $\sqsubset$} (solid arrows), paired with corresponding synthesised types $\phi_i \in \lfloor \tau \rfloor$. Overlaid with precision relations on types ({\color{BrickRed}dashed arrows}).}
