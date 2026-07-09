@@ -55,7 +55,7 @@ Any strictly smaller slice of either $x : * \funarr *$ or $(x, x)$ synthesises a
 \label{sec:minimality}
 
 
-Synthesis slices give us \textit{some} explanation of the query, but many are clearly useless, such as the original program itself, which corresponds to fully highlighting the program. We want to find minimal slices: those where further slicing any part of the program makes the slice invalid (synthesising a type insufficient to cover the query).
+Synthesis slices provide \textit{some} explanation of the query, but many are clearly useless, such as the original program itself, which corresponds to fully highlighting the program. We want to find minimal slices: those where further slicing any part of the program makes the slice invalid (synthesising a type insufficient to cover the query).
 \begin{definition}[Minimality]
 \label{def:isminimal}
 For an element $a$ of a poset, $a$ is minimal, $\isMin{a}$, when every $a'$ with $a' \sqsubseteq a$ is in fact equal to $a$.
@@ -81,9 +81,9 @@ The slice lattice $\lfloor \Gamma, e \rfloor$ is finite. Hence, $\{\,s' : \synsl
 \end{proof}
 
 Consequentially, any derivation $D$ has a minimal synthesis slice, as the original program is a trivial inhabitant of $\synslice{D}{\upsilon}$ for all $\upsilon$.
-\paragraph{A Brute-Force Algorithm via Graduality} The proof above is not a practical algorithm. In reality, for any term, you can efficiently compute the list of maximal slices that are strictly less precise than some given term by omitting exactly \textit{one} leaf from the AST. 
+\paragraph{A Brute-Force Algorithm via Graduality} The proof above is not a practical algorithm. In practice, for any term, the list of maximal slices strictly less precise than a given term can be computed efficiently by omitting exactly \textit{one} leaf from the AST.
 
-Pick the first maximal strict slice that satisfies the query and recurse; if none of the slices satisfy the query, then you have found a minimal slice by using graduality (\cref{thm:graduality-syn}). This is $\mathcal{O}(n \times T)$ where $n$ is the program size and $T$ the type checking complexity; type checking is linear in the program size for this calculus, so finding a minimal slice is $\mathcal{O}(n^2)$.
+The algorithm picks the first maximal strict slice that satisfies the query and recurses; if none of the slices satisfy the query, then a minimal slice has been found, by graduality (\cref{thm:graduality-syn}). This is $\mathcal{O}(n \times T)$ where $n$ is the program size and $T$ the type checking complexity; type checking is linear in the program size for this calculus, so finding a minimal slice is $\mathcal{O}(n^2)$.
 
 See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend through, stopping just before descending below the given query; all three minima are marked.
 
@@ -194,7 +194,7 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 
 \subsection{Refined Slices}
 \label{sec:sub-slices}
-In practice, the user may look at a large query $\upsilon$ getting a large program slice $\rho$. Therefore they may want to refine the query to focus on a subpart, $\upsilon' \sqsubseteq \upsilon$, that they don't quite understand. It turns out to always be possible to pick a consistent program slice $\rho' \sqsubseteq \rho$ which is a refinement of the previous slice by \textit{monotonicity} (which follows from graduality, \cref{thm:graduality-syn}):
+In practice, the user may look at a large query $\upsilon$ getting a large program slice $\rho$. Therefore they may want to refine the query to focus on a subpart, $\upsilon' \sqsubseteq \upsilon$, that they do not quite understand. It is always possible to pick a consistent program slice $\rho' \sqsubseteq \rho$ which is a refinement of the previous slice by \textit{monotonicity} (which follows from graduality, \cref{thm:graduality-syn}):
 
 \begin{majortheorembox}
 \begin{theorem}[Monotonicity of minimal slices]\label{thm:mono}
@@ -219,7 +219,7 @@ This is desirable because the user will not be shown \textit{additional} informa
 \end{tikzpicture}
 \end{center}
 
-On the other hand, you do not necessarily have monotonicity in the upwards direction. Consider the $\rho_j$ node in \Cref{fig:syn-slice-refinement}, which is minimal under query $\upsilon_0$, but no minimum for query $\upsilon_1$ is strictly more precise than $\rho_j$.
+On the other hand, monotonicity does not necessarily hold in the upwards direction. Consider the $\rho_j$ node in \Cref{fig:syn-slice-refinement}, which is minimal under query $\upsilon_0$, but no minimum for query $\upsilon_1$ is strictly more precise than $\rho_j$.
 
 \subsection{Decompositions}
 \label{sec:decompositions}
