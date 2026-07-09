@@ -1,7 +1,7 @@
 \section{The Core Calculus}
 \label{sec:core-calculus}
 
-In this section, we present the core calculus which Type Slicing builds upon. It is a bidirectional, gradually typed lambda calculus, with precision on types and terms, based on the Hazel calculus~\cite{HazelLivePaper}, extended with products, sums, and explicit System~F polymorphism. We prove that this calculus satisfies graduality (\cref{sec:gradual-types}), and we define and prove several {lattices} on precision.
+In this section, we present the core calculus which Type Slicing builds upon. It is a bidirectional, gradually typed lambda calculus, with precision on types and terms, based on the Hazel calculus~\cite{HazelLivePaper}, extended with products, sums, and explicit System~F polymorphism. We prove that this calculus satisfies graduality (\S\ref{sec:gradual-types}), and we define and prove several {lattices} on precision.
 
 \subsection{Syntax \& Relations}
 \label{sec:core-syntax}
@@ -24,7 +24,7 @@ Base types such as booleans are omitted from the core syntax, being encoded usin
 
 \subsubsection{Consistency}
 
-Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in standard gradual type systems (\cref{sec:gradual-types}). That is, a weakening of equality, where every type is consistent with $\gap$, and compound types are consistent when their components are. Consistency is reflexive and symmetric but \textit{not} transitive.
+Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in standard gradual type systems (\S\ref{sec:gradual-types}). That is, a weakening of equality, where every type is consistent with $\gap$, and compound types are consistent when their components are. Consistency is reflexive and symmetric but \textit{not} transitive.
 
 \begin{figure}[H]
 \fbox{$\tau_1 \sim \tau_2$}\ \ \ $\tau_1$ is consistent with $\tau_2$
@@ -94,7 +94,7 @@ Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloo
 \begin{theorem}\label{thm:slice-lattices}
 Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ is a bounded distributive lattice.
 \end{theorem}
-Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{DaveyPriestley}. We will later introduce and use co-Heyting subtraction to represent `disjoint' types in \cref{sec:algorithms}.
+Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{DaveyPriestley}. We will later introduce and use co-Heyting subtraction to represent `disjoint' types (\S\ref{sec:algorithms}).
 
 \paragraph{Notation: Slice Lattices as Highlighted Terms.} An element of a slice lattice can be notated as a highlight of the original (top) term with omitted regions (the \gap{}s) left unhighlighted. For instance, the slice $\mathit{Int} \funarr \gap$ in $\lfloor\mathit{Int} \funarr \mathit{Bool}\rfloor$ can be represented as $\sli{\mathit{Int} \funarr}\, \mathit{Bool}$.
 
@@ -116,7 +116,7 @@ The bidirectional typing judgements are mostly standard; the complete synthesis 
 \label{fig:typing-rules-excerpt}
 \end{figure}
 
-Of note is the use of joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding (argument) into the body (function). The typing rules satisfy graduality (\cref{sec:gradual-types}).
+Of note is the use of joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding (argument) into the body (function). The typing rules satisfy graduality (\S\ref{sec:gradual-types}).
 \begin{theorem}\label{thm:graduality-syn}
 The synthesis judgement $\synthesis[\_]{\_}{\_}$ and analysis judgement $\analysis[\_]{\_}{\_}$ satisfy downwards static graduality.
 \end{theorem}

@@ -8,7 +8,7 @@ Type slicing looks especially promising for common gradual type systems in which
 
 \emph{Set theoretic types} extend the type language with union, intersection, and negation. A term can then carry several types simultaneously, allowing typing of overloaded functions, and typecase constructs, commonly used in real world hybrid typed languages (e.g.\ TypeScript, or Elixir~\cite{ElixirTypes}). Relevant foundations have been explored for these types \cite{CastagnaLanvin, CastagnaLPS}, including graduality proofs \cite{AngeloThesis}, providing formal foundations to apply type slicing to.\footnote{After adapting into a bidirectional setting with expression holes.}
 
-To demonstrate this application, consider generalising sum types of the core calculus (\cref{sec:core-calculus}) to allow sum injections to synthesise partially dynamic types: 
+To demonstrate this application, consider generalising sum types of the core calculus (\S\ref{sec:core-calculus}) to allow sum injections to synthesise partially dynamic types: 
 \[\inference[\synr{$\iota_1$}]{\synthesis{e}{\tau}}{\synthesis{\iota_1\; e}{\tau + \gap}} \qquad
   \inference[\synr{$\iota_2$}]{\synthesis{e}{\tau}}{\synthesis{\iota_2\; e}{\gap + \tau}}\]
 

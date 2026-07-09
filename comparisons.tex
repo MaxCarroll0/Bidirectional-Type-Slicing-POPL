@@ -20,7 +20,7 @@ Galois slicing~\cite{Perera2012} is a lattice-theoretic approach to dynamic prog
 
 In Perera's setting, a program evaluation lifts to a \textit{meet-preserving} map $\mathit{eval}_{\rho,e} : \lfloor \rho, e\rfloor \to \lfloor v\rfloor$ between the slice lattices of partial programs and partial values. By an adjoint functor theorem~\cite[Prop.~7.34]{DaveyPriestley}, a meet-preserving map between complete lattices is the upper adjoint of a (unique) Galois connection and vice versa. The lower adjoint, $\mathit{uneval}$, is the `backward slice function' sending a partial-value query to a \textit{least} program slice evaluating to it.
 
-For total type systems assigning unique types like the core calculus (\cref{sec:core-calculus}), the natural type-slicing analogue of $\mathit{eval}_{\rho,e}$ maps partial assumptions and expressions to partial types by type checking.
+For total type systems assigning unique types like the core calculus (\S\ref{sec:core-calculus}), the natural type-slicing analogue of $\mathit{eval}_{\rho,e}$ maps partial assumptions and expressions to partial types by type checking.
 \[
   \phi_D : \lfloor \Gamma, e \rfloor \to \lfloor \tau \rfloor
 \]
@@ -40,7 +40,7 @@ Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} work in a globall
 
 These program slices are not structure-preserving programs; they are flat sets of constraints and sources, rather than actual programs. This means the results themselves cannot be type checked, nor can they be executed.
 
-There is also a difference in scope. Type error slicing answers \emph{``why does this program fail to type-check?''}, whereas type slicing answers \emph{``why does this expression have this type?''}. Via marking (\cref{sec:marking})~\cite{Marking2024}, which elaborates every well-formed expression into a totally typed derivation, type slicing applies also to ill-typed programs. So, here, the question of ``why this type?'' subsumes ``why this fails to type-check?''.
+There is also a difference in scope. Type error slicing answers \emph{``why does this program fail to type-check?''}, whereas type slicing answers \emph{``why does this expression have this type?''}. Via marking (\S\ref{sec:marking})~\cite{Marking2024}, which elaborates every well-formed expression into a totally typed derivation, type slicing applies also to ill-typed programs. So, here, the question of ``why this type?'' subsumes ``why this fails to type-check?''.
 
 \subsection{Type-Directed Slicing}
 \label{sec:cmp-type-directed}

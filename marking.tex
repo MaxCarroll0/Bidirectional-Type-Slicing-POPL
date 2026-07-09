@@ -1,9 +1,9 @@
 \section{Error Marking \& Type Error Debugging}
 \label{sec:marking}
 
-This section formally applies type slicing to static error squiggles as in \cref{fig:parse-digit-slices} (\cref{sec:slicing-by-example}). It demonstrates that we can not only use this calculus to ``explain types'' in well-typed programs, but also effectively ``explain type errors'' in ill-typed programs.
+This section formally applies type slicing to static error squiggles as in \cref{fig:parse-digit-slices} (\S\ref{sec:slicing-by-example}). It demonstrates that we can not only use this calculus to ``explain types'' in well-typed programs, but also effectively ``explain type errors'' in ill-typed programs.
 
-This builds upon the theory of type error marking for bidirectional systems with holes of Zhao et al.~\cite{Marking2024}, which we briefly recap next and extend to the type slicing core calculus (\cref{sec:core-calculus}).
+This builds upon the theory of type error marking for bidirectional systems with holes of Zhao et al.~\cite{Marking2024}, which we briefly recap next and extend to the type slicing core calculus (\S\ref{sec:core-calculus}).
  
 \subsection{Error Marking}
 \label{sec:marking-calculus}
@@ -66,7 +66,7 @@ likewise for analysis.
 \label{sec:marking-classification}
 
 
-In this style, we extend context typing (\cref{sec:context-typing}) to \textit{marked} context typing $\mctxclass[\Delta;\Gamma]{C}{\chk C}{p}{\Delta';\Gamma'}{m}$, threading a marked context $\chk C$ alongside $C$ (with context marks defined analogously to expressions), adding one error rule per mark form of \cref{tab:mark-forms}. We have proven analogous totality and soundness theorems hold for marked contexts, mirroring the unmarked plug decomposition and composition (\cref{thm:plug-decomposition,thm:plug-composition}).
+In this style, we extend context typing (\S\ref{sec:context-typing}) to \textit{marked} context typing $\mctxclass[\Delta;\Gamma]{C}{\chk C}{p}{\Delta';\Gamma'}{m}$, threading a marked context $\chk C$ alongside $C$ (with context marks defined analogously to expressions), adding one error rule per mark form of \cref{tab:mark-forms}. We have proven analogous totality and soundness theorems hold for marked contexts, mirroring the unmarked plug decomposition and composition (\cref{thm:plug-decomposition,thm:plug-composition}).
 
 \subsection{The Debugging Recipe by Example}
 \label{sec:marking-recipes}

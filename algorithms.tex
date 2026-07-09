@@ -39,13 +39,13 @@
 \providecommand{\sPboth}[1]{\stkU{OliveGreen/-1pt,Mulberry/-3.4pt}{#1}}
 
 \bigskip
-\noindent The theory of \cref{sec:synthesis,sec:analysis} establishes \textit{which} slices exist, and provides a brute-force algorithm. This section explores these structures further to improve the brute-force algorithm.
+\noindent The theory of synthesis and analysis slices (\S\ref{sec:synthesis}, \S\ref{sec:analysis}) establishes \textit{which} slices exist, and provides a brute-force algorithm. This section explores these structures further to improve the brute-force algorithm.
 
 \subsection{Products of Synthesis Slices}
 \label{sec:product-revisited}
 
 
-\Cref{sec:decompositions} suggested recursively calculating minimal slices of subterms and composing them together. However, you cannot do this naively: the product of two minimal slices is not necessarily minimal. Consider the following if statement:
+We earlier suggested recursively calculating minimal slices of subterms and composing them together (\S\ref{sec:decompositions}). However, you cannot do this naively: the product of two minimal slices is not necessarily minimal. Consider the following if statement:
 \[ \Gamma = (x \mathbin{:} \mathbf{*} \funarr \mathbf{*},\; y \mathbin{:} \mathbf{*} \funarr \mathbf{*}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y, \qquad \tau = \mathbf{*} \funarr \mathbf{*}, \]
 and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \mathbf{*} \funarr \mathbf{*}$. There are \textit{four} incomparable minimal full slices, displayed together as underlines:
 
@@ -112,7 +112,7 @@ When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\m
 \subsection{Term-Minimal Slices}
 \label{sec:term-minimal-slices}
 
-To rule out the slices like (A) and (B) of Section~\ref{sec:product-revisited}, we strengthen the notion of slices. We first calculate the minimal expression under \textit{maximal} typing assumptions, and then minimise the assumptions afterwards. By graduality, this is a minimal synthesis slice.
+To rule out slices like (A) and (B) (\S\ref{sec:product-revisited}), we strengthen the notion of slices. We first calculate the minimal expression under \textit{maximal} typing assumptions, and then minimise the assumptions afterwards. By graduality, this is a minimal synthesis slice.
 
 \begin{definition}[Term-minimal slice]
 \label{def:term-minimal-slice}
@@ -130,7 +130,7 @@ Crucially, the two notions of minimality do not coincide: term-minimality is str
 \begin{counterexamplebox}
 %
 \begin{counterexample}[Minimal $\not\Rightarrow$ Term-Minimal]\label{lem:min-not-tmin}
-Slices (A) and (B) of Section~\ref{sec:product-revisited} are minimal synthesis slices but are \textbf{not} term-minimal.
+Slices (A) and (B) (\S\ref{sec:product-revisited}) are minimal synthesis slices but are \textbf{not} term-minimal.
 \end{counterexample}
 \end{counterexamplebox}
 
@@ -217,7 +217,7 @@ The Hazel implementation simply does a disjoint split and ignores the overflow i
 
 Analysis slices are calculated directly from synthesis slices. The only rule that creates a type checking judgement is function application. Consider the analysis slice of a function argument with query type $\upsilon_1$; it is just the function application and a slice of the function under $\gap \to \upsilon_1$. That is, to explain why a function argument must be a given type, you ask why the corresponding function had that as its domain type.
 
-However, to recursively calculate the analysis slice of an application when the focus is deep inside the argument, you need to calculate the analysis slice of the argument, but its outer derivation mode is in \textit{analysis}. The analysis slices of \cref{sec:ana-slice-def} do not apply here.
+However, to recursively calculate the analysis slice of an application when the focus is deep inside the argument, you need to calculate the analysis slice of the argument, but its outer derivation mode is in \textit{analysis}. The analysis slices defined earlier (\S\ref{sec:ana-slice-def}) do not apply here.
 
 We need an additional notion of \textit{inner} analysis slices. Dually to regular (outer) analysis slices, which treat the synthesis mode as an \textit{input}, the inner slices treat the analysis derivation mode as an \textit{output}, and attempt to minimise it. 
 

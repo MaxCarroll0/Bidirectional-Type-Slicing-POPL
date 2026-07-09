@@ -225,7 +225,7 @@ On the other hand, you do not necessarily have monotonicity in the upwards direc
 \label{sec:decompositions}
 \mastercases
 
-Instead of calculating slices by brute force (\cref{sec:min-exists}), it would be ideal if we could compositionally calculate minimal slices of a term from minimal subslices of its subterms. It is indeed possible to compose synthesis slices into larger synthesis slices, and we prove that all minima can be expressed by some composition; this subsection demonstrates two of the cases. \Cref{sec:algorithms} considers how to recursively choose the compositions.
+Instead of calculating slices by brute force (\S\ref{sec:min-exists}), it would be ideal if we could compositionally calculate minimal slices of a term from minimal subslices of its subterms. It is indeed possible to compose synthesis slices into larger synthesis slices, and we prove that all minima can be expressed by some composition; this subsection demonstrates two of the cases. We later consider how to recursively choose the compositions (\S\ref{sec:algorithms}).
 
 \subsubsection{Products}
 \label{sec:case-pair}
@@ -240,7 +240,7 @@ Let $m : \minsynslice{\synr{Pair}\,D_1\,D_2}{\upsilon_1 \times \upsilon_2}$. The
 \end{thmcase}
 \end{majortheorembox}
 
-However, we shall later see that the converse fails: the product of two minimal slices need not be minimal, since the joined assumptions can leave one component's term slice redundant. So one cannot simply recurse through the derivation, pairing sub-slices on $\upsilon_1$ and $\upsilon_2$ to obtain a minimal slice on $\upsilon_1 \times \upsilon_2$. \Cref{sec:product-revisited} explores and resolves this problem.
+However, we shall later see that the converse fails: the product of two minimal slices need not be minimal, since the joined assumptions can leave one component's term slice redundant. So one cannot simply recurse through the derivation, pairing sub-slices on $\upsilon_1$ and $\upsilon_2$ to obtain a minimal slice on $\upsilon_1 \times \upsilon_2$. We explore and resolve this problem later (\S\ref{sec:product-revisited}).
 
 \subsubsection{Let Bindings}
 \label{sec:let-decomp}
