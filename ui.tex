@@ -34,10 +34,10 @@ Hazel renders each slice by folding away every fragment the queried type does no
   {\includegraphics[width=0.9\linewidth]{media/syn-parse-digit.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[synco] (a1) at (0.34,0.29) {select \texttt{parse\_digit}};
-  \draw[synl] (a1.south west) -- (0.10,0.205);
-  \node[synco] (a2) at (0.62,0.28) {synthesised type};
-  \draw[synl] (a2.south) -- (0.53,0.07);
+  \node[synco] (a1) at (0.24,0.29) {select \texttt{parse\_digit}};
+  \draw[synl] (a1.west) -- (0.08,0.25);
+  \node[synco] (a2) at (0.52,0.2) {which synthesises this type};
+  \draw[synl] (a2.south) -- (0.43,0.07);
 \end{scope}
 \end{tikzpicture}
 
@@ -48,8 +48,8 @@ Hazel renders each slice by folding away every fragment the queried type does no
   {\includegraphics[width=0.9\linewidth]{media/synslice-parse-digit.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[synco] (b1) at (0.62,0.22) {press slicing icon};
-  \draw[synl] (b1.south) -- (0.615,0.10);
+  \node[synco] (b1) at (0.62,0.23) {press slicing icon};
+  \draw[synl] (b1.south) -- (0.63,0.08);
 \end{scope}
 \end{tikzpicture}
 
@@ -71,8 +71,8 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
   {\includegraphics[width=\linewidth]{media/synslice-parse-digit-no-result.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[synco] (d1) at (0.54,0.40) {query folding\\result type};
-  \draw[synl] (d1.south) -- (0.50,0.065);
+  \node[synco] (d1) at (0.54,0.39) {fold result type within query};
+  \draw[synl] (d1.south) -- (0.51,0.062);
 \end{scope}
 \end{tikzpicture}
 \caption{Refined synthesis query omitting the return Option type.}
@@ -85,9 +85,9 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
   {\includegraphics[width=\linewidth]{media/anaslice-arg.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[anaco] (c1) at (0.62,0.45) {selected argument};
-  \draw[anal] (c1.west) -- (0.33,0.455);
-  \node[anaco] (c2) at (0.72,0.76) {expected \texttt{String}\\from the annotation};
+  \node[anaco] (c1) at (0.56,0.4) {selecting argument instead};
+  \draw[anal] (c1.west) -- (0.26,0.41);
+  \node[anaco] (c2) at (0.72,0.86) {annotation enforcing \texttt{String}\\upon the argument};
   \draw[anal] (c2.south) -- (0.60,0.645);
 \end{scope}
 \end{tikzpicture}
@@ -106,10 +106,10 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
   {\includegraphics[width=0.9\linewidth, trim={0 0 0 62}, clip]{media/extended-error.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[errco] (e1) at (0.80,0.288) {selected literal synthesises\\
+  \node[errco] (e1) at (0.80,0.63) {selected curried function synthesises\\
     \texttt{Digit → String → Option(\ldots)}};
-  \draw[errl] (e1.south west) -- (0.57,0.202);
-  \node[anaco] (e2) at (0.55,0.115) {\ldots but its position demands\\
+  \draw[errl] (e1.south west) -- (0.4,0.202);
+  \node[anaco] (e2) at (0.8,0.4) {\ldots but its position demands\\
     \texttt{Digit → Option((String, Pin))}};
   \draw[anal] (e2.south) -- (0.68,0.040);
   \node[errco] (e3) at (0.85,0.150) {press \emph{Explain error}};
@@ -126,10 +126,10 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
   \node[purpco] (f1) at (0.55,0.585) {source of the (erroneous) expected type:\\
     \texttt{seq}'s annotation \texttt{A → Option((String, B))}};
-  \draw[purpl] (f1.north west) -- (0.28,0.684);
-  \node[errco] (f2) at (0.62,0.298) {the error: a mis-shaped literal};
-  \draw[errl] (f2.west) -- (0.35,0.298);
-  \node[foldco] (f3) at (0.88,0.257) {everything else\\folds away};
+  \draw[purpl] (f1.west) -- (0.2,0.66);
+  \node[errco] (f2) at (0.62,0.425) {the (correct) function literals marked\\ as an error in standard localisation};
+  \draw[errl] (f2.west) -- (0.3,0.32);
+  \node[foldco] (f3) at (0.62,0.257) {everything else\\folds away};
 \end{scope}
 \end{tikzpicture}
 
