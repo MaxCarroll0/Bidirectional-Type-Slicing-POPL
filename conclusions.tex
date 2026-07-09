@@ -24,11 +24,6 @@ This idea and motivation appear in a preliminary workshop paper~\cite{CarrollEtA
 
 However, the strong theoretical properties of slices being slices of the original program is not maintained during dynamic execution as reductions are performed. Tracking dynamic execution, perhaps integrating ideas from Perera~\cite{Perera2012,PereraGarg2016}, would allow users to trace back casts to source code with stronger guarantees.
 
-\subsection{Type Debugging Interfaces}
-\label{sec:future-ui}
-
-The Hazel interface presented in \cref{sec:slicing-by-example} is an initial proof of concept; the theory admits a broader design space of interfaces. Possibilities include hover-based ``why this type?'' explanations integrated into editor services, incremental query refinement by selecting sub-parts of a reported type, and contribution slices (\cref{sec:join-slices}) for previewing the impact of a type-changing refactor. Which of these interaction techniques help programmers in practice, and for which tasks, are empirical questions that we leave to future user studies.
-
 \section{Conclusions}
 \label{sec:conclusions}
 
