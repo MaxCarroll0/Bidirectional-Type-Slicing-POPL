@@ -237,7 +237,7 @@ A \textit{full type slice} is a fully sliced decomposition of a program around a
 \vspace{-0.5em}
 \begin{definition}[Type slices]
   \label{def:type-slice}
-A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\synmode\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair $((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta';\,\gamma_f'}{\synmode\,\phi'}$ for some $\psi$, and $\gamma_f' \sqsupseteq \gamma_f$ such that $\synthesis[\Delta';\ \gamma_f']{\varsigma}[\phi']$.
+A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\synmode\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair $((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta';\,\gamma_f'}{\synmode\,\phi'}$ for some $\psi$, and $\gamma_f' \sqsupseteq \gamma_f$ such that $\synthesis[\Delta';\ \gamma_f']{\varsigma}{\phi'}$.
 \end{definition}
 \vspace{-0.5em}
 

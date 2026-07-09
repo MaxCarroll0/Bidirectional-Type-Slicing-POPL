@@ -143,7 +143,7 @@ The shape-mismatch marks all occur in similar situations: the syntactic position
 
 \vspace{3pt}\noindent
 \begin{minipage}[c]{0.68\linewidth}
-\hspace*{9pt}A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$. Where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
+\hspace*{9pt}A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$, where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
 \end{minipage}\hfill
 \begin{minipage}[c]{0.28\linewidth}
 \centering
@@ -155,8 +155,8 @@ $\markbox{\markarrow[(\texttt{*}\sli,\texttt{*})]}\,(\,\texttt{true}\,).$
 \label{sec:marking-recipes-lam}
 
 Unannotated lambdas $\lambda y.\,e$ have no synthesis rule; their type can only be
-determined by the surrounding context. Consequentially it has
-no synthesis type, so type inconsistencies are not marked via subsumption (type inconsistency), but instead by a mode limitation mark. In this situation all the relevant type information is derived from the surrounding context, so we use analysis slices.
+determined by the surrounding context. Consequently it has
+no synthesis type, so type inconsistencies are not marked via subsumption, but instead by a mode limitation mark. In this situation all the relevant type information is derived from the surrounding context, so we use analysis slices.
 
 \vspace{3pt}\noindent
 \begin{minipage}[c]{0.58\linewidth}
