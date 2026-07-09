@@ -32,14 +32,16 @@ For every $s : \anaslice{\mathit{Cls}}{\upsilon}$, there exists $m : \minanaslic
 \end{theorem}
 \end{majortheorembox}
 
+\begin{majortheorembox}
 \begin{theorem}[Monotonicity of minimal analysis slices]\label{thm:ana-mono}
 If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and\\$m_2 : \minanaslice{\mathit{Cls}}{\upsilon_2}$, then there exists $m_1 : \minanaslice{\mathit{Cls}}{\upsilon_1}$ with $m_1 \sqsubseteq m_2$.
 \end{theorem}
+\end{majortheorembox}
 
 \subsection{Minimally Scoped Analysis Slices}
 \noindent As mentioned earlier, a synthesising term derives all of its type information internally.\footnote{Again, given that assumptions are tracked externally.} Therefore, the type is actually only enforced by the context up until the innermost subderivation with a synthesis outer derivation mode.
 
-For example, for an annotated term nested inside another annotation, only the inner annotation actually enforces a type on the inner term. Therefore, an algorithm need only check this region (the outer context can be fully omitted). Further, there is little point in highlighting the outer context in practice as it has no influence on the types; this is the approach the Hazel implementation takes, to avoid excessive highlighting.
+For example, for an annotated term nested inside another annotation, only the inner annotation actually enforces a type on the inner term. Therefore, an algorithm need only check this region (the outer context can be fully omitted).
 
 %%% Local Variables:
 %%% mode: LaTeX

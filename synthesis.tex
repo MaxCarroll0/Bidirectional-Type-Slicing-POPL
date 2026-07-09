@@ -196,9 +196,11 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 \label{sec:sub-slices}
 In practice, the user may look at a large query $\upsilon$ getting a large program slice $\rho$. Therefore they may want to refine the query to focus on a subpart, $\upsilon' \sqsubseteq \upsilon$, that they don't quite understand. It turns out to always be possible to pick a consistent program slice $\rho' \sqsubseteq \rho$ which is a refinement of the previous slice by \textit{monotonicity} (which follows from graduality, \cref{thm:graduality-syn}):
 
+\begin{majortheorembox}
 \begin{theorem}[Monotonicity of minimal slices]\label{thm:mono}
 If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and $m_2 : \minsynslice{D}{\upsilon_2}$, then there exists $m_1 : \minsynslice{D}{\upsilon_1}$ with $m_1 \sqsubseteq m_2$.
 \end{theorem}
+\end{majortheorembox}
 
 This is desirable because the user will not be shown \textit{additional} information after a query refinement which would require further reasoning by the user to understand. \Cref{fig:syn-slice-refinement} illustrates a monotonic refinement path along 3 refined queries on the example lattice. If we did not follow a monotonic path during refinement we would get `branch hopping':
 
@@ -232,9 +234,11 @@ Given slices $(\gamma_1, \varsigma_1) : \synslice{D_1}{\upsilon_1}$ and $(\gamma
 \[(\gamma_1, \varsigma_1) \pairsyn (\gamma_2, \varsigma_2) \;\triangleq\; (\gamma_1 \sqcup \gamma_2,\;(\varsigma_1, \varsigma_2))\]
 The pair synthesises (possibly more precise)\footnote{Due to $\gamma_1 \sqcup \gamma_2$ being larger than $\gamma_1$ and $\gamma_2$.} types $\phi_1' \times \phi_2' \sqsupseteq \phi_1 \times \phi_2 \sqsupseteq \upsilon_1 \times \upsilon_2$. For this combinator, we get the following decomposition theorem:
 
+\begin{majortheorembox}
 \begin{thmcase}[Product Decomposition]\label{thm:min-prod-decomp}
 Let $m : \minsynslice{\synr{Pair}\,D_1\,D_2}{\upsilon_1 \times \upsilon_2}$. Then there exist minimal $m_1 : \minsynslice{D_1}{\upsilon_1}$ and $m_2 : \minsynslice{D_2}{\upsilon_2}$ with $m = m_1 \pairsyn m_2$.
 \end{thmcase}
+\end{majortheorembox}
 
 However, we shall later see that the converse fails: the product of two minimal slices need not be minimal, since the joined assumptions can leave one component's term slice redundant. So one cannot simply recurse through the derivation, pairing sub-slices on $\upsilon_1$ and $\upsilon_2$ to obtain a minimal slice on $\upsilon_1 \times \upsilon_2$. \Cref{sec:product-revisited} explores and resolves this problem.
 
@@ -252,9 +256,11 @@ A slice of a let-expression can be constructed from a slice $(\gamma_1, \varsigm
 Then, upon joining the assumptions for the two slices, we must remove the assumption on $x$ from the body (notated $\gamma_{\setminus x}$), as this is now provided by the definition:
 \[(\gamma_1, \varsigma_1) \mathbin{\mathsf{def}} (\gamma_2, \varsigma_2) \triangleq (\gamma_1 \sqcup (\gamma_2)_{\setminus x},\; \mathbf{let}\;x = \varsigma_1\;\mathbf{in}\;\varsigma_2)\]
 
+\begin{majortheorembox}
 \begin{thmcase}[Binding Decomposition]\label{thm:min-def-decomp}
 Let $m : \minsynslice{\synr{Let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_1 \in \lfloor\tau_1\rfloor$ and minimal slices $m_1 : \minsynslice{D_1}{\phi_1}$ (synthesising $\phi_1'$) and $m_2 = (\gamma_2, \varsigma_2) : \minsynslice{D_2}{\upsilon}$ satisfying $\gamma_2(x) \sqsubseteq \phi_1'$, with $m = m_1 \mathbin{\mathsf{def}} m_2$.
 \end{thmcase}
+\end{majortheorembox}
 
 \subsection{Contribution Slices}
 \label{sec:join-slices}
@@ -264,6 +270,8 @@ Finally, a minimal slice only provides an explanation; it does not show \textit{
 
 Such a region can be uniquely expressed as the \textit{join} of all minimal slices for the query. The contribution slice is efficient in the sense that it is a \textit{least} upper bound of actual minimal slices. For this to work, synthesis slices must be closed under joins: the joined slice must also be \textit{valid}, which is true:
 
+\vspace{-0.5em}
+\begin{majortheorembox}
 \noindent
 \begin{minipage}[c]{0.60\linewidth}
 \begin{theorem}[Join Closure of Synthesis Slices]\label{thm:join-syn}
@@ -278,8 +286,7 @@ For $\rho_1 = (\gamma_1, \varsigma_1) : \synslice{D}{\upsilon_1}$ and $\rho_2 = 
 \upsilon_1 \arrow[u, "\sqsubseteq" {sloped}] \arrow[r, "\sqsubseteq"] & {\color{induced} \upsilon_1 \sqcup \upsilon_2} \arrow[u, induced, "\sqsubseteq"' {sloped}, dashed] & \upsilon_2 \arrow[u, "\sqsubseteq"' {sloped}] \arrow[l, "\sqsupseteq"']
 \end{tikzcd}
 \end{minipage}
-
-\medskip
+\end{majortheorembox}
 
 %%% Local Variables:
 %%% mode: LaTeX
