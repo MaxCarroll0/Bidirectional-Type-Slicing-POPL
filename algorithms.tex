@@ -51,35 +51,63 @@ and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \m
 
 \begin{center}
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
-  \node[draw, line width=0.9pt, rounded corners,
-        label={[font=\scriptsize\itshape]above:assumptions}] (a)
-        {$x : \sAC{\mathbf{*}} \mathrel{\sABC{\funarr}} \sBC{\mathbf{*}},\quad y : \sBD{\mathbf{*}} \mathrel{\sABD{\funarr}} \sAD{\mathbf{*}}$};
-  \node[below=12pt of a] (t)
+  \node[inner sep=0pt] (ax) {$x : \sAC{\mathbf{*}} \mathrel{\sABC{\funarr}} \sBC{\mathbf{*}}$};
+  \node[inner sep=0pt, anchor=west] (xmark) at (ax.west) {$\phantom{x : }$};
+  \node[inner sep=0pt, right=3.5em of ax] (ay) {$y : \sBD{\mathbf{*}} \mathrel{\sABD{\funarr}} \sAD{\mathbf{*}}$};
+  \node[inner sep=0pt, anchor=west] (ymark) at (ay.west) {$\phantom{y : }$};
+  \node[inner sep=0pt] at ($(ax.east)!0.3!(ay.west)$) {$,$};
+  \node[draw, line width=0.9pt, rounded corners, fit=(ax)(ay),
+        label={[font=\scriptsize\itshape]above:assumptions}] (a) {};
+  \coordinate (col1) at (xmark.east |- a.south);
+  \coordinate (col2) at ($(ax.east |- a.south) + (3pt,0)$);
+  \coordinate (col3) at (ymark.east |- a.south);
+  \node[font=\tiny\bfseries, BrickRed,   anchor=east, inner sep=1pt] at ([yshift=12pt]col1)  {(A)};
+  \node[font=\tiny\bfseries, OliveGreen, anchor=east, inner sep=1pt] at ([yshift=7.2pt]col1) {(C)};
+  \node[font=\tiny\bfseries, NavyBlue,   anchor=west, inner sep=1pt] at ([yshift=9.6pt]col2) {(B)};
+  \node[font=\tiny\bfseries, NavyBlue,   anchor=east, inner sep=1pt] at ([yshift=9.6pt]col3) {(B)};
+  \node[font=\tiny\bfseries, BrickRed,   anchor=west, inner sep=1pt] at ([yshift=12pt]a.south east)  {(A)};
+  \node[font=\tiny\bfseries, Mulberry,   anchor=west, inner sep=1pt] at ([yshift=4.8pt]a.south east) {(D)};
+  \node[right=5em of a] (t)
        {$\sABCD{\mathbf{if}}\tokensp\mathbf{true}\tokensp\sABCD{\mathbf{then}}\tokensp\sABC{x}\tokensp\sABCD{\mathbf{else}}\tokensp\sABD{y}$};
+  \node[font=\tiny\bfseries, BrickRed,   anchor=east, inner sep=1pt] at ([yshift=12pt]t.south west)   {(A)};
+  \node[font=\tiny\bfseries, NavyBlue,   anchor=west, inner sep=1pt] at ([yshift=9.6pt]t.south east)  {(B)};
+  \node[font=\tiny\bfseries, OliveGreen, anchor=east, inner sep=1pt] at ([yshift=7.2pt]t.south west)  {(C)};
+  \node[font=\tiny\bfseries, Mulberry,   anchor=west, inner sep=1pt] at ([yshift=4.8pt]t.south east)  {(D)};
 \end{tikzpicture}
 \end{center}
 
-The four colours encode four minimal slices of $D$ at $\upsilon$:
 \begin{description}
-\item[(A) {\color{BrickRed}Red}]: Both branches are retained; the assumption slice keeps $x$'s domain only and $y$'s codomain only (joining to $* \funarr *$).
-\item[(B) {\color{NavyBlue}Blue}]: Symmetric to (A), taking the opposite choices for the assumption slice
-\item[(C) {\color{OliveGreen}Green}]: \textbf{Else}-branch omitted.
-\item[(D) {\color{Mulberry}Mulberry}]: Symmetric to (C): \textbf{then}-branch omitted.
+\item[{\color{BrickRed}(A)}] Both branches are retained; the assumption slice keeps $x$'s domain only and $y$'s codomain only (joining to $* \funarr *$).
+\item[{\color{NavyBlue}(B)}] Symmetric to (A), taking the opposite choices for the assumption slice
+\item[{\color{OliveGreen}(C)}] \textbf{Else}-branch omitted.
+\item[{\color{Mulberry}(D)}] Symmetric to (C): \textbf{then}-branch omitted.
 \end{description}
 
-Slices (A) and (B) are minimal because each variable is sliced \textit{differently} across the two uses, and none are \textit{program} slices of each other. However, notice that (A) and (B) are not subslices of the product with $x$, where only 2 minima exist:
+Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are minimal because each variable is sliced \textit{differently} across the two uses, and none are \textit{program} slices of each other. However, notice that {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are not subslices of the product with $x$, where only 2 minima exist:
 
 \begin{center}
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
-  \node[draw, line width=0.9pt, rounded corners,
-        label={[font=\scriptsize\itshape]above:assumptions}] (a)
-        {$x : \sPboth{\mathbf{*}\funarr\mathbf{*}},\quad y : \sPtwo{\mathbf{*}\funarr\mathbf{*}}$};
-  \node[below=12pt of a] (t)
+  \node[inner sep=0pt] (ax) {$x : \sPboth{\mathbf{*}\funarr\mathbf{*}}$};
+  \node[inner sep=0pt, anchor=west] (xmark) at (ax.west) {$\phantom{x : }$};
+  \node[inner sep=0pt, right=2.5em of ax] (ay) {$y : \sPtwo{\mathbf{*}\funarr\mathbf{*}}$};
+  \node[inner sep=0pt, anchor=west] (ymark) at (ay.west) {$\phantom{y : }$};
+  \node[inner sep=0pt] at ($(ax.east)!0.3!(ay.west)$) {$,$};
+  \node[draw, line width=0.9pt, rounded corners, fit=(ax)(ay),
+        label={[font=\scriptsize\itshape]above:assumptions}] (a) {};
+  \coordinate (col1) at (xmark.east |- a.south);
+  \coordinate (col2) at ($(ax.east |- a.south) + (3pt,0)$);
+  \coordinate (col3) at (ymark.east |- a.south);
+  \node[font=\tiny\bfseries, OliveGreen, anchor=east, inner sep=1pt] at ([yshift=12pt]col1)  {(C)};
+  \node[font=\tiny\bfseries, Mulberry,   anchor=west, inner sep=1pt] at ([yshift=9.6pt]col2) {(D)};
+  \node[font=\tiny\bfseries, Mulberry,   anchor=east, inner sep=1pt] at ([yshift=9.6pt]col3) {(D)};
+  \node[right=5em of a] (t)
        {$\sPboth{(}\tokensp\sPboth{\mathbf{if}}\tokensp\mathbf{true}\tokensp\sPboth{\mathbf{then}}\tokensp\sPone{x}\tokensp\sPboth{\mathbf{else}}\tokensp\sPtwo{y}\tokensp\sPboth{\mathbf{,}}\tokensp\sPboth{x}\tokensp\sPboth{)}$};
+  \node[font=\tiny\bfseries, OliveGreen, anchor=east, inner sep=1pt] at ([yshift=12pt]t.south west)  {(C)};
+  \node[font=\tiny\bfseries, Mulberry,   anchor=west, inner sep=1pt] at ([yshift=9.6pt]t.south east) {(D)};
 \end{tikzpicture}
 \end{center}
 
-When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right projection's use of $x$ is strictly stronger than that of slices (A), (B), and (D); we are \textit{aliasing} this variable's assumption. Slices (A) and (B) are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice (D) is still valid because it doesn't actually use $x$.
+When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right projection's use of $x$ is strictly stronger than that of slices {\color{BrickRed}(A)}, {\color{NavyBlue}(B)}, and {\color{Mulberry}(D)}; we are \textit{aliasing} this variable's assumption. Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice {\color{Mulberry}(D)} is still valid because it doesn't actually use $x$.
 
 \subsection{Term-Minimal Slices}
 \label{sec:term-minimal-slices}

@@ -27,6 +27,7 @@ Hazel renders each slice by folding away every fragment the queried type does no
   {\footnotesize\sffamily\color{black!55}$\big\Downarrow$\ \ #1}\par\vspace{0.7mm}}
 
 \begin{figure}[t]
+\vspace{6pt}
 \centering
 
 \begin{tikzpicture}
@@ -48,8 +49,8 @@ Hazel renders each slice by folding away every fragment the queried type does no
   {\includegraphics[width=0.9\linewidth]{media/synslice-parse-digit.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[synco] (b1) at (0.66,0.27) {press slicing icon};
-  \draw[synl] (b1.south) -- (0.655,0.078);
+  \node[synco] (b1) at (0.62,0.22) {press slicing icon};
+  \draw[synl] (b1.south) -- (0.615,0.10);
 \end{scope}
 \end{tikzpicture}
 
@@ -58,7 +59,7 @@ Hazel renders each slice by folding away every fragment the queried type does no
 \label{fig:parse-digit-synthesis}
 \end{figure}
 
-\Cref{fig:parse-digit-synthesis} slices a small character parser. The synthesis slice folds the whole function to just the \texttt{String} domain annotation, and the first branch determining the result option type, discarding all other branches.\footnote{Folding all other branches into a single fold projector is not currently supported by the Hazel UI, but is shown here for illustrative purposes.}
+\Cref{fig:parse-digit-synthesis} slices a small character parser. The synthesis slice reduces the function to the \texttt{String} domain annotation and first branch determining the result option type, discarding all other branches.\footnote{Folding all other branches into a single fold projector is not currently supported by the Hazel UI, but is shown here for illustrative purposes.}
 
 Refined queries may target \emph{part} of a reported type: for example, asking only about the domain of a function type, by folding away the returned sum type (\synsrc{\texttt{String → \fold}}). The resulting program shrinks the slice to exclude the entire function body (\cref{fig:parse-digit-analysis}). This same slice is also the minimal \textit{analysis} slice which \textit{enforces} \anasrc{\texttt{String}} on the argument.
 \begin{figure}[h]
@@ -103,17 +104,17 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 
 \begin{tikzpicture}
 \node[anchor=south west, inner sep=0] (img) at (0,0)
-  {\includegraphics[width=0.98\linewidth]{media/extended-error.png}};
+  {\includegraphics[width=0.9\linewidth, trim={0 0 0 62}, clip]{media/extended-error.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[errco] (e1) at (0.80,0.25) {selected literal synthesises\\
+  \node[errco] (e1) at (0.80,0.288) {selected literal synthesises\\
     \texttt{Digit → String → Option(\ldots)}};
-  \draw[errl] (e1.south west) -- (0.57,0.175);
-  \node[anaco] (e2) at (0.55,0.10) {\ldots but its position demands\\
+  \draw[errl] (e1.south west) -- (0.57,0.202);
+  \node[anaco] (e2) at (0.55,0.115) {\ldots but its position demands\\
     \texttt{Digit → Option((String, Pin))}};
-  \draw[anal] (e2.south) -- (0.68,0.035);
-  \node[errco] (e3) at (0.85,0.13) {press \emph{Explain error}};
-  \draw[errl] (e3.south) -- (0.92,0.04);
+  \draw[anal] (e2.south) -- (0.68,0.040);
+  \node[errco] (e3) at (0.85,0.150) {press \emph{Explain error}};
+  \draw[errl] (e3.south) -- (0.92,0.046);
 \end{scope}
 \end{tikzpicture}
 
@@ -121,15 +122,15 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 
 \begin{tikzpicture}
 \node[anchor=south west, inner sep=0] (img) at (0,0)
-  {\includegraphics[width=0.88\linewidth]{media/extended-explained-error.png}};
+  {\includegraphics[width=0.9\linewidth, trim={0 0 0 57}, clip]{media/extended-explained-error.png}};
 \draw[black!35, line width=0.35pt] (img.south west) rectangle (img.north east);
 \begin{scope}[x={(img.south east)},y={(img.north west)}]
-  \node[purpco] (f1) at (0.55,0.50) {source of the (erroneous) expected type:\\
+  \node[purpco] (f1) at (0.55,0.585) {source of the (erroneous) expected type:\\
     \texttt{seq}'s annotation \texttt{A → Option((String, B))}};
-  \draw[purpl] (f1.north west) -- (0.28,0.585);
-  \node[errco] (f2) at (0.62,0.255) {the error: a mis-shaped literal};
-  \draw[errl] (f2.west) -- (0.35,0.255);
-  \node[foldco] (f3) at (0.88,0.22) {everything else\\folds away};
+  \draw[purpl] (f1.north west) -- (0.28,0.684);
+  \node[errco] (f2) at (0.62,0.298) {the error: a mis-shaped literal};
+  \draw[errl] (f2.west) -- (0.35,0.298);
+  \node[foldco] (f3) at (0.88,0.257) {everything else\\folds away};
 \end{scope}
 \end{tikzpicture}
 

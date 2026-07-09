@@ -384,11 +384,8 @@
 \usetikzlibrary{positioning,calc,fit,backgrounds,decorations.pathmorphing,shapes.geometric,arrows.meta}
 \tikzcdset{arrows={->}, diagrams={column sep=large, row sep=large}}
 
-% Lightweight footnote-block environment retained from the dissertation.
-\newsavebox{\fnbox}
-\newenvironment{fn}
-  {\begin{lrbox}{\fnbox}\footnotesize\begin{minipage}{\linewidth}}
-  {\end{minipage}\end{lrbox}\footnote{\usebox{\fnbox}}}
+
+
 
 % ---------------------------------------------------------------------------
 % Mechanisation markers and marginpars: REMOVED for the POPL version (a separate

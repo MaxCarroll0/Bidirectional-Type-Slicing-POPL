@@ -16,31 +16,35 @@
 \subsection{Synthesis Slices}
 \label{sec:syn-slice-def}
 
-Consider a `program' $P = (\Gamma, e)$, that is, typing assumptions and an expression. When the program synthesises a type (in some type variable context $\Delta$)\begin{fn}Type variable contexts are not sliced as the only information such slices would encode is whether a type variable was used, which can be extracted purely syntactically from the resulting slice. Typing assumptions are different because we can \textit{partially} require an assumption.\end{fn}, all of its type information is contained within the synthesis derivation $D \;:\; \synthesis{e}{\tau}$.
+Consider a `program' $P = (\Gamma, e)$, that is, typing assumptions and an expression. When the program synthesises a type (in some type variable context $\Delta$)\footnote{Type variable contexts are not sliced as the only information such slices would encode is whether a type variable was used, which can be extracted purely syntactically from the resulting slice. Typing assumptions are different because we can \textit{partially} require an assumption.}, all of its type information is contained within the synthesis derivation $D \;:\; \synthesis{e}{\tau}$.
 
 Given the derivation $D$, we may \textit{query} the type $\tau$ by taking a slice $\upsilon$ in $\lfloor \tau \rfloor$. A synthesis slice is a `program slice' $\rho = (\gamma, \varsigma)$ in $\lfloor \Gamma , e\rfloor$ which synthesises a type at least as precise as the query $\upsilon$; this corresponds to a highlighted version of the original program. 
 
 Intuitively, $\upsilon$ specifies the part of $\tau$ we wish to explain; for example, querying $\upsilon = \mathit{Int} \funarr \gap$ for $\tau = \mathit{Int} \funarr \mathit{Bool}$ asks ``which parts of the program account for the domain being $\mathit{Int}$?''. The slice might not include \textit{all} the program regions relevant to the query type, but will necessarily provide a consistent subset which suffices to totally \textit{explain} (independently synthesise) the query.
 
+\noindent
+\begin{minipage}[c]{0.56\linewidth}
 \begin{definition}[Synthesis slice]
 \label{def:syn-slice}
 A \textit{synthesis slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\synslice{D}{\upsilon}$, is a pair $(\gamma, \varsigma) \in \lfloor \Gamma, e\rfloor$ such that $\Delta;\gamma \vdash \varsigma\;\synmode\;\phi$ for some $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor \tau \rfloor$ by graduality, \cref{thm:graduality-syn}).
 \end{definition}
-\begin{figure}[H]
+\end{minipage}\hfill
+\begin{minipage}[c]{0.40\linewidth}
 \centering
-\begin{tikzcd}[column sep=large, row sep=large]
+\vspace{6pt}
+\begin{tikzcd}[column sep=large, row sep=normal]
 & \rho \arrow[r, "\sqsubseteq" {sloped}] \arrow[d, "\synmode"'] & (\Gamma, e) \arrow[d, "\synmode"] \\
 \upsilon \arrow[r, "\sqsubseteq" {sloped}] & \phi \arrow[r, induced, "\sqsubseteq" {sloped}, "\text{(by graduality)}"', dashed] & \tau
 \end{tikzcd}
-\caption{Diagram of a synthesis slice; $\upsilon \sqsubseteq \phi$ is the validity witness.}
-\label{fig:fundamental-triangle}
-\end{figure}
+\end{minipage}
+
+\medskip
 
 Many such synthesis slices exist. In particular, the original program $(\Gamma, e)$ is necessarily a synthesis slice; and for $\synslice{D}{\gap}$, every slice of $(\Gamma, e)$ is a valid synthesis slice. We refer to the $\upsilon \sqsubseteq \phi$ condition as \textit{validity}. It is intentional that this is \textit{not} an exact equality, as demonstrated by the counterexample below:
 
 \begin{counterexamplebox}
 %
-\begin{counterexample}[Non-Existence of all Exact Synthesis Slices]\label{lem:exact-not-exist}
+\begin{counterexample}[Non-Existence of all Exact Synthesis Slices]\label{lem:exact-not-exist}\leavevmode\\
 Consider $x \mathbin{:} \mathbf{*} \funarr \mathbf{*} \vdash (x, x) \synmode (* \funarr *) \times (* \funarr *)$, and query $\upsilon = (\mathbf{*} \funarr \gap) \times (\gap \funarr \mathbf{*})$. 
 
 Any strictly smaller slice of either $x : * \funarr *$ or $(x, x)$ synthesises a type strictly less precise than $\upsilon$. Yet the original program synthesises $(* \funarr *) \times (* \funarr *)$, strictly more precise than $\upsilon$.
@@ -146,7 +150,7 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 \node[anchor=north west, font=\scriptsize\bfseries, OliveGreen!35!black] at (-3.85,9.6) {$\upsilon \sqsubseteq \phi_i$};
 \node[anchor=south west, font=\scriptsize\bfseries, gray!50!black] at (-3.85,0.7) {$\upsilon \not\sqsubseteq \phi_i$};
 \end{tikzpicture}
-\caption{Valid synthesis slices above query $\upsilon$ in the shaded region, with 3 minima consisting of 2 inexact minima (ellipses) and one minimum (square) synthesising exactly $\upsilon$.}
+\caption{Synthesis slices above query $\upsilon$ in the shaded region, with 3 minima consisting of 2 inexact minima (ellipses) and one minimum (square) synthesising exactly $\upsilon$.}
 \label{fig:syn-slice-existence}
 \end{subfigure}\hfill
 \begin{subfigure}[t]{0.49\linewidth}
@@ -200,9 +204,17 @@ This is desirable because the user will not be shown \textit{additional} informa
 
 \paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. For example, refining $\upsilon = \mathbf{*}\funarr\mathbf{*}$ to $\upsilon' = \gap\funarr\mathbf{*}$:
 \begin{center}
-\fullslice{x : \sli{\mathbf{*} \funarr \mathbf{*}}}{\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}\;x\;\mathbf{else}}\;y}
+\begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
+  \node[draw, line width=0.9pt, rounded corners,
+        label={[font=\scriptsize\itshape]above:assumptions}] (a) {$x : \sli{\mathbf{*} \funarr \mathbf{*}}$};
+  \node[right=6pt of a] (t) {$\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}\;x\;\mathbf{else}}\;y$};
+\end{tikzpicture}%
 \quad$\xrightarrow{\upsilon' \sqsubseteq \upsilon}$\quad
-\fullslice{y : \mathbf{*}\,\sli{\funarr \mathbf{*}}}{\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}}\;x\;\sli{\mathbf{else}\;y}}
+\begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
+  \node[draw, line width=0.9pt, rounded corners,
+        label={[font=\scriptsize\itshape]above:assumptions}] (a) {$y : \mathbf{*}\,\sli{\funarr \mathbf{*}}$};
+  \node[right=6pt of a] (t) {$\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}}\;x\;\sli{\mathbf{else}\;y}$};
+\end{tikzpicture}
 \end{center}
 
 On the other hand, you do not necessarily have monotonicity in the upwards direction. Consider the $\rho_j$ node in \Cref{fig:syn-slice-refinement}, which is minimal under query $\upsilon_0$, but no minimum for query $\upsilon_1$ is strictly more precise than $\rho_j$.
@@ -218,7 +230,7 @@ Instead of calculating slices by brute force (\cref{sec:min-exists}), it would b
 
 Given slices $(\gamma_1, \varsigma_1) : \synslice{D_1}{\upsilon_1}$ and $(\gamma_2, \varsigma_2) : \synslice{D_2}{\upsilon_2}$ for the two components of a pair $D = \synr{Pair}\,D_1\,D_2$ (with synthesised types $\phi_1, \phi_2$), we form their product slice $(\gamma_1, \varsigma_1) \pairsyn (\gamma_2, \varsigma_2) : \synslice{D}{\upsilon_1 \times \upsilon_2}$ by joining the two assumption slices and pairing the term slices:
 \[(\gamma_1, \varsigma_1) \pairsyn (\gamma_2, \varsigma_2) \;\triangleq\; (\gamma_1 \sqcup \gamma_2,\;(\varsigma_1, \varsigma_2))\]
-The pair synthesises (possibly more precise)\begin{fn}Due to $\gamma_1 \sqcup \gamma_2$ being larger than $\gamma_1$ and $\gamma_2$\end{fn} types $\phi_1' \times \phi_2' \sqsupseteq \phi_1 \times \phi_2 \sqsupseteq \upsilon_1 \times \upsilon_2$. For this combinator, we get the following decomposition theorem:
+The pair synthesises (possibly more precise)\footnote{Due to $\gamma_1 \sqcup \gamma_2$ being larger than $\gamma_1$ and $\gamma_2$.} types $\phi_1' \times \phi_2' \sqsupseteq \phi_1 \times \phi_2 \sqsupseteq \upsilon_1 \times \upsilon_2$. For this combinator, we get the following decomposition theorem:
 
 \begin{thmcase}[Product Decomposition]\label{thm:min-prod-decomp}
 Let $m : \minsynslice{\synr{Pair}\,D_1\,D_2}{\upsilon_1 \times \upsilon_2}$. Then there exist minimal $m_1 : \minsynslice{D_1}{\upsilon_1}$ and $m_2 : \minsynslice{D_2}{\upsilon_2}$ with $m = m_1 \pairsyn m_2$.
@@ -252,20 +264,22 @@ Finally, a minimal slice only provides an explanation; it does not show \textit{
 
 Such a region can be uniquely expressed as the \textit{join} of all minimal slices for the query. The contribution slice is efficient in the sense that it is a \textit{least} upper bound of actual minimal slices. For this to work, synthesis slices must be closed under joins: the joined slice must also be \textit{valid}, which is true:
 
+\noindent
+\begin{minipage}[c]{0.60\linewidth}
 \begin{theorem}[Join Closure of Synthesis Slices]\label{thm:join-syn}
-For $(\gamma_1, \varsigma_1) : \synslice{D}{\upsilon_1}$ and $(\gamma_2, \varsigma_2) : \synslice{D}{\upsilon_2}$, then $(\gamma_1, \varsigma_1) \joinsyn (\gamma_2, \varsigma_2) : \synslice{D}{\upsilon_1 \sqcup \upsilon_2}$, with the joined slice taken pointwise: $(\gamma_1 \sqcup \gamma_2,\; \varsigma_1 \sqcup \varsigma_2)$.
+For $\rho_1 = (\gamma_1, \varsigma_1) : \synslice{D}{\upsilon_1}$ and $\rho_2 = (\gamma_2, \varsigma_2) : \synslice{D}{\upsilon_2}$, then $\rho_1 \joinsyn \rho_2 : \synslice{D}{\upsilon_1 \sqcup \upsilon_2}$, with the joined slice taken pointwise: $(\gamma_1 \sqcup \gamma_2,\; \varsigma_1 \sqcup \varsigma_2)$.
 \end{theorem}
-
-\begin{figure}[H]
+\end{minipage}\hfill
+\begin{minipage}[c]{0.36\linewidth}
 \centering
-\begin{tikzcd}[column sep=large, row sep=large]
-\rho_1 \arrow[r, "\sqsubseteq"] \arrow[d, "\synmode"'] & {\color{induced} \rho^{\sqcup}} \arrow[d, "\synmode"] & \rho_2 \arrow[l, "\sqsupseteq"'] \arrow[d, "\synmode"] \\
+\begin{tikzcd}[column sep=1.6em, row sep=1.2em]
+\rho_1 \arrow[r, "\sqsubseteq"] \arrow[d, "\synmode"'] & {\color{induced} \rho_1 \sqcup \rho_2} \arrow[d, "\synmode"] & \rho_2 \arrow[l, "\sqsupseteq"'] \arrow[d, "\synmode"] \\
 \phi_1 & {\color{induced} \phi'} & \phi_2 \\
 \upsilon_1 \arrow[u, "\sqsubseteq" {sloped}] \arrow[r, "\sqsubseteq"] & {\color{induced} \upsilon_1 \sqcup \upsilon_2} \arrow[u, induced, "\sqsubseteq"' {sloped}, dashed] & \upsilon_2 \arrow[u, "\sqsubseteq"' {sloped}] \arrow[l, "\sqsupseteq"']
 \end{tikzcd}
-\caption{Theorem~\ref{thm:join-syn}.}
-\label{fig:join-validity}
-\end{figure}
+\end{minipage}
+
+\medskip
 
 %%% Local Variables:
 %%% mode: LaTeX

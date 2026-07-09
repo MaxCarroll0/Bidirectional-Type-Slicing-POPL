@@ -9,20 +9,24 @@ Globally inferred languages typically have much more confusing typing derivation
 \subsection{Cast Slicing \& Dynamics}
 \label{sec:cast-dynamics}
 
+\noindent
+\begin{minipage}[t]{0.58\linewidth}
+\vspace{0pt}
 A gradually-typed language elaborates source programs into a cast calculus and runs the resulting casts dynamically. Type slices can be attached directly to those casts. Hence, casts can then explain why they were inserted by pointing back to code; the source will be a slice of the term being cast, and the target a slice of its context. 
 
-Approximate minimal slices can be tagged directly onto types allowing them to be decomposed at runtime, allowing dynamic casts to point back to code. This is particularly useful for debugging dynamic type errors, which would not otherwise point back to code: gradual typing's blame~\cite{WadlerFindler2009} identifies \emph{which} cast failed, but implicates only the cast site, whereas a tagged slice widens this to every source fragment that contributed to either side of the failing cast.
-
-This idea and motivation appear in a preliminary workshop paper~\cite{CarrollEtAl2025} and in earlier work~\priorDissertationSelfCite, though developed there on a drastically different underlying theory and user interface. This was also implemented for Hazel: selecting a dynamic cast in the evaluation result retrieves the code from which it originated (\cref{fig:cast-slice}).
-
-\begin{figure}[h]
+\hspace*{9pt}This is useful for debugging dynamic type errors, which would not otherwise point back to code: gradual typing's blame~\cite{WadlerFindler2009} identifies \emph{which} cast failed, but implicates only the cast site, whereas a slice widens this to every source fragment that contributed to either side of the failing cast.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.38\linewidth}
+\vspace{0pt}
 \centering
-\includegraphics[width=0.55\textwidth]{media/simple_cast_error}
-\caption{Cast slicing in Hazel: selecting the failing cast $1 + \text{``one''} \mathbin{:} \mathit{Int}$ (below) highlights the source slice responsible for its $\mathit{Int}$ side (above): the $+$ operator.}
+\includegraphics[width=\linewidth]{media/simple_cast_error}
+\captionof{figure}{Type slice associated with a cast error. From a preliminary workshop paper~\cite{CarrollEtAl2025} upon differing foundations~\priorDissertationSelfCite{} to this paper.}
 \label{fig:cast-slice}
-\end{figure}
+\end{minipage}
 
-However, the strong theoretical properties of slices being slices of the original program is not maintained during dynamic execution as reductions are performed. Tracking dynamic execution, perhaps integrating ideas from Perera~\cite{Perera2012,PereraGarg2016}, would allow users to trace back casts to source code with stronger guarantees.
+\vspace{3pt}
+
+However, the strong theoretical properties of slices being slices of the original program are not maintained during dynamic execution as reductions are performed. Tracking dynamic execution, perhaps integrating ideas from Perera~\cite{Perera2012,PereraGarg2016}, would allow users to trace back casts to source code with stronger guarantees.
 
 \section{Conclusions}
 \label{sec:conclusions}

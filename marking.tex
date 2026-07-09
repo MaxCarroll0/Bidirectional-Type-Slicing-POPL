@@ -141,11 +141,15 @@ However, type slicing is flexible. A user who \emph{does} want to trust the surr
 
 The shape-mismatch marks all occur in similar situations: the syntactic position of the focus requires a type kind, but the focus's synthesised type does not match this.
 
-A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$. Where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
+\vspace{3pt}\noindent
+\begin{minipage}[c]{0.68\linewidth}
+\hspace*{9pt}A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$. Where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
+\end{minipage}\hfill
+\begin{minipage}[c]{0.28\linewidth}
+\centering
 \queryblock{\texttt{*}\sli{\times}\texttt{*}}{\text{---}}
-\[
-  \markbox{\markarrow[(\texttt{*}\sli,\texttt{*})]}\,(\,\texttt{true}\,).
-\]
+$\markbox{\markarrow[(\texttt{*}\sli,\texttt{*})]}\,(\,\texttt{true}\,).$
+\end{minipage}
 
 \subsubsection{Unannotated Lambda against Non-Arrow: $\marklam$}
 \label{sec:marking-recipes-lam}
@@ -154,17 +158,18 @@ Unannotated lambdas $\lambda y.\,e$ have no synthesis rule; their type can only 
 determined by the surrounding context. Consequentially it has
 no synthesis type, so type inconsistencies are not marked via subsumption (type inconsistency), but instead by a mode limitation mark. In this situation all the relevant type information is derived from the surrounding context, so we use analysis slices.
 
-Consider the program:
-\[
-  \mathbf{let}\;b : \texttt{Bool} = \lambda y.\,y\;\mathbf{in}\;b.
-\]
+\vspace{3pt}\noindent
+\begin{minipage}[c]{0.58\linewidth}
+\hspace*{9pt}Consider the program $\mathbf{let}\;b : \texttt{Bool} = \lambda y.\,y\;\mathbf{in}\;b$.
 The RHS $\lambda y.\,y$ is a bare lambda analysed against
 $\texttt{Bool}$. Taking the $\mathit{MinAnaSlice}$ on the enclosing context witnesses the context enforcing a non-function type (\texttt{Bool}):
+\end{minipage}\hfill
+\begin{minipage}[c]{0.38\linewidth}
+\centering
 \queryblock{\text{---}}{\sli[OliveGreen]{\texttt{Bool}}}
-\[
-  \slist{\mathbf{let}}\;b\,\slist{:}\,\sli[OliveGreen]{\texttt{Bool}}\,\slist{=}\,
-  \markbox{\marklam[\lambda y.\,y]}\,\slist{\mathbf{in}}\;b.
-\]
+$\slist{\mathbf{let}}\;b\,\slist{:}\,\sli[OliveGreen]{\texttt{Bool}}\,\slist{=}\,
+  \markbox{\marklam[\lambda y.\,y]}\,\slist{\mathbf{in}}\;b.$
+\end{minipage}
 
 \subsubsection{Unbound variable: $\markvar{k}$}
 \label{sec:marking-recipes-unbound}

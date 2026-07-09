@@ -16,7 +16,7 @@ e &::= \gap \mid * \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\;
   &\quad\mid\; \iota_1\; e \mid \iota_2\; e \mid (\mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;e) \mid \Lambda\alpha.\; e \mid e\langle\tau\rangle \mid \mathbf{let}\;x = e\;\mathbf{in}\;e
 \end{align*}
 
-\caption{Syntax of the core calculus up to $\alpha$-equivalence (on variables $x$). $\mathrm{FV}(\cdot)$ denotes the set of free variables of an expression.}
+\caption{Syntax of the core calculus up to $\alpha$-equivalence (on variables $x$).}
 \label{fig:syntax}
 \end{figure}
 
@@ -26,7 +26,6 @@ Base types such as booleans are omitted from the core syntax, being encoded usin
 
 Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in standard gradual type systems (\cref{sec:gradual-types}). That is, a weakening of equality, where every type is consistent with $\gap$, and compound types are consistent when their components are. Consistency is reflexive and symmetric but \textit{not} transitive.
 
-\enlargethispage{3\baselineskip}
 \begin{figure}[H]
 \fbox{$\tau_1 \sim \tau_2$}\ \ \ $\tau_1$ is consistent with $\tau_2$
 \[\inference[$\sim\gap_1$]{}{\tau \sim \gap} \qquad
@@ -42,7 +41,7 @@ Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in stand
 
 \subsubsection{Precision}
 
-Precision (Figure~\ref{fig:precision}) is a partial order that organises terms by \textit{information content}: for types, $\tau' \sqsubseteq \tau$ means $\tau$ has at least as much type information as $\tau'$. Here, $\gap$ is the global minimum. Expression precision is defined analogously. Figure~\ref{fig:term-precision-lattice} illustrates this with a small example.
+Precision (Figure~\ref{fig:precision}) is a partial order that organises terms by \textit{information content}: for types, $\tau' \sqsubseteq \tau$ means $\tau$ has at least as much type information as $\tau'$. Here, $\gap$ is the global minimum. Expression precision is defined analogously; for instance, the slices of $\lambda x \mathbin{:} *.\; x$ form the precision chain $\gap \sqsubseteq \lambda x \mathbin{:} \gap.\; \gap \sqsubseteq \lambda x \mathbin{:} *.\; \gap \sqsubseteq \lambda x \mathbin{:} *.\; x$, each step filling in one more part of the term.
 
 \begin{figure}[H]
 \fbox{$\tau \sqsubseteq \tau'$}\ \ \ $\tau$ is less precise than $\tau'$
@@ -55,25 +54,6 @@ Precision (Figure~\ref{fig:precision}) is a partial order that organises terms b
   \inference[$\sqsubseteq{\forall}$]{\tau \sqsubseteq \tau'}{\forall\alpha.\;\tau \sqsubseteq \forall\alpha.\;\tau'}\]
 \caption{Type precision.}
 \label{fig:precision}
-\end{figure}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[node distance=1.6cm, >=stealth, every node/.style={inner sep=2pt},
-                    precarrow/.style={->, latticecolor!75, line width=0.5pt}]
-  \node (top) {$\lambda x \mathbin{:} *.\; x$};
-  \node (l)   [below left=1.4cm and 0.6cm of top] {$\lambda x \mathbin{:} *.\; \gap$};
-  \node (r)   [below right=1.4cm and 0.6cm of top] {$\lambda x \mathbin{:} \gap.\; x$};
-  \node (mid) [below=2.8cm of top] {$\lambda x \mathbin{:} \gap.\; \gap$};
-  \node (bot) [below=1.4cm of mid] {$\gap$};
-  \draw[precarrow] (l)   -- node[auto,sloped,font=\scriptsize] {$\sqsubseteq$} (top);
-  \draw[precarrow] (r)   -- node[auto,sloped,font=\scriptsize] {$\sqsupseteq$} (top);
-  \draw[precarrow] (mid) -- node[auto,sloped,font=\scriptsize] {$\sqsupseteq$} (l);
-  \draw[precarrow] (mid) -- node[auto,sloped,font=\scriptsize] {$\sqsubseteq$} (r);
-  \draw[precarrow] (bot) -- node[auto,sloped,font=\scriptsize] {$\sqsubseteq$} (mid);
-\end{tikzpicture}
-\caption{Hasse diagram of slices less precise than $\lambda x{:}*.\; x$, with each edge directed from a less-precise slice up to a more-precise slice.}
-\label{fig:term-precision-lattice}
 \end{figure}
 
 \paragraph{Precision on Typing Assumptions.} In this calculus, we represent typing assumptions as \textit{finite} partial functions from variable names to types, with domain $\mathrm{dom}(\Gamma)$. Precision is defined by domain inclusion and pointwise precision on types in the (smaller) domain:
@@ -123,7 +103,7 @@ Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{
 
 The bidirectional typing judgements are mostly standard; the complete synthesis and analysis rule sets appear in the supplementary material, and Figure~\ref{fig:typing-rules-excerpt} presents some of the major rules. $\wf{\tau}$ denotes when a type $\tau$ is \textit{well-formed} under available type variables $\Delta$.
 
-\begin{figure}[H]
+\begin{figure}[h!t]
 \small
 \[\inference[\synr{Var}]{x : \tau \in \Gamma}{\synthesis{x}{\tau}} \qquad
   \inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \funarr \tau_2}}\]
