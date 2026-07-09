@@ -45,7 +45,7 @@ $\markvar{k}$      & scope & Variables & Variable $k$ has no binding in scope \\
 
 Importantly, marked terms can be type-checked by treating the marks as `non-empty' holes, synthesising $\gap$ (and recursively marking and type-checking the inner term).
 
-The validity of this method is formalised by two theorems: \textit{totality} ensures marks account for every possible typing error, and \textit{erasure} ensures adding marks does not change the structure of the terms.
+The validity of this method is formalised by two theorems: \textit{totality} ensures marks account for every possible typing error, and \textit{erasure} ensures adding marks does not change a term's structure.
 
 \begin{theorem}[Totality of Marking]
 \label{thm:mark-total}
@@ -94,7 +94,7 @@ around the RHS:
 \[
   \mathbf{let}\;p : * \funarr * = \markbox{\markincon[(\texttt{true},\,\texttt{false})]{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}}\;\mathbf{in}\;p.
 \]
-Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}$ with the entire red term highlighted. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
+Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}$ with the entire term highlighted. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
 
 \noindent\paragraph{\textbf{Decomposition}}
 The (context, focus) pair the marking factors into is
@@ -143,7 +143,7 @@ The shape-mismatch marks all occur in similar situations: the syntactic position
 
 \vspace{3pt}\noindent
 \begin{minipage}[c]{0.68\linewidth}
-\hspace*{9pt}A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$. Where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
+\hspace*{9pt}A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$, where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
 \end{minipage}\hfill
 \begin{minipage}[c]{0.28\linewidth}
 \centering
@@ -155,8 +155,8 @@ $\markbox{\markarrow[(\texttt{*}\sli,\texttt{*})]}\,(\,\texttt{true}\,).$
 \label{sec:marking-recipes-lam}
 
 Unannotated lambdas $\lambda y.\,e$ have no synthesis rule; their type can only be
-determined by the surrounding context. Consequentially it has
-no synthesis type, so type inconsistencies are not marked via subsumption (type inconsistency), but instead by a mode limitation mark. In this situation all the relevant type information is derived from the surrounding context, so we use analysis slices.
+determined by the surrounding context. Consequently it has
+no synthesis type, so type inconsistencies are not marked via subsumption, but instead by a mode limitation mark. In this situation all the relevant type information is derived from the surrounding context, so we use analysis slices.
 
 \vspace{3pt}\noindent
 \begin{minipage}[c]{0.58\linewidth}

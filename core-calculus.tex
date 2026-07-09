@@ -1,7 +1,7 @@
 \section{The Core Calculus}
 \label{sec:core-calculus}
 
-In this section, we present the core calculus which Type Slicing builds upon. It is a bidirectional, gradually typed lambda calculus, with precision on types and terms, based on the Hazel calculus~\cite{HazelLivePaper}, extended with products, sums, and explicit System~F polymorphism. We prove that this calculus satisfies graduality (\S\ref{sec:gradual-types}), and we define and prove several {lattices} on precision.
+In this section, we present the core calculus which type slicing builds upon. It is a bidirectional, gradually typed lambda calculus, with precision on types and terms, based on the Hazel calculus~\cite{HazelLivePaper}, extended with products, sums, and explicit System~F polymorphism. We prove that this calculus satisfies graduality (\S\ref{sec:gradual-types}), and we define and prove several lattice structures on precision.
 
 \subsection{Syntax \& Relations}
 \label{sec:core-syntax}
@@ -116,7 +116,7 @@ The bidirectional typing judgements are mostly standard; the complete synthesis 
 \label{fig:typing-rules-excerpt}
 \end{figure}
 
-Of note is the use of joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding (argument) into the body (function). The typing rules satisfy graduality (\S\ref{sec:gradual-types}).
+We use joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding into the body. The typing rules satisfy graduality (\S\ref{sec:gradual-types}).
 \begin{theorem}\label{thm:graduality-syn}
 The synthesis judgement $\synthesis[\_]{\_}{\_}$ and analysis judgement $\analysis[\_]{\_}{\_}$ satisfy downwards static graduality.
 \end{theorem}

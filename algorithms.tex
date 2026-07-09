@@ -206,11 +206,11 @@ The case rule is the difficult one, appearing to require an iterative fixed poin
 
 However, when the branch slices exactly synthesise disjoint type queries, then there is no redundancy and the result is minimal. The scrutinee can be sliced using the join of the minimal assumptions on the branches, much like with let bindings. 
 
-To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1 \heytingminus \upsilon_2$, which is the least slice whose join with $\upsilon_2$ recovers $\upsilon_1$, i.e. ``the part of $\upsilon_1$ not already covered by $\upsilon_2$'', for example $\sli{* \times *} \;\heytingminus\; \sli{* \times}\,\gap \;=\; \gap\,\sli{\times *}$.
+To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1 \heytingminus \upsilon_2$, which is the least slice whose join with $\upsilon_2$ recovers $\upsilon_1$, i.e. ``the part of $\upsilon_1$ not already covered by $\upsilon_2$'', e.g. $\sli{* \times *} \;\heytingminus\; \sli{* \times}\,\gap \;=\; \gap\,\sli{\times *}$.
 
 Then, a disjoint cover of query $\upsilon$ is one such that $\upsilon\heytingminus \upsilon_1 = \upsilon_2$ and $\upsilon \heytingminus \upsilon_2 = \upsilon_1$. The case expression will necessarily synthesise $\upsilon_1 \sqcup \upsilon_2$ which equals $\upsilon$ by standard co-Heyting algebra rules. Note that the lattice is \textit{not} a boolean algebra, so $\upsilon_1 \sqcap \upsilon_2 \neq \gap$ in general.
 
-The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider the aliased variables at the leaves of the branch expressions.
+The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider aliased variables at the leaves.
 
 \subsection{Calculating Analysis Slices}
 \label{sec:ana-slice-calculus}
@@ -221,7 +221,7 @@ However, to recursively calculate the analysis slice of an application when the 
 
 We need an additional notion of \textit{inner} analysis slices. Dually to regular (outer) analysis slices, which treat the synthesis mode as an \textit{input}, the inner slices treat the analysis derivation mode as an \textit{output}, and attempt to minimise it. 
 
-Intuitively, an inner analysis slice gives the minimal assumptions, context, and additionally the minimum \textit{analysis type} to be imposed on it by the outer context, such that the queried analysis type holds at its focus. In particular slicing the function in an application would use this minimal outer analysis mode type on the argument to slice the domain type of the function.
+Intuitively, an inner analysis slice gives the minimal assumptions, context, and additionally the minimum \textit{analysis type} to be imposed on it by the outer context, such that the queried analysis type holds at its focus. In particular, slicing the function in an application would use this minimal outer analysis mode type on the argument to slice the domain type of the function.
 \vspace{-0.5em}
 \begin{definition}
 \label{def:ana-pos-slice}
@@ -238,11 +238,11 @@ A \textit{full type slice} is a fully sliced decomposition of a program around a
 \vspace{-0.5em}
 \begin{definition}[Type slices]
   \label{def:type-slice}
-A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\synmode\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair $((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta';\,\gamma_f'}{\synmode\,\phi'}$ for some $\psi$, and $\gamma_f' \sqsupseteq \gamma_f$ such that $\synthesis[\Delta';\ \gamma_f']{\varsigma}[\phi']$.
+A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\synmode\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair $((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta';\,\gamma_f'}{\synmode\,\phi'}$ for some $\psi$, and $\gamma_f' \sqsupseteq \gamma_f$ such that $\synthesis[\Delta';\ \gamma_f']{\varsigma}{\phi'}$.
 \end{definition}
 \vspace{-0.5em}
 
-Importantly, the pair of slices forms a well-typed program: by context typing soundness, $\kappa[\varsigma]$ synthesises $\psi$. Then, a \textit{minimal} type slice is one in which the context $\kappa$ and the focused expression $\varsigma$ are jointly minimised alongside minimal external typing assumptions of the context typing $\gamma$. Notably, we do \textit{not} minimise the assumptions to the focused terms, as its assumptions are now explicitly provided by the surrounding context (and $\gamma$). 
+Importantly, the pair of slices forms a well-typed program: by context typing soundness, $\kappa[\varsigma]$ synthesises $\psi$. Then, a \textit{minimal} type slice is one in which the context $\kappa$ and the focused expression $\varsigma$ are jointly minimised alongside minimal external typing assumptions of the context typing $\gamma$. Notably, we do \textit{not} minimise the assumptions to the focused term, as its assumptions are now explicitly provided by the surrounding context (and $\gamma$).
 
 As slices can be inexact, efficiently calculating a minimal context providing sufficient assumptions to a minimal \textit{SynSlice} at the focus is non-trivial. The Hazel implementation instead closely approximates this by slicing the definition / annotation on each binding by its required type as per the minimal assumptions of the focused term. When each slice of these definitions is exact, the resulting type slice is minimal.
 
@@ -261,7 +261,7 @@ We can construct a reduction from the NP-hard set cover optimisation problem as 
 
 Then, if a synthesis slice is queried on this case tree with $\tau \times * \times \dots \times *$, each $I_j$ must be retained, so the whole tree structure must be retained, and the only variance in the size of the slices is purely dependent on which variables $x_j$ were retained.
 
-As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau$, which implies there are $m$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e. $x_j : T'_j \sqsubseteq T_j$} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^mS'_j = U$. Hence, the retained $S_j$ form a set-cover. Finally, the only variance in the size of the slice was in the number of variable $x_j$ chosen, i.e. the number of sets chosen; hence, a minimum-size synthesis slice corresponds to a minimum set cover.
+As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau$, which implies there are $m$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e. $x_j : T'_j \sqsubseteq T_j$} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^mS'_j = U$. Hence, the retained $S_j$ form a set-cover. Finally, the only variance in the size of the slice was in the number of variables $x_j$ chosen, i.e. the number of sets chosen; hence, a minimum-size synthesis slice corresponds to a minimum set cover.
 
 \begin{figure}[ht]
 \centering
