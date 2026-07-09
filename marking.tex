@@ -94,7 +94,7 @@ around the RHS:
 \[
   \mathbf{let}\;p : * \funarr * = \markbox{\markincon[(\texttt{true},\,\texttt{false})]{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}}\;\mathbf{in}\;p.
 \]
-Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}$ with the entire red term highlighted. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
+Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}$ with the entire term boxed. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
 
 \noindent\paragraph{\textbf{Decomposition}}
 The (context, focus) pair the marking factors into is

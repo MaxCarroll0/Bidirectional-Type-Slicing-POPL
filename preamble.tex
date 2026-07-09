@@ -246,7 +246,7 @@
 
 \newcommand{\markbox}[1]{%
   \tikz[baseline=(N.base)]{%
-    \node[draw=BrickRed!85, dashed, line width=0.7pt, rounded corners=2pt,
+    \node[draw=BrickRed!85, line width=0.7pt, rounded corners=2pt,
           inner sep=2pt, fill=BrickRed!6, anchor=base] (N) {\strut$#1$};%
   }%
 }
@@ -359,13 +359,23 @@
 \newcommand{\sliceC}[1]{\underline{\textcolor{OliveGreen}{#1}}}
 \newcommand{\sliceD}[1]{\underline{\textcolor{Mulberry}{#1}}}
 
-% Highlighted-box slice notation
+% Highlighted-box slice notation. Border style tracks the colour so the three
+% co-occurring slice boxes stay distinguishable in greyscale: synthesis
+% (NavyBlue) dashed, analysis (OliveGreen) dotted, query (teal) dash-dotted.
+\makeatletter
+\def\sli@olive{OliveGreen}
+\def\sli@teal{teal}
 \newcommand{\sli}[2][NavyBlue]{%
+  \def\sli@c{#1}%
+  \def\sli@style{dashed}%
+  \ifx\sli@c\sli@olive \def\sli@style{dotted}\fi
+  \ifx\sli@c\sli@teal  \def\sli@style{densely dashdotted}\fi
   \tikz[baseline=(N.base)]{%
-    \node[draw=#1!60, dashed, line width=0.4pt, rounded corners=1.5pt,
+    \node[draw=#1!60, \sli@style, line width=0.5pt, rounded corners=1.5pt,
           inner sep=1.5pt, fill=#1!12, anchor=base] (N) {\strut$#2$};%
   }%
 }
+\makeatother
 \newcommand{\slr}[1]{%
   \tikz[baseline=(N.base)]{%
     \node[draw=BrickRed!80, line width=0.8pt, rounded corners=2pt,

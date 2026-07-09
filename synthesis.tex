@@ -99,7 +99,8 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
   slprogarr/.style={->, latticecolor!75, line width=0.95pt},
   slsyn/.style={->, BrickRed, line width=0.6pt, dashed,
                 dash pattern=on 3pt off 2pt, shorten >=2.5pt, shorten <=2.5pt},
-  slpath/.style={->, Green!65!black, line width=1.5pt, shorten >=2pt, shorten <=2pt},
+  slpath/.style={Green!60!black, opacity=0.32, line width=6pt,
+                 line cap=round, line join=round},
   slfront/.style={OliveGreen!55!black, line width=1.5pt, line cap=round},
   sldot/.style={OliveGreen!55!black, line width=0.5pt, dotted},
 }
@@ -170,11 +171,9 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 \foreach \p/\c in {T/A,T/B,T/C,A/E,A/H,B/E,B/F,C/F,E/I,F/I,F/J,H/K,I/K,I/Bot,J/Bot,K/Bot}
   \draw[slsyn] (\p) to[bend right=7] (\c);
 \draw[slsyn] (E) -- (H);
-\draw[slpath] (T) -- (B);
-\draw[slpath] (B) -- (E);
-\draw[slpath] (E) -- (I);
-\draw[slpath] (I) -- (K);
-\draw[slpath] (K) -- (Bot);
+\begin{scope}[on background layer]
+  \draw[slpath] (T) -- (B) -- (E) -- (I) -- (K) -- (Bot);
+\end{scope}
 \node[slhi] at (B) {$(\rho_b,\;\phi_b)$};
 \node[slhi] at (I) {$(\rho_i,\;\upsilon_1)$};
 \node[slhi] at (K) {$(\rho_k,\;\phi_k)$};
@@ -185,10 +184,10 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 \node[anchor=west, font=\scriptsize, OliveGreen!40!black] at (3.95,4.3) {$\upsilon_1$};
 \node[anchor=west, font=\scriptsize, OliveGreen!40!black] at (3.95,2.2) {$\upsilon_0$};
 \end{tikzpicture}
-\caption{Monotonically descending minima $m_2, m_1, m_0$ for query refinements $\upsilon_2 \to \upsilon_1 \to \upsilon_0$, calculated by descending along the \textcolor{Green!60!black}{green} path.}
+\caption{Monotonically descending minima $m_2, m_1, m_0$ for query refinements $\upsilon_2 \to \upsilon_1 \to \upsilon_0$, calculated by descending along the \textcolor{Green!60!black}{highlighted} path.}
 \label{fig:syn-slice-refinement}
 \end{subfigure}
-\caption{Two similar Hasse diagrams of program slices $\rho_i \in \lfloor P \rfloor$, ordered by {\color{latticecolor}strict program precision $\sqsubset$}, paired with corresponding synthesised types $\phi_i \in \lfloor \tau \rfloor$. Overlaid with precision relations on types ({\color{BrickRed}dotted lines}).}
+\caption{Two similar Hasse diagrams of program slices $\rho_i \in \lfloor P \rfloor$, ordered by {\color{latticecolor}strict program precision $\sqsubset$} (solid arrows), paired with corresponding synthesised types $\phi_i \in \lfloor \tau \rfloor$. Overlaid with precision relations on types ({\color{BrickRed}dashed arrows}).}
 \label{fig:syn-slices}
 \end{figure}
 
