@@ -80,7 +80,7 @@ For every $s : \synslice{D}{\upsilon}$, there exists $m : \minsynslice{D}{\upsil
 The slice lattice $\lfloor \Gamma, e \rfloor$ is finite. Hence, $\{\,s' : \synslice{D}{\upsilon} \mid s' \sqsubset s\,\}$ is finite and computable by enumeration. If this set is empty, then $s$ is minimal; otherwise, recurse on any of its elements. Each step strictly decreases precision, so finiteness ensures termination.
 \end{proof}
 
-Consequentially, any derivation $D$ has a minimal synthesis slice, as the original program is a trivial inhabitant of $\synslice{D}{\upsilon}$ for all $\upsilon$.
+Consequently, any derivation $D$ has a minimal synthesis slice, as the original program is a trivial inhabitant of $\synslice{D}{\upsilon}$ for all $\upsilon$.
 \paragraph{A Brute-Force Algorithm via Graduality} The proof above is not a practical algorithm. In practice, for any term, the list of maximal slices strictly less precise than a given term can be computed efficiently by omitting exactly \textit{one} leaf from the AST.
 
 The algorithm picks the first maximal strict slice that satisfies the query and recurses; if none of the slices satisfy the query, then a minimal slice has been found, by graduality (\cref{thm:graduality-syn}). This is $\mathcal{O}(n \times T)$ where $n$ is the program size and $T$ the type checking complexity; type checking is linear in the program size for this calculus, so finding a minimal slice is $\mathcal{O}(n^2)$.
