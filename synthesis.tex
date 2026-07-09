@@ -45,9 +45,9 @@ Many such synthesis slices exist. In particular, the original program $(\Gamma, 
 \begin{counterexamplebox}
 %
 \begin{counterexample}[Non-Existence of all Exact Synthesis Slices]\label{lem:exact-not-exist}\leavevmode\\
-Consider $x \mathbin{:} \mathbf{*} \funarr \mathbf{*} \vdash (x, x) \synmode (* \funarr *) \times (* \funarr *)$, and query $\upsilon = (\mathbf{*} \funarr \gap) \times (\gap \funarr \mathbf{*})$. 
+Consider $x \mathbin{:} \mathbf{1} \funarr \mathbf{1} \vdash (x, x) \synmode (1 \funarr 1) \times (1 \funarr 1)$, and query $\upsilon = (\mathbf{1} \funarr \gap) \times (\gap \funarr \mathbf{1})$.
 
-Any strictly smaller slice of either $x : * \funarr *$ or $(x, x)$ synthesises a type strictly less precise than $\upsilon$. Yet the original program synthesises $(* \funarr *) \times (* \funarr *)$, strictly more precise than $\upsilon$.
+Any strictly smaller slice of either $x : 1 \funarr 1$ or $(x, x)$ synthesises a type strictly less precise than $\upsilon$. Yet the original program synthesises $(1 \funarr 1) \times (1 \funarr 1)$, strictly more precise than $\upsilon$.
 \end{counterexample}
 \end{counterexamplebox}
 
@@ -203,17 +203,17 @@ If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and $m_2 : \minsy
 
 This is desirable because the user will not be shown \textit{additional} information after a query refinement which would require further reasoning by the user to understand. \Cref{fig:syn-slice-refinement} illustrates a monotonic refinement path along 3 refined queries on the example lattice. If we did not follow a monotonic path during refinement we would get `branch hopping':
 
-\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. For example, refining $\upsilon = \mathbf{*}\funarr\mathbf{*}$ to $\upsilon' = \gap\funarr\mathbf{*}$:
+\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. For example, refining $\upsilon = \mathbf{1}\funarr\mathbf{1}$ to $\upsilon' = \gap\funarr\mathbf{1}$:
 \begin{center}
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
   \node[draw, line width=0.9pt, rounded corners,
-        label={[font=\scriptsize\itshape]above:assumptions}] (a) {$x : \sli{\mathbf{*} \funarr \mathbf{*}}$};
+        label={[font=\scriptsize\itshape]above:assumptions}] (a) {$x : \sli{\mathbf{1} \funarr \mathbf{1}}$};
   \node[right=6pt of a] (t) {$\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}\;x\;\mathbf{else}}\;y$};
 \end{tikzpicture}%
 \quad$\xrightarrow{\upsilon' \sqsubseteq \upsilon}$\quad
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
   \node[draw, line width=0.9pt, rounded corners,
-        label={[font=\scriptsize\itshape]above:assumptions}] (a) {$y : \mathbf{*}\,\sli{\funarr \mathbf{*}}$};
+        label={[font=\scriptsize\itshape]above:assumptions}] (a) {$y : \mathbf{1}\,\sli{\funarr \mathbf{1}}$};
   \node[right=6pt of a] (t) {$\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}}\;x\;\sli{\mathbf{else}\;y}$};
 \end{tikzpicture}
 \end{center}

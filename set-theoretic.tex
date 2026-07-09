@@ -12,7 +12,7 @@ To demonstrate this application, consider generalising sum types of the core cal
 \[\inference[\synr{$\iota_1$}]{\synthesis{e}{\tau}}{\synthesis{\iota_1\; e}{\tau + \gap}} \qquad
   \inference[\synr{$\iota_2$}]{\synthesis{e}{\tau}}{\synthesis{\iota_2\; e}{\gap + \tau}}\]
 
-Then an if statement $\mathit{pred} \triangleq \mathbf{if}\ x > 0\ \mathbf{then}\ \iota_1(x - 1)\ \mathbf{else}\ \iota_2(*)$ synthesises a sum type $\mathbb{N} + *$ without requiring type annotations in much the same way that union type inference often works (i.e. union type $\mathbb{N}\ |\ *$). Then, type slicing can intuitively explain where the components of the sum (union) come from. Querying $\gap + *$ will highlight exactly the failing branch and $\mathbb{N} + \gap$ the succeeding one. 
+Then an if statement $\mathit{pred} \triangleq \mathbf{if}\ x > 0\ \mathbf{then}\ \iota_1(x - 1)\ \mathbf{else}\ \iota_2(())$ synthesises a sum type $\mathbb{N} + 1$ without requiring type annotations in much the same way that union type inference often works (i.e. union type $\mathbb{N}\ |\ 1$). Then, type slicing can intuitively explain where the components of the sum (union) come from. Querying $\gap + 1$ will highlight exactly the failing branch and $\mathbb{N} + \gap$ the succeeding one. 
 \subsection{Occurrence Typing}
 \label{sec:occurrence}
 

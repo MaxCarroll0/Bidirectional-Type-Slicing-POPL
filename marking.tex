@@ -86,49 +86,49 @@ We give some worked examples, notating with a \markbox{\text{marked term}}, a \s
 
 Consider the program
 \[
-  \mathbf{let}\;p : * \funarr * = (\texttt{true},\,\texttt{false})\;\mathbf{in}\;p.
+  \mathbf{let}\;p : 1 \funarr 1 = (\texttt{true},\,\texttt{false})\;\mathbf{in}\;p.
 \]
-The RHS $(\texttt{true},\,\texttt{false})$ synthesises $\texttt{Bool} \times \texttt{Bool}$ but is analysed against $* \funarr *$. Marking inserts
-$\markincon{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}$
+The RHS $(\texttt{true},\,\texttt{false})$ synthesises $\texttt{Bool} \times \texttt{Bool}$ but is analysed against $1 \funarr 1$. Marking inserts
+$\markincon{\texttt{Bool} \times \texttt{Bool}}{1 \funarr 1}$
 around the RHS:
 \[
-  \mathbf{let}\;p : * \funarr * = \markbox{\markincon[(\texttt{true},\,\texttt{false})]{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}}\;\mathbf{in}\;p.
+  \mathbf{let}\;p : 1 \funarr 1 = \markbox{\markincon[(\texttt{true},\,\texttt{false})]{\texttt{Bool} \times \texttt{Bool}}{1 \funarr 1}}\;\mathbf{in}\;p.
 \]
-Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}$ with the entire term highlighted. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
+Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \texttt{Bool}}{1 \funarr 1}$ with the entire term highlighted. However, in reality, only the outermost type constructors are actually causing the (initial) type inconsistency, and type slicing allows query refinements of the full types. In full:
 
 \noindent\paragraph{\textbf{Decomposition}}
 The (context, focus) pair the marking factors into is
 \[
-  C \;=\; \mathbf{let}\;p : * \funarr * = \cmark\;\mathbf{in}\;p,
+  C \;=\; \mathbf{let}\;p : 1 \funarr 1 = \cmark\;\mathbf{in}\;p,
   \qquad
   e \;=\; (\texttt{true},\,\texttt{false}),
 \]
-with the focus at $\anamode\,(* \funarr *)$. The two
+with the focus at $\anamode\,(1 \funarr 1)$. The two
 debugging queries run on the two sides of this split.
 
 \noindent\paragraph{\textbf{Synthesis Slice}}
-$\mathit{MinSynSlice}$ at the minimal type-slice $\upsilon \sqsubseteq \texttt{Bool} \times \texttt{Bool}$ that still witnesses $\upsilon \not\sim (* \funarr *)$:
+$\mathit{MinSynSlice}$ at the minimal type-slice $\upsilon \sqsubseteq \texttt{Bool} \times \texttt{Bool}$ that still witnesses $\upsilon \not\sim (1 \funarr 1)$:
 \[
   e \;\rightsquigarrow\; (\,\texttt{true}\,\sli{,}\,\texttt{false}\,)
   \qquad\text{with}\qquad
-  \upsilon = \gap\,\sli{\times}\,\gap.
+  \upsilon = \gap\,{\times}\,\gap.
 \]
 
 \noindent\paragraph{\textbf{Analysis Slice}}
-$\mathit{MinAnaSlice}$ at the minimal $\psi \sqsubseteq * \funarr *$ that still witnesses $(* \times *) \not\sim \psi$:
+$\mathit{MinAnaSlice}$ at the minimal $\psi \sqsubseteq 1 \funarr 1$ that still witnesses $(1 \times 1) \not\sim \psi$:
 \[
   C \;\rightsquigarrow\;
-  \slist{\mathbf{let}}\;p\,\slist{:}\,*\,\sli[OliveGreen]{\funarr}\,*\,\slist{=}\,\cmark\,\slist{\mathbf{in}}\;p
+  \slist{\mathbf{let}}\;p\,\slist{:}\,1\,\sli[OliveGreen]{\funarr}\,1\,\slist{=}\,\cmark\,\slist{\mathbf{in}}\;p
   \qquad\text{with}\qquad
-  \psi = \gap\,\sli[OliveGreen]{\funarr}\,\gap.
+  \psi = \gap\,{\funarr}\,\gap.
 \]
 
 \paragraph{\textbf{Full view:}} The slices pick out exactly what each side contributes to the failure.
 
-\queryblock{\texttt{Bool}\sli{\times}\texttt{Bool}\;\;(\equiv\;\gap \times \gap)}{\texttt{*}\sli[OliveGreen]{\funarr}\texttt{*}\;\;(\equiv\;\gap \funarr \gap)}
+\queryblock{\texttt{Bool}\sli{\times}\texttt{Bool}\;\;(\equiv\;\gap \times \gap)}{\texttt{1}\sli[OliveGreen]{\funarr}\texttt{1}\;\;(\equiv\;\gap \funarr \gap)}
 \[
-  \slist{\mathbf{let}}\;p\,\slist{:}\,*\,\sli[OliveGreen]{\funarr}\,*\,\slist{=}\,
-  \markbox{\markincon[(\,\texttt{true}\,\sli{,}\,\texttt{false}\,)]{\texttt{Bool} \times \texttt{Bool}}{* \funarr *}}\,
+  \slist{\mathbf{let}}\;p\,\slist{:}\,1\,\sli[OliveGreen]{\funarr}\,1\,\slist{=}\,
+  \markbox{\markincon[(\,\texttt{true}\,\sli{,}\,\texttt{false}\,)]{\texttt{Bool} \times \texttt{Bool}}{1 \funarr 1}}\,
   \slist{\mathbf{in}}\;p.
 \]
 
@@ -143,12 +143,12 @@ The shape-mismatch marks all occur in similar situations: the syntactic position
 
 \vspace{3pt}\noindent
 \begin{minipage}[c]{0.68\linewidth}
-\hspace*{9pt}A representative example is $e = \texttt{(*, *)}\,(\,\texttt{true}\,)$, where $\texttt{(*,*)}$ is syntactically in a function position, but synthesises $\texttt{*}\times\texttt{*}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
+\hspace*{9pt}A representative example is $e = \texttt{((), ())}\,(\,\texttt{true}\,)$, where $\texttt{((),())}$ is syntactically in a function position, but synthesises $\texttt{1}\times\texttt{1}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
 \end{minipage}\hfill
 \begin{minipage}[c]{0.28\linewidth}
 \centering
-\queryblock{\texttt{*}\sli{\times}\texttt{*}}{\text{---}}
-$\markbox{\markarrow[(\texttt{*}\sli,\texttt{*})]}\,(\,\texttt{true}\,).$
+\queryblock{\texttt{1}\sli{\times}\texttt{1}}{\text{---}}
+$\markbox{\markarrow[(\texttt{()}\sli,\texttt{()})]}\,(\,\texttt{true}\,).$
 \end{minipage}
 
 \subsubsection{Unannotated Lambda against Non-Arrow: $\marklam$}

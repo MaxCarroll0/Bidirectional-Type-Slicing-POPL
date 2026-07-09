@@ -29,7 +29,7 @@ marked) context typing rules, and the marked-context metatheory.
 \small
 \fbox{$\synthesis{e}{\tau}$}\ \ \ $e$ synthesises type $\tau$ under type variable context $\Delta$ and typing assumptions $\Gamma$
 \[\inference[\synr{$\gap$}]{}{\synthesis{\gap}{\gap}} \qquad
-  \inference[\synr{*}]{}{\synthesis{*}{*}}\]
+  \inference[\synr{()}]{}{\synthesis{()}{1}}\]
 \[\inference[\synr{Var}]{x : \tau \in \Gamma}{\synthesis{x}{\tau}}\]
 \[\inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \funarr \tau_2}} \qquad
   \inference[\synr{let}]{\synthesis{e_1}{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_2}{\tau_2}}{\synthesis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}}\]
@@ -80,7 +80,7 @@ marked) context typing rules, and the marked-context metatheory.
 
 \bigskip
 
-\inference[\synr{Const}]{}{\tmrule{*}{*}{\latticetop}{*}{*}{\emptyset}}
+\inference[\synr{Const}]{}{\tmrule{()}{1}{\latticetop}{()}{1}{\emptyset}}
 
 \bigskip
 

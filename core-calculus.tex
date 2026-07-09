@@ -6,13 +6,13 @@ In this section, we present the core calculus which type slicing builds upon. It
 \subsection{Syntax \& Relations}
 \label{sec:core-syntax}
 
-The syntax of the core calculus is given in Figure~\ref{fig:syntax}. $*$ is the unit type, and $\gap$ is a gap / hole serving a dual role: in the gradual typing interpretation it is the dynamic type, and in the slicing interpretation it represents unrequired type information (to explain a query). Similarly a $\gap$ in expressions represents omitted sub-expressions, irrelevant to the explanation resulting from a query. In type checking, omitted expressions synthesise the dynamic (omitted) type.
+The syntax of the core calculus is given in Figure~\ref{fig:syntax}. $1$ is the unit type, and $\gap$ is a gap / hole serving a dual role: in the gradual typing interpretation it is the dynamic type, and in the slicing interpretation it represents unrequired type information (to explain a query). Similarly a $\gap$ in expressions represents omitted sub-expressions, irrelevant to the explanation resulting from a query. In type checking, omitted expressions synthesise the dynamic (omitted) type.
 
 \begin{figure}[H]
 \fbox{Syntax}\ \ \ Types $\tau$ and expressions $e$
 \begin{align*}
-\tau &::= \gap \mid * \mid \tau \funarr \tau \mid \tau \times \tau \mid \tau + \tau \mid \forall\alpha.\;\tau \mid \alpha \\[4pt]
-e &::= \gap \mid * \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\; e \mid e(e) \mid (e,\; e) \mid \pi_1\; e \mid \pi_2\; e \\
+\tau &::= \gap \mid 1 \mid \tau \funarr \tau \mid \tau \times \tau \mid \tau + \tau \mid \forall\alpha.\;\tau \mid \alpha \\[4pt]
+e &::= \gap \mid () \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\; e \mid e(e) \mid (e,\; e) \mid \pi_1\; e \mid \pi_2\; e \\
   &\quad\mid\; \iota_1\; e \mid \iota_2\; e \mid (\mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;e) \mid \Lambda\alpha.\; e \mid e\langle\tau\rangle \mid \mathbf{let}\;x = e\;\mathbf{in}\;e
 \end{align*}
 
@@ -20,7 +20,7 @@ e &::= \gap \mid * \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\;
 \label{fig:syntax}
 \end{figure}
 
-Base types such as booleans are omitted from the core syntax, being encoded using sums in the usual way (e.g.\ $\mathit{Bool} \triangleq * + *$); we use them freely in examples.
+Base types such as booleans are omitted from the core syntax, being encoded using sums in the usual way (e.g.\ $\mathit{Bool} \triangleq 1 + 1$); we use them freely in examples.
 
 \subsubsection{Consistency}
 
@@ -30,7 +30,7 @@ Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in stand
 \fbox{$\tau_1 \sim \tau_2$}\ \ \ $\tau_1$ is consistent with $\tau_2$
 \[\inference[$\sim\gap_1$]{}{\tau \sim \gap} \qquad
   \inference[$\sim\gap_2$]{}{\gap \sim \tau} \qquad
-  \inference[$\sim{*}$]{}{* \sim *} \qquad
+  \inference[$\sim{1}$]{}{1 \sim 1} \qquad
   \inference[$\sim{\funarr}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \funarr \tau_2 \sim \tau_1' \funarr \tau_2'}\]
 \[\inference[$\sim{\times}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \times \tau_2 \sim \tau_1' \times \tau_2'} \qquad
   \inference[$\sim{+}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 + \tau_2 \sim \tau_1' + \tau_2'} \qquad
@@ -41,12 +41,12 @@ Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in stand
 
 \subsubsection{Precision}
 
-Precision (Figure~\ref{fig:precision}) is a partial order that organises terms by \textit{information content}: for types, $\tau' \sqsubseteq \tau$ means $\tau$ has at least as much type information as $\tau'$. Here, $\gap$ is the global minimum. Expression precision is defined analogously; for instance, the slices of $\lambda x \mathbin{:} *.\; x$ form the precision chain $\gap \sqsubseteq \lambda x \mathbin{:} \gap.\; \gap \sqsubseteq \lambda x \mathbin{:} *.\; \gap \sqsubseteq \lambda x \mathbin{:} *.\; x$, each step filling in one more part of the term.
+Precision (Figure~\ref{fig:precision}) is a partial order that organises terms by \textit{information content}: for types, $\tau' \sqsubseteq \tau$ means $\tau$ has at least as much type information as $\tau'$. Here, $\gap$ is the global minimum. Expression precision is defined analogously; for instance, the slices of $\lambda x \mathbin{:} 1.\; x$ form the precision chain $\gap \sqsubseteq \lambda x \mathbin{:} \gap.\; \gap \sqsubseteq \lambda x \mathbin{:} 1.\; \gap \sqsubseteq \lambda x \mathbin{:} 1.\; x$, each step filling in one more part of the term.
 
 \begin{figure}[H]
 \fbox{$\tau \sqsubseteq \tau'$}\ \ \ $\tau$ is less precise than $\tau'$
 \[\inference[$\sqsubseteq\gap$]{}{\gap \sqsubseteq \tau} \qquad
-  \inference[$\sqsubseteq{*}$]{}{* \sqsubseteq *} \qquad
+  \inference[$\sqsubseteq{1}$]{}{1 \sqsubseteq 1} \qquad
   \inference[$\sqsubseteq{\alpha}$]{}{\alpha \sqsubseteq \alpha} \qquad
   \inference[$\sqsubseteq{\funarr}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 \funarr \tau_2 \sqsubseteq \tau_1' \funarr \tau_2'}\]
 \[\inference[$\sqsubseteq{\times}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 \times \tau_2 \sqsubseteq \tau_1' \times \tau_2'} \qquad
@@ -71,7 +71,7 @@ Typical literature refers to these \textit{typing assumptions} as `typing contex
 \label{sec:core-meets-joins}
 
 The \textit{meet} $\tau_1 \sqcap \tau_2$ is the greatest lower bound (GLB) under precision, retaining only sub-terms present in both terms. The \textit{join} $\tau_1 \sqcup \tau_2$ is the least upper bound (LUB) under precision, omitting only subterms omitted in both components. For example:
-\[(* \funarr \gap) \sqcap (\gap \funarr *) \;=\; \gap \funarr \gap, \qquad\quad (* \funarr \gap) \sqcup (\gap \funarr *) \;=\; * \funarr *.\]
+\[(1 \funarr \gap) \sqcap (\gap \funarr 1) \;=\; \gap \funarr \gap, \qquad\quad (1 \funarr \gap) \sqcup (\gap \funarr 1) \;=\; 1 \funarr 1.\]
 Meets are \textit{total}, but joins are defined only between \textit{consistent} types.
 
 \subsubsection{The Slice Lattice}
