@@ -219,30 +219,33 @@ Analysis slices are calculated directly from synthesis slices. The only rule tha
 
 However, to recursively calculate the analysis slice of an application when the focus is deep inside the argument, you need to calculate the analysis slice of the argument, but its outer derivation mode is in \textit{analysis}. The analysis slices of \cref{sec:ana-slice-def} do not apply here.
 
-We need an additional notion of \textit{inner} analysis slices. Dually to regular (outer) analysis slices, which treat the synthesis mode as an \textit{input}\footnote{Note, this is dual to the modes in typing of expressions!}, the inner slices treat the analysis derivation mode as an \textit{output}, and attempt to minimise it. 
+We need an additional notion of \textit{inner} analysis slices. Dually to regular (outer) analysis slices, which treat the synthesis mode as an \textit{input}, the inner slices treat the analysis derivation mode as an \textit{output}, and attempt to minimise it. 
 
 Intuitively, an inner analysis slice gives the minimal assumptions, context, and additionally the minimum \textit{analysis type} to be imposed on it by the outer context, such that the queried analysis type holds at its focus. In particular slicing the function in an application would use this minimal outer analysis mode type on the argument to slice the domain type of the function.
+\vspace{-0.5em}
 \begin{definition}
 \label{def:ana-pos-slice}
 An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\anamode\,\tau_p}{\Delta';\,\Gamma'}{\anamode\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaposslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that, for some chosen outer type $\upsilon_{\mathrm{outer}} \in \lfloor\tau_p\rfloor$, $\ctxclass[\Delta;\,\gamma]{\kappa}{\anamode\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{\anamode\,\upsilon}$.
 \end{definition}
+\vspace{-0.5em}
 
 \section{Full Type Slices -- Slicing Assumption Definitions}
-An astute reader may have noticed that analysis slices do \textit{not} explain a set of minimal assumptions upon the focus allowing it to analyse against the queried type. We take this approach to allow analysis slices to work in principle with \textit{any} (type-checking) term at the focus, many of which will have differing minimal assumptions to analyse against the type.
+Synthesis slices are explained using a set of \textit{minimal assumptions}. However, in real code, these are actually \textit{provided by the surrounding context} (or from external code). Providing these minimal assumptions via a full slice of this context can be very meaningful. For example, when debugging a type error, the error itself may be \textit{non-local}, within a variable definition elsewhere, giving one of the used variables the wrong type. In this situation the error is in the definition, and we could debug it by inspecting (and slicing) that definition.
 
-However, when you actually want to consider a specific term at the focus, in particular, a \textit{synthesising} term, which makes use of variables \textit{provided by the surrounding context}, a full slice of the context can be very meaningful. For example, when debugging a type error, the error itself may be \textit{non-local}, giving one of the used variables the wrong type.
+A \textit{full type slice} is a fully sliced decomposition of a program around a focus, which can be pieced back together to form a well-typed program with the same (or stronger) typing properties at the focus as some given query:
 
-Formally, we refer to such a construct as a \textit{type slice}: a fully sliced decomposition of a program around a focus, which can be pieced back together to form a well-typed program with the same (or stronger) typing properties at the focus as some given query:
-
+\vspace{-0.5em}
 \begin{definition}[Type slices]
   \label{def:type-slice}
 A \textit{type slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\synmode\,\tau}$ and $D : \synthesis[\Delta';\,\Gamma']{e}{\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\syntypeslice{(\mathit{Cls},D)}{\upsilon}$, is a pair $((\kappa,\gamma),(\gamma_f,\varsigma)) \in \lfloor\C,\Gamma\rfloor \times \lfloor\Gamma',e\rfloor$ such that $(\gamma_f,\varsigma) : \synslice{D}{\upsilon}$, and $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta';\,\gamma_f'}{\synmode\,\phi'}$ for some $\psi$, and $\gamma_f' \sqsupseteq \gamma_f$ such that $\synthesis[\Delta';\ \gamma_f']{\varsigma}[\phi']$.
 \end{definition}
+\vspace{-0.5em}
 
 Importantly, the pair of slices forms a well-typed program: by context typing soundness, $\kappa[\varsigma]$ synthesises $\psi$. Then, a \textit{minimal} type slice is one in which the context $\kappa$ and the focused expression $\varsigma$ are jointly minimised alongside minimal external typing assumptions of the context typing $\gamma$. Notably, we do \textit{not} minimise the assumptions to the focused terms, as its assumptions are now explicitly provided by the surrounding context (and $\gamma$). 
 
-As slices can be inexact, efficiently calculating a minimal context providing sufficient assumptions to a minimal \textit{SynSlice} at the focus is non-trivial. The Hazel implementation instead approximates this by slicing the definition / annotation on each binding by its required type as per the minimal assumptions of the focused term. When each slice of these definitions is exact,\footnote{Inexactness can only come from synthesising let bindings lacking annotations and with variable aliasing whilst querying the definition at a refined (not full) query. Therefore, we expect this approximation to be exact in most situations.} the resulting type slice is minimal.
+As slices can be inexact, efficiently calculating a minimal context providing sufficient assumptions to a minimal \textit{SynSlice} at the focus is non-trivial. The Hazel implementation instead closely approximates this by slicing the definition / annotation on each binding by its required type as per the minimal assumptions of the focused term. When each slice of these definitions is exact, the resulting type slice is minimal.
 
+For terms in analysis mode, the full type slice is just the analysis slice, as the empty focus (with type $\gap$) analyses successfully against any type.
 \section{Minimum-Size Slices}
 \label{sec:min-size}
 
