@@ -84,7 +84,9 @@
 % \subsection detected"), so the \pretocmd{\subsection}{\needspace{...}} hack from
 % the dissertation is removed for the POPL version.
 
-\usepackage{cleveref}
+% capitalise: \cref prints capitalised names everywhere ("Theorem 4.5",
+% "Fig. 2", "Table 1"), matching caption labels; \Cref unchanged.
+\usepackage[capitalise]{cleveref}
 % Abbreviated section cross-references: \cref -> "Sec. 3" mid-sentence,
 % \Cref -> "Section 3" at sentence start. Sub(sub)sections inherit these.
 \crefname{section}{Sec.}{Secs.}

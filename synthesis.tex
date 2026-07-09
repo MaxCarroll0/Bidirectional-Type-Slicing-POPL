@@ -268,7 +268,7 @@ Let $m : \minsynslice{\synr{Let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_
 
 Finally, a minimal slice only provides an explanation; it does not show \textit{all} information \textit{contributing} in any way to a query type. The latter is a useful notion when performing refactors which change the type, where quickly identifying the regions of the program which rely on the old type is crucial.
 
-Such a region can be uniquely expressed as the \textit{join} of all minimal slices for the query. The contribution slice is efficient in the sense that it is a \textit{least} upper bound of actual minimal slices. For this to work, synthesis slices must be closed under joins: the joined slice must also be \textit{valid}, which is true:
+Such a region can be uniquely expressed as the \textit{join} of all minimal slices for the query. The contribution slice is efficient in the sense that it is a \textit{least} upper bound of actual minimal slices. For this to work, synthesis slices must be closed under joins: the joined slice must also be \textit{valid}:
 
 \vspace{-0.5em}
 \begin{majortheorembox}

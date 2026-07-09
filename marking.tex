@@ -45,7 +45,7 @@ $\markvar{k}$      & scope & Variables & Variable $k$ has no binding in scope \\
 
 Importantly, marked terms can be type-checked by treating the marks as `non-empty' holes, synthesising $\gap$ (and recursively marking and type-checking the inner term).
 
-The validity of this method is formalised by two theorems: \textit{totality} ensures marks account for every possible typing error, and \textit{erasure} ensures adding marks does not change the structure of the terms.
+The validity of this method is formalised by two theorems: \textit{totality} ensures marks account for every possible typing error, and \textit{erasure} ensures adding marks does not change a term's structure.
 
 \begin{theorem}[Totality of Marking]
 \label{thm:mark-total}

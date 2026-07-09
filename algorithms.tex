@@ -206,11 +206,11 @@ The case rule is the difficult one, appearing to require an iterative fixed poin
 
 However, when the branch slices exactly synthesise disjoint type queries, then there is no redundancy and the result is minimal. The scrutinee can be sliced using the join of the minimal assumptions on the branches, much like with let bindings. 
 
-To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1 \heytingminus \upsilon_2$, which is the least slice whose join with $\upsilon_2$ recovers $\upsilon_1$, i.e. ``the part of $\upsilon_1$ not already covered by $\upsilon_2$'', for example $\sli{* \times *} \;\heytingminus\; \sli{* \times}\,\gap \;=\; \gap\,\sli{\times *}$.
+To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1 \heytingminus \upsilon_2$, which is the least slice whose join with $\upsilon_2$ recovers $\upsilon_1$, i.e. ``the part of $\upsilon_1$ not already covered by $\upsilon_2$'', e.g. $\sli{* \times *} \;\heytingminus\; \sli{* \times}\,\gap \;=\; \gap\,\sli{\times *}$.
 
 Then, a disjoint cover of query $\upsilon$ is one such that $\upsilon\heytingminus \upsilon_1 = \upsilon_2$ and $\upsilon \heytingminus \upsilon_2 = \upsilon_1$. The case expression will necessarily synthesise $\upsilon_1 \sqcup \upsilon_2$ which equals $\upsilon$ by standard co-Heyting algebra rules. Note that the lattice is \textit{not} a boolean algebra, so $\upsilon_1 \sqcap \upsilon_2 \neq \gap$ in general.
 
-The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider the aliased variables at the leaves of the branch expressions.
+The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider aliased variables at the leaves.
 
 \subsection{Calculating Analysis Slices}
 \label{sec:ana-slice-calculus}
