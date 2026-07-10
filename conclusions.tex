@@ -12,7 +12,7 @@ Globally inferred languages have much more confusing typing derivations and erro
 \noindent
 \begin{minipage}[t]{0.58\linewidth}
 \vspace{0pt}
-A gradually-typed language elaborates source programs into a cast calculus and runs the casts dynamically. Type slices can be attached directly to those casts, letting casts explain why they were inserted by pointing back to code: the source is a slice of the term being cast, the target a slice of its context.
+A gradually-typed language elaborates programs into a cast calculus and runs the casts dynamically. Type slices can be attached to those casts, letting casts explain their insertion by pointing back to code: the source is a slice of the term being cast, the target a slice of its context.
 
 \hspace*{9pt}This is useful for debugging dynamic type errors, which would not otherwise point back to code: gradual typing's blame~\cite{WadlerFindler2009} identifies \emph{which} cast failed but implicates only the cast site; a slice widens this to every source fragment contributing to either side.
 \end{minipage}\hfill
@@ -31,7 +31,7 @@ However, slices are no longer slices of the original program once dynamic reduct
 \section{Conclusions}
 \label{sec:conclusions}
 
-This paper formulated type slicing theory for a bidirectional calculus with explicit System~F polymorphism, bindings, products, and sums, mechanised in Agda, and formally integrated it with the error-marking calculus of \citet{Marking2024}, applying type slicing to ill-typed programs and justifying its \textit{sound} use in debugging \textit{all} static type errors. This foundation positions type slicing as a promising tool for practical languages, especially gradually typed ones, explaining both static \textit{and, in follow-up work, dynamic} types.
+This paper formulated type slicing theory for a bidirectional calculus with explicit System~F polymorphism, bindings, products, and sums, mechanised in Agda, and formally integrated it with the error-marking calculus of \citet{Marking2024}, applying it to ill-typed programs and justifying its \textit{sound} use in debugging \textit{all} static type errors. This positions type slicing as a promising tool for practical languages, especially gradually typed ones, explaining both static \textit{and, in follow-up work, dynamic} types.
 
 \label{lastcontentpage}
 
