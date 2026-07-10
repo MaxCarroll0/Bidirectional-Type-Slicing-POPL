@@ -6,7 +6,7 @@
 \providecommand{\anaposslice}[2]{\mathit{InnerAnaSlice}\;#1 \mathbin{\blacktriangleleft} #2}
 \providecommand{\minanaposslice}[2]{\mathit{MinInnerAnaSlice}\;#1 \mathbin{\blacktriangleleft} #2}
 
-\noindent With this in mind, analysis slices are simple analogues to synthesis slices, except being conducted on context typing derivations for a \textit{fixed inner mode}. Specifically, as any program synthesises a type, analysis slices concern derivations only in \textit{synthesis} outer derivation mode.
+\noindent With this in mind, analysis slices are simple analogues to synthesis slices, except being conducted on \textit{analysis inner mode} context typing derivations. And, as the overall programs that we consider must synthesise a type, the usual analysis slices concern derivations only in \textit{synthesis} outer derivation mode.\footnote{An extension to analysis outer modes, which is useful for efficient calculation, is discussed later.}
 
 Intuitively, slices of the context explain why a sub-term is \textit{expected} by the surrounding context to synthesise or analyse against a given type. We typically only care about the cases where the inner mode is in \textit{analysis}; a (well-typed) surrounding context does not actually influence \textit{why} a term synthesises a type.\footnote{A context may define a variable which is used in a synthesising term, non-locally affecting the subterm's type. However, assumption slices are treated entirely \textit{separately} in both modes. That is, we do not ask the analysis slice to explain how exactly the bindings provide the minimal assumptions for the focus, only how it explains the \textit{type} at the focus.}
 
