@@ -36,7 +36,7 @@ Concretely, this paper contributes:
 {\em (iii)} \textit{context typing} (\S\ref{sec:context-typing}), a novel judgement with totality, soundness, and gradual guarantees, enabling the dual \textit{analysis slices} (\S\ref{sec:analysis});
 {\em (iv)} integration with error marking (\S\ref{sec:marking}), extending both slice forms to arbitrary ill-typed programs;
 {\em (v)} term-minimal slices supporting compositional calculation, NP-hardness of minimum-size slicing, and a linear-time approximation (\S\ref{sec:algorithms}--\S\ref{sec:min-size});
-and {\em (vi)} a comparison with prior forms of slicing (\S\ref{sec:related-work}) and applications to set-theoretic and occurrence typing (\S\ref{sec:set-theoretic}).
+and {\em (vi)} a comparison with prior forms of slicing and type debugging (\S\ref{sec:related-work}) and applications to set-theoretic and occurrence typing (\S\ref{sec:set-theoretic}).
 
 Hazel~\cite{hazel-website} is an example full-scale language satisfying these conditions; we have extended its implementation with an efficient linear-time approximation of type slicing, introduced by example (\S\ref{sec:slicing-by-example}). The prototype user interface is an initial proof of concept, and we make no specific usability claims; we expect the theory to support a variety of user interfaces and further applications for type debugging and explanation, and suggest several avenues for exploration (\S\ref{sec:further-work}).
 The core calculus and metatheory are mechanised in Agda and available in the supplemental material.

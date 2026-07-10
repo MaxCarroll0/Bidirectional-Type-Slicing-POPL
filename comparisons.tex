@@ -1,8 +1,8 @@
-\section{Relation to Other Forms of Slicing}
+\section{Relation to Other Forms of Slicing \& Type Debugging}
 \label{sec:comparisons}
 \label{sec:related-work}
 
-Program slicing methods have been explored extensively, in various forms and for many applications~\cite{TipSurvey1995}. Here we compare type slicing with these, being loosely related in foundation to \emph{Galois slicing}~\cite{Perera2012}, and in application to \emph{type error slicing}~\cite{Wand1986,HaackWells2003}.
+Program slicing methods have been explored extensively, in various forms and for many applications~\cite{TipSurvey1995}. Here we compare type slicing with these, being loosely related in foundation to \emph{Galois slicing}~\cite{Perera2012}, and in application to \emph{type error slicing}~\cite{Wand1986,HaackWells2003}. We then relate to the broader type debugging literature (\S\ref{sec:cmp-debuggers}).
 
 \subsection{Classical Program Slicing}
 \label{sec:cmp-program-slicing}
@@ -36,7 +36,7 @@ Then take the two slices $s_1$ keeping only the first branch and the $s_2$ keepi
 
 Type error slicing, like type slicing, is a static analysis on a typing problem. Both share the broad goal of attributing type-level information back to source positions, but differ in language target, the underlying mathematical structure, and the scope.
 
-Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} work in a globally inferred Hindley-Milner system; the program is reduced to a system of equality constraints over type variables, and a type error slice is computed as a minimal unsatisfiable subset of the constraint set, projected back to the corresponding minimal subset of source positions.
+Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} work in a globally inferred Hindley-Milner system; the program is reduced to a system of equality constraints over type variables, and a type error slice is computed as a minimal unsatisfiable subset of the constraint set, projected back to the corresponding minimal subset of source positions. Skalpel~\cite{Skalpel2017} matures and scales this approach to full Standard ML.
 
 These program slices are not structure-preserving programs; they are flat sets of constraints and sources, rather than actual programs. This means the results themselves cannot be type checked, nor can they be executed.
 
@@ -50,6 +50,13 @@ There is also a difference in scope. Type error slicing answers \emph{``why does
 Essentially, given a target program element and a typechecker specified by its type rules, a type-directed slicer statically computes a smaller program on which the typechecker behaves identically at the target. This form of slicing is essentially the same idea as our type slicing when restricted only to maximal queries (no partial queries). However, the approach, theory, and proofs behind both specifying and calculating type slices differ greatly. Similarly, the languages being considered differ, with ours extending further to bidirectionally inferred types, applying to programs with fewer annotations and better support for first-class functions (lambda expressions). On the other hand, their work is applied in practice to a wider range of analyses, including exceptions, crashes, and nullness analysis.
 
 Their work was empirically evaluated on historical bugs of \texttt{javac}, NullAway~\cite{NullAway}, and the Checker Framework~\cite{CheckerFramework}, showing significant success in producing efficiently reduced test cases. Therefore, we expect that our theory would be similarly applicable to such extensive real world use cases. Further, applying the ideas of partial queries may be a worthwhile extension to their tools, especially when a type checker may produce multiple cascading bugs on some program.
+
+\subsection{Type Debuggers \& Type Explanation}
+\label{sec:cmp-debuggers}
+
+Beyond slicing, there is a broad literature on explaining, localising, and repairing type errors. The oldest line \emph{explains} types: Beaven and Stansifer~\cite{BeavenStansifer1993} and Duggan and Bent~\cite{DugganBent1996} generate textual explanations from instrumented unification, \citet{YangMichaelsonTrinder2002} explain inferred polymorphic types of well-typed programs, and \citet{Chitil2001} navigates compositional explanation graphs via algorithmic debugging. These systems answer the same question as a synthesis slice---why does this term have this type?---but produce prose or inference traces that grow with the program, whereas a type slice is itself a minimal well-formed program, which can be re-checked, further queried, and refined. Interactive debuggers similarly answer queries about types and errors: Chameleon~\cite{StuckeyChameleon2003} answers location queries over a constraint store for Haskell, and Argus~\cite{Argus2025} interactively explains Rust trait errors within the IDE.
+
+A larger body of work improves error \emph{reports} for globally inferred languages: constraint-solving heuristics in Helium~\cite{HeerenHageSwierstra2003}, ranking likely error causes over constraint graphs~\cite{ZhangMyers2014,SHErrLoc2015}, minimum error sources via MaxSMT~\cite{PavlinovicKingWies2014,PavlinovicICFP2015}, correcting sets computed against a black-box inferencer~\cite{Mycroft2016}, messages derived from subtyping-constraint data flows~\cite{FlowMessages2023}, dynamic witnesses executing ill-typed programs~\cite{SeidelJhalaWeimer2016}, and learned localisation~\cite{NATE2017} and repair~\cite{Rite2020}. These techniques answer ``where is the error?'' or ``how might it be fixed?'' rather than ``why this type?''; empirically, the true fix often lies outside the reported location~\cite{StudentTypeErrorFixes}, which type slicing surfaces directly via analysis and full slices (\S\ref{sec:full-slices}). As slices are themselves programs, these tools compose with type slicing (\S\ref{sec:intro}), running unchanged on the minimised programs.
 
 
 %%% Local Variables:
