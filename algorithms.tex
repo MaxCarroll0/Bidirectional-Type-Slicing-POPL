@@ -225,9 +225,11 @@ Intuitively, an inner analysis slice gives the minimal assumptions, context, and
 \vspace{-0.5em}
 \begin{definition}
 \label{def:ana-pos-slice}
-An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\anamode\,\tau_p}{\Delta';\,\Gamma'}{\anamode\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaposslice{\mathit{Cls}}{\upsilon}$, is a triple $(\kappa, \gamma, \upsilon_{\mathrm{outer}}) \in \lfloor\C, \Gamma, \tau_p\rfloor$ such that $\ctxclass[\Delta;\,\gamma]{\kappa}{\anamode\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{\anamode\,\phi}$ for some inner-type witness $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor\tau\rfloor$ by graduality, \cref{thm:graduality-ana-cls}).
+An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\anamode\,\tau_p}{\Delta';\,\Gamma'}{\anamode\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaposslice{\mathit{Cls}}{\upsilon}$, is a triple $(\kappa, \gamma, \upsilon_{\mathrm{outer}}) \in \lfloor\C, \Gamma, \tau_p\rfloor$ such that \mbox{$\ctxclass[\Delta;\,\gamma]{\kappa}{\anamode\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{\anamode\,\phi}$} for some inner-type witness $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor\tau\rfloor$ by graduality, \cref{thm:graduality-ana-cls}).
 \end{definition}
 \vspace{-0.5em}
+
+\noindent A minimal inner analysis slice minimises the whole triple, $\upsilon_{\mathrm{outer}}$ included (so that an application slices the function's domain by no more than the argument requires).
 
 \section{Full Type Slices -- Slicing Assumption Definitions}
 \label{sec:full-slices}
