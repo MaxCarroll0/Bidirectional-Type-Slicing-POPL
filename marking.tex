@@ -66,17 +66,17 @@ likewise for analysis.
 \label{sec:marking-classification}
 
 
-In this style, we extend context typing (\S\ref{sec:context-typing}) to \textit{marked} context typing $\mctxclass[\Delta;\Gamma]{C}{\chk C}{p}{\Delta';\Gamma'}{m}$, threading a marked context $\chk C$ alongside $C$ (with context marks defined analogously to expressions), adding one error rule per mark form of \cref{tab:mark-forms}. We have proven analogous totality and soundness theorems hold for marked contexts, mirroring the unmarked plug decomposition and composition (\cref{thm:plug-decomposition,thm:plug-composition}).
+In this style, we extend context typing (\S\ref{sec:context-typing}) to \textit{marked} context typing $\mctxclass[\Delta;\,\Gamma]{\C}{\chk{\C}}{p}{\Delta';\,\Gamma'}{m}$, threading a marked context $\chk{\C}$ alongside $\C$ (with context marks defined analogously to expressions), adding one error rule per mark form of \cref{tab:mark-forms}. We have proven analogous totality and soundness theorems hold for marked contexts, mirroring the unmarked plug decomposition and composition (\cref{thm:plug-decomposition,thm:plug-composition}).
 
 \subsection{The Debugging Recipe by Example}
 \label{sec:marking-recipes}
 
 We may now relate the tools developed over the last four sections to explain type errors:
 \begin{enumerate}
-\item Place the focus (cursor) at some marked term. This splits the marked program into a marked context $\chk C$ and marked focus $\chk e$, with $\chk C[\chk e]$ recovering the program; a marked context typing at the focus is then derivable by totality of marked context typing.
+\item Place the focus (cursor) at some marked term. This splits the marked program into a marked context $\chk{\mathcal{C}}$ and marked focus $\chk e$, with $\chk{\mathcal{C}}[\chk e]$ recovering the program; a marked context typing at the focus is then derivable by totality of marked context typing.
 \item Synthesis slice the internal type information, the term at the \emph{focus}, $\chk e$, if the focus mode $m$ is in synthesis ($\synmode\;\tau$).
 \item Analysis slice the external type information, the \emph{context typing} itself, if the focus mode $m$ is in analysis ($\anamode\;\tau$).
-\item Pick queries to explore the error. For type-inconsistency marks \textit{both} the synthesis and analysis slices exist (two context typings exist from step 1). From these, \textit{only} the inconsistent parts may be queried. For shape errors, simply query just the outermost shape of the synthesised type; mode-limitation errors are analogous on the analysis side.
+\item Pick queries to explore the error. For type-inconsistency marks \textit{both} the synthesis and analysis slices exist (two context typings exist from step 1). From these, \textit{only} the inconsistent parts need be queried to explain the error. For shape errors, simply query just the outermost shape of the synthesised type; mode-limitation errors are analogous on the analysis side.
 \end{enumerate}
 
 We give some worked examples, notating with a \markbox{\text{marked term}}, a \sli{\text{synthesis slice}}, and/or an \sli[OliveGreen]{\text{analysis slice}}. `Purely structural' slice regions which do not add or manipulate type information (i.e. bindings) are in a lighter shade.
@@ -99,7 +99,7 @@ Marking would ordinarily report the error $\markincon{\texttt{Bool} \times \text
 \noindent\paragraph{\textbf{Decomposition}}
 The (context, focus) pair the marking factors into is
 \[
-  C \;=\; \mathbf{let}\;p : 1 \funarr 1 = \cmark\;\mathbf{in}\;p,
+  \mathcal{C} \;=\; \mathbf{let}\;p : 1 \funarr 1 = \cmark\;\mathbf{in}\;p,
   \qquad
   e \;=\; (\texttt{true},\,\texttt{false}),
 \]
@@ -117,7 +117,7 @@ $\mathit{MinSynSlice}$ at the minimal type-slice $\upsilon \sqsubseteq \texttt{B
 \noindent\paragraph{\textbf{Analysis Slice}}
 $\mathit{MinAnaSlice}$ at the minimal $\psi \sqsubseteq 1 \funarr 1$ that still witnesses $(\texttt{Bool} \times \texttt{Bool}) \not\sim \psi$:
 \[
-  C \;\rightsquigarrow\;
+  \mathcal{C} \;\rightsquigarrow\;
   \slist{\mathbf{let}}\;p\,\slist{:}\,1\,\sli[OliveGreen]{\funarr}\,1\,\slist{=}\,\cmark\,\slist{\mathbf{in}}\;p
   \qquad\text{with}\qquad
   \psi = \gap\,{\funarr}\,\gap.

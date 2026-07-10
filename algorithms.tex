@@ -140,7 +140,7 @@ The rest of this section develops a structural calculus that characterises minim
 \[ \Gamma \vdash e \mathbin{\synmode} \tau \mathbin{\blacktriangleleft} \upsilon \;{\color{BrickRed}\rightsquigarrow}\; \varsigma \mathbin{\synmode} \psi \dashv \gamma, \]
 read ``the typing $\Gamma \vdash e \synmode \tau$ at query $\upsilon$ produces term slice $\varsigma$, synthesises $\psi$, and uses assumptions $\gamma$''. The fourth output $\gamma$ is a minimal assumption slice to retrieve a minimal slice corresponding to the term-minimal slice.
 
-\noindent The cases that deserve commentary are products, the binding constructs, function application, and type application; the \synr{Lam{:}}\ and \synr{Let}\ rules each carry a body re-typing premise (rightmost) which re-derives the body's typing under the binder slice $\gamma(x)$.
+\noindent The cases that deserve commentary are products, the binding constructs, function application, and type application.
 
 \subsubsection{Products}
 With term minimality, we now have that two minimal synthesis slices which are also term-minimal can be composed into a term-minimal, minimal synthesis slice. For a query $\upsilon_1\times \upsilon_2$ on the product, the projections are queried with $\upsilon_1$ and $\upsilon_2$ individually:
@@ -253,10 +253,12 @@ Importantly, the pair of slices forms a well-typed program: by context typing so
 As slices can be inexact, efficiently calculating a minimal context providing sufficient assumptions to a minimal \textit{SynSlice} at the focus is non-trivial. The Hazel implementation instead closely approximates this by slicing the definition / annotation on each binding by its required type as per the minimal assumptions of the focused term. When each slice of these definitions is exact, the resulting type slice is minimal.
 
 For terms in analysis mode, the full type slice is just the analysis slice, as the empty focus (with type $\gap$) analyses successfully against any type.
+
+\clearpage
 \section{Minimum-Size Slices}
 \label{sec:min-size}
 
-Minimal slices are not unique, and some are actually larger than others in the sheer number of terms highlighted. So, one might rank them by \textit{size}: the number of highlighted positions, asking for a \textit{minimum-size} slice. For this core calculus, finding such a slice is \textbf{NP-hard} in general. 
+Minimal slices are not unique, and some are actually larger than others in the sheer number of terms highlighted. So, one might rank them by \textit{size}: the number of highlighted positions, asking for a \textit{minimum-size} slice. For this core calculus, finding such a slice is \textbf{NP-hard} in general. This implies that an algorithm attempting to also reduce the absolute size of slices should use heuristics to avoid or reduce the likelihood of cases with exponential time complexity.
 
 We can construct a reduction from the NP-hard set cover optimisation problem as follows, and shown in \cref{fig:nphard}:
 \begin{itemize}
