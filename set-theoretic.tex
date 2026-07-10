@@ -1,10 +1,8 @@
-\section{Set-Theoretic Types and Occurrence Typing}
+\subsection{Set-Theoretic Types}
 \label{sec:set-theoretic}
+\label{sec:future-set-theoretic-occurrence}
 
 Type slicing looks especially promising for common gradual type systems in which \textit{control flow and types are intertwined}: an expression's type depends non-trivially on the branches inside a function, or the control-flow path in which the expression lies. Explaining a type then genuinely requires considering the branches within the code, rather than just annotations and literals; as type slices necessarily \textit{retain} program structure, they can retain the appropriate control flow structure.
-
-\subsection{Set-Theoretic Types}
-\label{sec:future-set-theoretic-occurrence}
 
 \emph{Set theoretic types} extend the type language with union, intersection, and negation, letting a term carry several types simultaneously, typing overloaded functions and typecase constructs common in real world hybrid typed languages (e.g.\ TypeScript, or Elixir~\cite{ElixirTypes}). Relevant foundations, including graduality proofs, have been explored~\cite{CastagnaLanvin, CastagnaLPS, AngeloThesis}, ready for type slicing to build upon.\footnote{After adapting into a bidirectional setting with expression holes.}
 
