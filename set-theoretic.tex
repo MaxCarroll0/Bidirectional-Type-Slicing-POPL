@@ -1,22 +1,19 @@
 \section{Set-Theoretic Types and Occurrence Typing}
 \label{sec:set-theoretic}
 
-Type slicing looks especially promising for common gradual type systems in which \textit{control flow and types are intertwined}. Here, an expression's type depends non-trivially on the branches inside a function, or the control-flow path in which the expression lies. Therefore, explaining a type genuinely requires considering the branches within the code, rather than just the basic annotations and literals. Further, as type slices necessarily \textit{retain} program structure, they also have the ability to retain appropriate control flow structure.
+Type slicing looks especially promising for common gradual type systems in which \textit{control flow and types are intertwined}: an expression's type depends non-trivially on the branches inside a function, or the control-flow path in which the expression lies. Explaining a type then genuinely requires considering the branches within the code, rather than just annotations and literals; as type slices necessarily \textit{retain} program structure, they can retain the appropriate control flow structure.
 
 \subsection{Set-Theoretic Types}
 \label{sec:future-set-theoretic-occurrence}
 
-\emph{Set theoretic types} extend the type language with union, intersection, and negation. A term can then carry several types simultaneously, allowing typing of overloaded functions, and typecase constructs, commonly used in real world hybrid typed languages (e.g.\ TypeScript, or Elixir~\cite{ElixirTypes}). Relevant foundations have been explored for these types \cite{CastagnaLanvin, CastagnaLPS}, including graduality proofs \cite{AngeloThesis}, providing formal foundations to apply type slicing to.\footnote{After adapting into a bidirectional setting with expression holes.}
+\emph{Set theoretic types} extend the type language with union, intersection, and negation, letting a term carry several types simultaneously, typing overloaded functions and typecase constructs common in real world hybrid typed languages (e.g.\ TypeScript, or Elixir~\cite{ElixirTypes}). Relevant foundations, including graduality proofs, have been explored~\cite{CastagnaLanvin, CastagnaLPS, AngeloThesis}, ready for type slicing to build upon.\footnote{After adapting into a bidirectional setting with expression holes.}
 
-To demonstrate this application, consider generalising sum types of the core calculus (\S\ref{sec:core-calculus}) to allow sum injections to synthesise partially dynamic types: 
-\[\inference[\synr{$\iota_1$}]{\synthesis{e}{\tau}}{\synthesis{\iota_1\; e}{\tau + \gap}} \qquad
-  \inference[\synr{$\iota_2$}]{\synthesis{e}{\tau}}{\synthesis{\iota_2\; e}{\gap + \tau}}\]
-
-Then an if statement $\mathit{pred} \triangleq \mathbf{if}\ x > 0\ \mathbf{then}\ \iota_1(x - 1)\ \mathbf{else}\ \iota_2(())$ synthesises a sum type $\mathbb{N} + 1$ without requiring type annotations in much the same way that union type inference often works (i.e. union type $\mathbb{N}\ |\ 1$). Then, type slicing can intuitively explain where the components of the sum (union) come from. Querying $\gap + 1$ will highlight exactly the failing branch and $\mathbb{N} + \gap$ the succeeding one. 
+To demonstrate this application, consider generalising sum types of the core calculus (\S\ref{sec:core-calculus}) to allow sum injections to synthesise partially dynamic types: when $\synthesis{e}{\tau}$, let $\synthesis{\iota_1\; e}{\tau + \gap}$ and $\synthesis{\iota_2\; e}{\gap + \tau}$.
+Then an if statement $\mathit{pred} \triangleq \mathbf{if}\ x > 0\ \mathbf{then}\ \iota_1(x - 1)\ \mathbf{else}\ \iota_2(())$ synthesises a sum type $\mathbb{N} + 1$ without requiring annotations, much as union type inference works (i.e. union type $\mathbb{N}\ |\ 1$), and type slicing can explain where each component comes from: querying $\gap + 1$ highlights exactly the failing branch, and $\mathbb{N} + \gap$ the succeeding one.
 \subsection{Occurrence Typing}
 \label{sec:occurrence}
 
-\emph{Occurrence typing}~\cite{OccurrenceTyping} is another common technique in hybrid type systems. Inside the true branch of \texttt{if (typeof x = int) ... else ...}, the type of \texttt{x} is refined as an \texttt{int}. These explicitly require exploring the surrounding control flow, which can be extensive and/or complex, to reason about the types. As mentioned, type slices necessarily retain the program structure, so can provide a reduced slice with minimal control flow to reason about the type within. However, formally applying type slicing to such a system will need extensive work on integration with bidirectional typing and static graduality.
+\emph{Occurrence typing}~\cite{OccurrenceTyping} is another common technique in hybrid type systems. Inside the true branch of \texttt{if (typeof x = int) ... else ...}, the type of \texttt{x} is refined as an \texttt{int}. These explicitly require exploring the surrounding control flow, which can be extensive, to reason about the types. As type slices necessarily retain program structure, they can provide a reduced slice with minimal control flow to reason within. Formally applying type slicing to such systems will, however, need extensive integration work with bidirectional typing and static graduality.
 
 %%% Local Variables:
 %%% mode: LaTeX

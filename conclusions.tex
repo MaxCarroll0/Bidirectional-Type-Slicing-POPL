@@ -4,7 +4,7 @@
 \subsection{Implicit Polymorphism}
 \label{sec:future-implicit}
 
-Globally inferred languages typically have much more confusing typing derivations and type errors than locally inferred languages. Extending the calculus to implicit polymorphism in a bidirectional setting would expand the application significantly. In particular, the ability to explain even well-typed code is particularly useful here as error marks are often localised to the wrong location, resulting in the real error being in well-typed code whose types may be inconsistent with the programmer's intuitive expectation. Adapting the constraint slicing systems of Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} to integrate with type slicing is worth exploring.
+Globally inferred languages have much more confusing typing derivations and errors than locally inferred ones, so extending the calculus to implicit polymorphism would expand the application significantly. Explaining even well-typed code is particularly useful here: error marks are often mis-localised, leaving the real error in well-typed code whose types conflict with the programmer's expectation. Adapting the constraint slicing of Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} to integrate with type slicing is worth exploring.
 
 \subsection{Cast Slicing \& Dynamics}
 \label{sec:cast-dynamics}
@@ -12,28 +12,26 @@ Globally inferred languages typically have much more confusing typing derivation
 \noindent
 \begin{minipage}[t]{0.58\linewidth}
 \vspace{0pt}
-A gradually-typed language elaborates source programs into a cast calculus and runs the resulting casts dynamically. Type slices can be attached directly to those casts. Hence, casts can then explain why they were inserted by pointing back to code; the source will be a slice of the term being cast, and the target a slice of its context. 
+A gradually-typed language elaborates source programs into a cast calculus and runs the casts dynamically. Type slices can be attached directly to those casts, letting casts explain why they were inserted by pointing back to code: the source is a slice of the term being cast, the target a slice of its context.
 
-\hspace*{9pt}This is useful for debugging dynamic type errors, which would not otherwise point back to code: gradual typing's blame~\cite{WadlerFindler2009} identifies \emph{which} cast failed, but implicates only the cast site, whereas a slice widens this to every source fragment that contributed to either side of the failing cast.
+\hspace*{9pt}This is useful for debugging dynamic type errors, which would not otherwise point back to code: gradual typing's blame~\cite{WadlerFindler2009} identifies \emph{which} cast failed but implicates only the cast site; a slice widens this to every source fragment contributing to either side.
 \end{minipage}\hfill
 \begin{minipage}[t]{0.38\linewidth}
 \vspace{0pt}
 \centering
-\includegraphics[width=\linewidth]{media/simple_cast_error}
+\includegraphics[width=0.85\linewidth]{media/simple_cast_error}
 \captionof{figure}{Type slice associated with a cast error, from a preliminary workshop paper~\hatraSelfCite{} built on differing foundations~\priorDissertationSelfCite{}.}
 \label{fig:cast-slice}
 \end{minipage}
 
 \vspace{3pt}
 
-However, the strong theoretical properties of slices being slices of the original program are not maintained during dynamic execution as reductions are performed. Tracking dynamic execution, perhaps integrating ideas from Perera~\cite{Perera2012,PereraGarg2016}, would allow users to trace back casts to source code with stronger guarantees; a recent study~\cite{TypeSlicer2025} found dynamic slices significantly aid diagnosis of run-time type errors in gradual languages.
+However, slices are no longer slices of the original program once dynamic reductions are performed. Tracking dynamic execution, perhaps integrating ideas from Perera~\cite{Perera2012,PereraGarg2016}, would allow tracing casts back to source with stronger guarantees; dynamic slices measurably aid diagnosis of run-time type errors in gradual languages~\cite{TypeSlicer2025}.
 
 \section{Conclusions}
 \label{sec:conclusions}
 
-This paper formulated type slicing theory for a bidirectional calculus with explicit System~F polymorphism, bindings, products, and sums, mechanised in Agda. We formally integrated this with the error-marking calculus of \citet{Marking2024}, which applies type slicing to ill-typed programs, justifying its \textit{sound} use in debugging \textit{all} static type errors of a program.
-
-We discussed how type slicing differs substantially from previous program slicing techniques, of which there are several varieties, none of which are directly applicable to the problem of explaining types in bidirectional type systems. This provides a solid foundation which, with some extensions, positions type slicing as a promising tool for use in practical languages, especially gradually typed ones, for explaining both static \textit{and, in follow-up work, dynamic} types.
+This paper formulated type slicing theory for a bidirectional calculus with explicit System~F polymorphism, bindings, products, and sums, mechanised in Agda, and formally integrated it with the error-marking calculus of \citet{Marking2024}, applying type slicing to ill-typed programs and justifying its \textit{sound} use in debugging \textit{all} static type errors. This foundation positions type slicing as a promising tool for practical languages, especially gradually typed ones, explaining both static \textit{and, in follow-up work, dynamic} types.
 
 \label{lastcontentpage}
 
