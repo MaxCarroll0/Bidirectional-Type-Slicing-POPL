@@ -2,7 +2,7 @@ We thank the reviewers for constructive comments, and we believe we can
 address all concerns given the extra 2 pages, as follows:
 
 * Overview
-The larger revisions we propose is listed in this section. The
+The larger revisions we propose are listed in this section. The
 per-reviewer sections that follow comment on /every/ point raised,
 each with an explanation, or where relevant, a small change we will
 make to address it (or our reasoning in the few cases where we propose
@@ -168,7 +168,7 @@ will clarify.
 + Figure 1: Hazel's type system does not infer the parameterised type
   ~A~ in ~Option(A)~ without an annotations, assuming dynamic
   ~Option(?)~ if an annotation is missing. The full case statement
-  synthesises 'Option(Digit)' as is joins this first branch type with
+  synthesises 'Option(Digit)' as it joins this first branch type with
   the ~Option(?)~ of branches 1-9 & _. The minimal slice query includes
   'Digit', so we must retain this branch.
 + (Your other comments are good improvements/fixes, and all changes
@@ -252,7 +252,7 @@ e.g. Roly Perera's, and also other typical lattice-based static
 analyses).
 
 Given New and Ahmed use gradaulity specifically for the dynamic
-guarantee, we will just switch to using SSG throughout. Good point
+guarantee, we will just switch to using SGG throughout. Good point
 
 *** Comments
 
@@ -275,7 +275,7 @@ example). These two will be fixed.
   under \upsilon = ~Int -> ⌷~ ('why does f take an Int as
   input?'). Consider the types some random slice of ~f~ could
   produce any of:
-  : f : Int -> Int  Explains the query, and more
+  : f : Int -> Bool Explains the query, and more
   : f : Int -> ⌷    Re-derives the query (therefore, explains it)
   : f : ⌷ -> Bool   Explains only the output, but not the input, therfore, not valid
   : f : ⌷           explains nothing, therefore not valid
@@ -303,7 +303,7 @@ example). These two will be fixed.
 - p10 Branch Hopping :: Yep, this is why this sort of situation is
   undesirable! We refine the query monotonically (\upsilon -> less
   precise \upsilon'), but if we pick some random slice for \upsilon',
-  it may not be monotonicallu decreasing vs the previous, we may omit
+  it may not be monotonically decreasing vs the previous, we may omit
   more (e.g. x is now omitted), but may also have new assumptions (or
   branches) appear magically (assumption y). In comparison picking
   monotonically decreasing slices will always be consistent, and only
