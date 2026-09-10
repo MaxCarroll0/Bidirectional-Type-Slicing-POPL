@@ -1,38 +1,65 @@
-Dear Reviewers, thank you for the detailed comments. Our response is below:
+We thank the reviewers for constructive comments, and we believe we can
+address all concerns given the extra 2 pages, as follows:
 
 * Overview
-The main revisions are below, followed by detailed responses to each
-individual point per reviewer, with a more concise 'Specific Question
-Answers' so you can find the specific answers you requested
-easily. Most of the comments suggesting changes will be acted upon
-(see the responses to each). In general we believe the biggest help
-will be adding some toy examples to help the maths be easier to
-follow. I have added some examples to this review text itself as
-examples for your benefit (TODO).
+The larger revisions we propose is listed in this section. The
+per-reviewer sections that follow comment on /every/ point raised,
+each with an explanation, or where relevant, a small change we will
+make to address it (or our reasoning in the few cases where we propose
+no change); each ends with a concise 'Specific Question Answers' so
+you can find the answers you requested easily.
 
-* Main Revisions
-The main revisions are below:
+Since this is a long response, each reviewer may prefer to just read
+the major revisions & their specific question answers.
+
+In general we believe the biggest help will be adding some toy
+examples to help the maths be easier to follow; we have included
+several in the explanations of the latter sections for your
+benefit. Alongside a couple of scope clarifications.
+
+* Major Revisions
 + Adding some toy examples throughout to aid intuition
-+ Slight reordering of some sections to aid understanding / motivation
-  of some of the theory
++ Add a query refinement intuition example to the introduction, where
+  refining queries is first discussed
++ Move section 2.2 (downwards static gradual guarantee) later, after
+  precision is introduced (section 3.1.2), while explicitly noting
+  that extended forms of precision (involving subtyping, records,
+  etc.) could be used alongside (or instead of) holes, making clear
+  the brute force underlying idea and slicing algorithm applicable to
+  a wide range of bidirectional type systems (gradual or not)
 + Clarification of the 'contributions section' -- make clear that the
   further applications (e.g. to set types) are intended as suitable
   systems to further expand / apply the theory or motivations to, not
   contributions themselves!
 + Add soundness theorem to the partial compositional algorithm of
   section 8 (already mechanised, was just omitted from the paper)
-+ Add a couple omitted important rules that were (wrongly) cut due to space
-  constraints (e.g. explicit subsumption rule is highly useful for
-  understanding for readers who don't know gradual types as much)
-+ Expansion of the related work section with a more practical focus,
-  i.e. some more in depth dicussions and examples on what type slicing
-  gives /over/ existing plain slicing or error slicing methods
-  conceptually (i.e. from a motivation standpoint, ignoring
-  differences in the language calculi).
++ Add sample checking rules to section 3.3, omitted (wrongly) due to
+  space constraints. Primarily, the analysis subsumption rule &
+  analysis unannotated function rule. We will also add a short excerpt
+  of the marking rules of section 7 (should space allow), these just
+  replicate existing literature (Zhao et al. [56]).
++ Detail the scope / goal of this paper a little more, this is
+  intended as a /theoretical paper/ which can serve as a foundation for
+  implementing type slicing tools for a wide range of bidirectional
+  languages.
+
+  The Hazel implementation gives some evidence of applying this theory
+  to larger systems. However, larger evaluation, in particular, of the
+  empirical benefits of being able to 'refine type queries' within
+  slices is more suitable to a later more practical-focused paper
+  (although, we do show small examples and applications of this to
+  demonstrate the motivation, primarily in section 1.2 & 7).
++ Small expansion of the related work section with a practical focus
+  on how our form of type slicing compares to existing tools i.e. some
+  more in depth discussions and examples on what type slicing gives
+  /over/ existing plain slicing or error slicing methods conceptually
+  (i.e. from a motivation standpoint, ignoring differences in the
+  language calculi).
 + Expansion of why we believe set theoretic (and occurrence) types is
-  a useful system to integrate / apply type slicing to. (referring to
-  the POPL24 citation reviewer A referred to is likely useful, as it
-  has some significant similarities that make it a natural extension).
+  a useful system to integrate / apply type slicing to. (with
+  reference to some actual inference algorithms, for example, the
+  Castagna POPL24 citation reviewer A referred to is a worthwhile
+  comparison to relate with type slicing here).
 + Add some context on why section 10 exists (this was a little foray
   into considering ranking of multiple minimal solutions, showing that
   at least one view of choosing the 'best' minimal slice ('by size')
@@ -40,17 +67,19 @@ The main revisions are below:
 
   Make it clear here that this paper is intended to /classify the
   space of solutions/, and find / approximate one efficiently, but
-  does not consider ranking solutions (which is a large problem in and
-  of itself, more suitable for a second practical paper exploring
-  further algorithms and more detailed evaluation of real-world
-  effectiveness).
+  does not consider ranking solutions (a large problem in and of
+  itself, more suitable for a second practical paper exploring further
+  algorithms and more detailed evaluation of real-world
+  effectiveness). Deciding how to rank solutions is quite subjective,
+  consider how to balance factors like: size, branching factor,
+  locality, no. of bindings, typing derivation size etc.
 + A few small maths & figure typo / wording / terminology fixes &
-  changes. (keen to not embarrass ourselves by miswriting a basic
-  digit parser combinator!! It appears I can't write bug-free code
-  without a proof assistant to double-check me...)
+  changes (thanks to reviewer B for finding a few good ones). (keen to
+  not embarrass ourselves by miswriting a basic digit parser
+  combinator!! It appears I can't write bug-free code without a proof
+  assistant to double-check me...)
 + Remove Purely Structural contexts. It is not really needed for
   understanding of the paper.
-
 
 =============
 
@@ -60,28 +89,33 @@ I agree this paper has little direct evidence in itself for
 demonstrating slicing method within a /practical/ context, as it is
 intended as an exploration of new theoretical ideas of slicing on
 typing derivations as applied to bidirectional typing and type query
-refinement to allow /incremental slicing/. I refer to SPECIMEN
+refinement to allow /incremental slicing/. I refer to SPECIMIN
 primarily as it is the most practical project with similar motivations
-(type-based slicing) can lead to practical success. Our system would,
-of course, require much further work to apply to a industry
-programming language to confirm this.
+(type-based slicing) evidencing that the underlying motivation can
+lead to practical success. Our system would, of course, require much
+further work to apply to a industry programming language to confirm
+this.
 
-Feasibility in a real-world situation is at least partially evidenced
-by the Hazel implementation (which is a real language with
-significantly more features than our basic calculus). Though the
-effectiveness of slicing in general is left to existing papers which
-have already justified this.
+Feasibility is at least partially evidenced by the Hazel
+implementation (a real language with significantly more features than
+our basic calculus), which shows the approach can be built; larger
+scale evaluation is future work.
 
-On the theoretical side, there simply is not a Galois connection here
-in the presence of branching code (see section 11.2). So I wouldn't
-exactly call it a 'trade', but a necessity (if taking a lattice
-approach). However, much of the foundations of these slicing methods
-ARE applied here (e.g. the idea of refining type queries via lattices
-is based upon Perera's slicing of values). Otherwise, this is an
-entirely new slicing formalism created in order to apply to
-bidirectional types. To our knowledge, there is no other slicing
-method of any kind / on any system which works on well-typed programs
-and allows type query refinement.
+This theory gives a framework within which to create more large-scale
+slicing methods with a clear specification of minimality.
+
+On the theoretical side, there simply *is not a suitable Galois
+connection* here in the presence of branching code (see section
+11.2). So I wouldn't exactly call it a 'trade', but a necessity (if
+taking a lattice approach). However, much of the foundations of these
+Galois slicing methods ARE applied here (e.g. the idea of refining
+type queries via lattices is based upon Perera's slicing of values),
+and we would say these are what give the /biggest benefits/ to this
+method (query refinement). Otherwise, this is an entirely new slicing
+formalism created in order to apply to bidirectional types. To our
+knowledge, there is no other slicing method of any kind / on any
+system which works on well-typed programs and allows type query
+refinement.
 
 Section 10 discusses ranking between minimal slices, establishing that
 trying to find the 'best (smallest) minimal slice' is NP-hard. A more
@@ -95,11 +129,36 @@ slices becomes more subjective: e.g. /is a slice with fewer branches,
 containing large tuples, more 'comprehensible' than a 'smaller' slice
 with partially omitted tuples over several branches?/
 
-The above is certainly some very interesting future work, but it would
-deserve a more detailed significant treatment in a more practical
-(future) paper.
+To demonstrate the subectivity concretely here is an example ( (this
+example is a little long, you may want to skip unless you are
+particularly interested), take a validator pseudocode:
+: validate x = if empty x       then (Some 400,      None,          None)
+:              else if long x   then (None,          Some TooLong,  None)
+:              else if bad x    then (None,          None,          Some "bad")
+:              else if cached x then (Some hit.code, Some hit.warn, None)
+:              else let r = check x
+:                   in (Some r.code, Some r.warn, Some r.msg)
+Under \upsilon = ~Option(Int) * Option(Warning) * Option(String)~
+(recall ~None~ synthesises ~? + 1~, so only a branch which /constructs/
+a value justifies that component). Sized by nodes plus non-hole leaves
+(triples as nested pairs), three of the minimal slices are
+: if ⌷ then (Some 400,⌷,⌷) else if ⌷ then (⌷,Some TooLong,⌷)
+:      else if ⌷ then (⌷,⌷,Some "bad") else ⌷        (3 branches, size 14)
+: if ⌷ then ⌷ else if ⌷ then ⌷ else if ⌷ then (⌷,⌷,Some "bad")
+:      else if ⌷ then (Some hit.code,Some hit.warn,⌷)
+:      else ⌷                                        (2 branches, size 15)
+: if ⌷ then ⌷ else ... else let r = check ⌷
+:      in (Some r.code, Some r.warn, Some r.msg)     (1 branch,  size 20)
 
-TODO: write example if statement?
++ The first slice (smallest size) has its type info scattered over
+  branches despite being small, is this easy to understand?
++ The second slice is larger but has more 'locality' in the slice.
++ The third slice has even more locality, but is larger, but requires
+  introducing a whole new binding.
+
+Which one is best? Ranking solutions is certainly some very
+interesting future work, but it would deserve a more detailed
+significant treatment in a more practical (future) paper.
 
 Set theoretic types were not meant to be a contribution here, just a
 future direction! That section heading may be a little misleading, we
@@ -112,38 +171,35 @@ will clarify.
   synthesises 'Option(Digit)' as is joins this first branch type with
   the ~Option(?)~ of branches 1-9 & _. The minimal slice query includes
   'Digit', so we must retain this branch.
-+ (Your other comments are good improvements, and all small changes
++ (Your other comments are good improvements/fixes, and all changes
   will be revised)
 
 *** Specific Question Answers
-+ TODO: READ THE PAPER and VeriFY / evaluate
-  Type slices link this back to /code/, that is, the inference done in
-  these systems in some cases is essentially the same as that done by
-  type slicing, but type slicing also tracks this code and be able to
-  show it to the user.
++ An inferred union or intersection still doesn't actually provide a
+  provenance to the code (type slice), nor do we have easy ways to
+  select parts of types (or subtypes), and relate these to partial
+  code regions themselves. However, inferred set-types do indeed
+  internally work in such a way that is very amenable to these slicing
+  methods. (Hence why this is a good further direction!!). Of course,
+  these relations depend highly on the particular inference system.
 
-  You could consider just tracing this inference engine, but Type
-  Slicing further allows selecting a PART of such an inferred union or
-  intersection type, highlighting the corresponding branches /
-  functions. This applies more generally even when we don't
-  specifically refine a query, e.g. type slicing ~f(x)~ can omit the
-  argument, but the inference engine will need to also verify the
-  argument types match. Similarly, when checking case statements, type
-  slicing need only retain one branch between redundant types, but
-  inference engines needs to verify all of them.
+  We have not yet explored that POPL24 paper algorithm in full depth,
+  however there are several striking partial similarities/relations to
+  type slicing in our paper. e.g. the split propagation system
+  (appendix H.3) ``given an environment \Gamma, an atom a and a type
+  t, what additional assumptions can be made on \Gamma in order to
+  ensure that a has type t?'' is similar to the slicing of assumptions
+  here, though stated in a different direction.
 
-  However, the fact there is so much overlap is exactly why it is
-  listed as a useful future direction, because the existing techniques
-  share similarities! We will expand on this a little further in the
-  revisions, with particular reference to the POPL24 paper.
+  These connections are particularly interesting, and we shall look
+  into these more, adding a paragraph to relate slicing in this
+  particular application. But, if anything, more connections just
+  makes applying this slicing method easier! And, of course, this
+  theory is applicable to many situations outside of set-types too.
 
-  *Note:* I realise that set-theoretic types are linked in the
-  contributions section referring to section 11 (related work), but
-  they are actually in 'further extensions / applications (section
-  12). This is a typo, set-theoretic applications is certainly not a
-  core /contribution/ of this paper! The contribution that text is
-  referring to is the comparison with related work (i.e. exploration
-  of Galois Connection suitability etc.)
+  (This is a particularly good question, we will be looking into it
+  more, though it primarily concerns future work rather than the main
+  paper)
 
 + Lemma 5.1 is weak, it just ensures that you can slice the two
   regions independently, which together become a syntactic slice of
@@ -157,11 +213,11 @@ will clarify.
   You could maybe form some sort of 'whole program minimality' by
   considering the overlap between 'full type slices' and 'full
   analysis slices' and observe some loss of minimality when joining
-  individually minimal slices, rather than jointly minising them
+  individually minimal slices, rather than jointly minimising them
   mutually, but this starts getting complex to reason about for little
-  benefit -- given a programmer (and the type checker!) typically
-  reasons about the type of a term via the two dual types, not the
-  overall full program.
+  benefit -- given a programmer (and the bidirectional type checker!)
+  typically reasons about the type of a term via the two dual types,
+  not the overall full program.
 
 ** Reviewer B
 Some toy examples with the formalism are a good idea. Section 7 has
@@ -195,6 +251,9 @@ direction is consistent with the lattice-based slicing literature,
 e.g. Roly Perera's, and also other typical lattice-based static
 analyses).
 
+Given New and Ahmed use gradaulity specifically for the dynamic
+guarantee, we will just switch to using SSG throughout. Good point
+
 *** Comments
 
 Sorry, figure 3 does indeed forget to consume the character on the
@@ -212,25 +271,35 @@ example). These two will be fixed.
   type, i.e. retains enough terms to replicate (or expand on) the
   query.
 
-  TODO: Here is a toy example we could use to aid intuition here:
-
-
+  A toy example, here: take variable ~f : Int -> Bool~
+  under \upsilon = ~Int -> ⌷~ ('why does f take an Int as
+  input?'). Consider the types some random slice of ~f~ could
+  produce any of:
+  : f : Int -> Int  Explains the query, and more
+  : f : Int -> ⌷    Re-derives the query (therefore, explains it)
+  : f : ⌷ -> Bool   Explains only the output, but not the input, therfore, not valid
+  : f : ⌷           explains nothing, therefore not valid
+  Not having this condition would allow the latter 2 to be valid
+  synthesis slices. Even though they don't provide enough type
+  information explain the query.
 - p.9 Counterexample 4.2 :: Good catch here, wording should've said
   'incomparable to \upsilon' or 'invalid type for query \upsilon'. All
-  we need for the counterexample is that it is NOT valid (i.e. not
-  more or equally precise than \upsilon); my totally ordered brain
+  we need for the counterexample is that it is NOT valid (i.e. /not
+  more or equally precise than \upsilon/); my totally ordered brain
   tripped up on negation rules here in the writeup.
 
   For completeness: The original program (x, x) has exactly one valid
   slice assuming x : 1 -> 1 which synthesises strictly more than the
-  query (1 -> ?) x (? -> 1). The counterexample only needed to show
-  not all queries have an exact slice (equal to \upsilon).
+  query (1 -> ?) * (? -> 1). The counterexample only needed to show
+  not all queries have a possible exact slice (equal to \upsilon).
 - p.9 Definition 4.3 :: That is what is says, no? fixed a, every a'
 - p.9 Definition 4.4 :: In the same way I would say, a Nat is an Int
   minimal in Int
 - p.9 ⌊Γ,e⌋ :: This is a slice lattice (section 3.2.2). Perhaps the
   confusion was due to implicitly assuming D is a derivation on
   some program \Gamma, e. Will make this explicit.
+- p.9 colon notation :: Yep, this is standard type theory notation for
+  an element of a type
 - p10 Branch Hopping :: Yep, this is why this sort of situation is
   undesirable! We refine the query monotonically (\upsilon -> less
   precise \upsilon'), but if we pick some random slice for \upsilon',
@@ -252,6 +321,8 @@ example). These two will be fixed.
   corresponding minimal slices, I'll clarify the prose a bit. Drawing
   them as highlighted boxes (as in section 7) is too visually chaotic
   sadly. Yes, the second query is as you say (will add this explicitly).
+- p18 'strictly stronger' :: in the sense the assumptions required on
+  x are strictly stronger
 - p20 :: Agreed, we will explore a better diagram (arrows / labels
   should help).
 
@@ -306,20 +377,29 @@ Most answered above, so giving short answers here.
 
 3) This captures the whole intuition of slices. A slice is valid only
    when it provides (\phi) at least as much typing information as
-   queried (\upsilon). Anything below / incomparable we
-   disqualify. TODO: quote from the paper AND add a text response here
+   queried (\upsilon). Anything below / incomparable we disqualify:
+   quoting section 4.1, a slice ``might not include /all/ the program
+   regions relevant to the query type, but will necessarily provide a
+   consistent subset which suffices to totally /explain/
+   (independently synthesise) the query''. Merely being 'different'
+   is not enough, and this is where incomparability matters: against
+   \upsilon = ~Int * ⌷~, a candidate synthesising ~⌷ * Bool~ differs
+   from the query but carries none of the information queried. See
+   the ~x : Int * Bool~ example under p.8 above for why equality is
+   too strong a requirement. We will clarify this in the text.
 
-   I can clarify this a little more in the text, with an example TODO:
 
+4)
+   1) Take the polymorphic type of the expression
+   2) componentwise match against the query (which has partial values
+      for the type variables)
+   3) Keep a type variable (\alpha) in the matched query if it matches
+      to some non-hole type \tau in the query
+   4) Add \tau \sqsubseteq \alpha as a constraint for each match
+   5) any other non-type var components are just lattice met.
 
-4) (1) Take the polymorphic type of the expression (2) componentwise
-   match against the query (which has partial values for the type
-   variables) (3) Keep a type variable (\alpha) in the matched query
-   if it matches to some non-hole type \tau in the query (5) Add \tau
-   \sqsubseteq \alpha as a constraint for each match (6) any other
-   non-type var components are just lattice met.
+   We will improve this figure (rearrange, add arrows & labels).
 
-   We will improve this figure.
 5) Marked terms are types with the unknown type (the paper does say
    this explicitly 'A term minimal slice corresponds to at least one
    minimal slice, term minimal slices can be formed by some
@@ -340,6 +420,126 @@ Most answered above, so giving short answers here.
    dashed arrows show type precision between program slices, nothing
    about the query \upsilon.  If you want to think about the query via
    arrows, then you could imagine the 'line' as a single type node
-   behind the diagram, with dotted arrows going to it from each node
-   in the shaded region (We would argue this view is less
+   behind the diagram, with dotted arrows going to it only from each
+   node in the shaded region (We would argue this view is less
    understandable visually).
+
+** Reviewer C
+Using plain slicing to understand the types of a program is an
+interesting idea, and does work reasonably well in a few cases. For
+example a chain of bindings sourced from some annotated function
+parameter.
+
+However, these generally produce overapproximations, or
+underapproximations (bad!!) for some slicing methods, among some other
+disadvantages:
+- Some slicing methods may not even retain types in their slices at
+  all. And most (but not all) don't allow selecting any 'term', but
+  rather only variables as the criterion.
+- There is no notion of 'refining' type queries, we can only look at
+  the terms / variables.
+- Data flow retains much more information than is required by just the
+  types, for example a function application ~f(e)~ has it's return
+  type sourced from only the function ~f~ (in our setting at least),
+  but plain slicing may retain ~e~ too.
+- Any situation where types are defined by annotations, we can omit
+  the term itself (but plain slicing would not, it relates to the
+  values).
+- If statements will keep the guards & multiple branches (in static
+  slicing), type slicing will only retain branches without (fully)
+  redundant types.
+- For dynamic slicing methods, the branch taken in reality may not
+  even contain all the type information (with gradual types), so would
+  not produce a valid type slice.
+
+On *(2)*, adding annotations in inferred languages (where these type
+error slicing tools generally are made for) typically changes the
+constraints / typing derivation that exists, meaning the explanation
+may not be the same (may use information from the annotation
+itself), or may even produce multiple error slices!
+
+For example, (in most bidirectional systems) asking the type of a branching
+statement by annotation would produce several errors on each branch,
+all with their own error slices. In a case where type information is
+derived from multiple branches, you may need to inspect multiple of
+these error slices to explain the error, and there is no omission of
+redundant type information between these multiple slices (only per
+individual slice).
+
+It's probably not infeasible to adapt an existing system to work
+outside of errors by using techniques like this, but you would still
+lose the refining queries feature, and would need to apply some
+existing method to a bidirectional typing system.
+
+*** Specific Question Answers
+1. term-minimal are more compositional, but being 'strictly stronger'
+   here is not exactly a /good/ thing. For example, consider a small
+   program, involving variables with huge definitions; minimising the
+   small term, but expanding the assumptions required on these
+   definitions, thereby expanding the slices of these definitions if
+   we wish to inspect those. For example, in
+   : let big = (* long definition *) : Int in
+   : let n = if b then big else (1 + 2) in n
+   under the query ~n => Int~, the term minimal slice may keep ~big~,
+   a single variable and no larger a term than the other branch's
+   ~⌷ + ⌷~ (its operands are analysed), but thereby demands the
+   assumption ~big : Int~, which the user may need to inspect (thereby
+   leading to a possibly huge slice on the definition of that
+   variable). Minimising the term under /maximal/ assumptions cannot
+   see this cost.
+
+   We consider this trade-off in simplifying / optimising the
+   algorithm & maths worth it. That is, we were just looking for one
+   minimal solution. Deciding which minimal solution is 'best' becomes
+   relatively more subjective (do we want tie-break by size, or
+   branching factor, or number of bindings, or are even by considering
+   some constructs' typing rules more 'inherently difficult to
+   understand' etc.). There is a concrete code example in the response
+   to Reviewer A on this subjectivity.
+2. My reasoning in using ⊑ here was that we can generalise this idea
+   to forms of precision not necessarily involving only holes
+   (consider subtyping, e.g. a record with fewer fields is less
+   precise than one with more).  So long as static graduality holds
+   (alongside some preservation lemmas), then at least the brute force
+   algorithm will still work.
+
+   But given multiple reviewers pointed this out, We agree reordering
+   to avoid confusion makes sense.
+3. Yep, that's exactly what the implementation & proofs do! For minimal
+   slices this makes no difference, but I could consider a
+   (non-minimal) where you use variables whose types are assumed
+   as hole. Encoding omitting a variable as assuming it has hole type
+   would collapse this distinction; I personally find the domain
+   interpretation is a bit more intuitive.
+4. Definitely, will add an example to the intro when talking about
+   'refining queries'
+5. It's mentioned on section 3.3 (line 333) (and fig. 7), but I
+   realise we didn't actually show an example, will do.
+6. Hazel doesn't extend precision to *->* etc. kinded types,
+   i.e. ~?(Int)~ is not less precise than ~Option(Int)~. But I suppose
+   it could be seen as any * -> * kinded type (applied at Int), but we
+   would still need to /use/ a constructor of this * -> * kinded type
+   to disambiguate between constructor / function applications (so the
+   slice remains the same as Option(Int)).
+
+   Not sure if I'm interpreting the question correctly? If you're
+   meaning a situation with type classes, e.g. ~Monad m => m Int~ and
+   querying ~monad ? => ?~, then this is a genuinely useful query to
+   ask about, and would have a sensical slice, e.g. retaining a use of
+   ~return _~. Making this work with correctly instance resolution
+   would be a significant task of course, requiring further theory.
+
+   But, as above something like ~_ => _ Int~ would still need to
+   over-approximate by retaining the ~return 5~ (i.e. monad) to know
+   that the result even is of a (applied) kinded type, rather than
+   just ~_ 5~ which would 'default' to being a regular function
+   application. The ambiguity could be solved via requiring explicit
+   syntax (i.e. change the language, obviously undesirable, though
+   acceptable for a proof of concept calculus), or by adding class of
+   holes, one to be used for each kind (and one for constructor
+   holes).
+
+   These points above are interesting, but are quite substantial future
+   directions that could be explored.
+7. Agreed
+8. Agreed
