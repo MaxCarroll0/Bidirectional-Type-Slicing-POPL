@@ -58,9 +58,9 @@ Hazel renders each slice by folding away every fragment the queried type does no
 \label{fig:parse-digit-synthesis}
 \end{figure}
 
-\Cref{fig:parse-digit-synthesis} slices a small character parser. The synthesis slice reduces the function to the \texttt{String} domain annotation and the first branch determining the result option type (Hazel does not infer the type parameter without an annotation), discarding all other branches, which the UI folds together into a single projector.
+\Cref{fig:parse-digit-synthesis} slices a small character parser. The synthesis slice reduces the function to the \texttt{String} domain annotation and the first branch determining the result option type (Hazel does not infer the type parameter without an annotation), folding away all other branches.
 
-Refined queries may target \emph{part} of a reported type: for example, asking only about the domain of a function type, by folding away the returned sum type (\synsrc{\texttt{String -> }$\fold$}). The resulting program shrinks the slice to exclude the entire function body (\cref{fig:parse-digit-analysis}). This same slice is also the minimal \textit{analysis} slice which \textit{enforces} \anasrc{\texttt{String}} on the argument.
+Refined queries may target \emph{part} of a reported type: for example, asking only about the domain of a function type, by folding away the returned sum type (\synsrc{\texttt{String -> }$\fold$}). The resulting program shrinks the slice to exclude the entire function body (\cref{fig:parse-digit-analysis}). This same slice is also the minimal \textit{analysis} slice which \textit{enforces} \anasrc{\texttt{String}} to be expected on the argument.
 \begin{figure}[h]
 \centering
 
@@ -110,7 +110,7 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
   \node[errco] (e1) at (0.80,0.63) {\textbf{selected} curried function synthesises\\
     \texttt{Digit -> String -> Option(\ldots)}};
   \draw[errl] (e1.south west) -- (0.4,0.182);
-  \node[anaco] (e2) at (0.8,0.4) {\ldots but its position demands\\
+  \node[anaco] (e2) at (0.8,0.5) {\ldots but its position demands\\
     \texttt{Digit -> Option((String, Pin))}};
   \draw[anal] (e2.south) -- (0.68,0.040);
   \node[errco] (e3) at (0.85,0.150) {press \emph{Explain error}};
@@ -137,7 +137,7 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 \caption{Explain-error slice for the parser combinator.}
 \label{fig:explain-error}
 \end{figure}
-
+\clearpage
 {\Cref{fig:explain-error} considers a much more complex error where a sequencing parser combinator has been defined incorrectly, but used correctly. As is usual, the error has been incorrectly localised to the usage site, trusting the (incorrect) annotation. Specifically, \texttt{seq}'s continuation is annotated as if it returns an \texttt{Option} immediately, rather than first accepting the remaining \texttt{String} threaded out of the previous parser. The use site provides the intended parser continuation.
 
 \emph{Explain error} queries the slices on only the outermost inconsistency in the types (the function vs the option in the return type); the resulting slice collapses the program to just the function shape of the continuation and the offending annotation.
