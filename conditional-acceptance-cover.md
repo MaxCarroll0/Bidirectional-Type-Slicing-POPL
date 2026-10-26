@@ -1,11 +1,15 @@
 # Revisions Made
 
 We have made almost the major revisions proposed above, alongside the smaller revisions / clarifications suggested in our detailed response. This includes:
-- X new toy examples
+- A few new toy examples throughout
 - Some additional rules in figures to serve as further context
 - Amended contributions sections to correctly state set theoretic ideas as extensions, and to clarify the actual scope of the paper
 - A Soundness theorem for the compositional algorithm (excluding the approximate cases)
 - Correct wording for counterexample 4.2 & notation / terminology improvements to a few diagrams (and graduality terminology)
+- Expansions of related work - type debugging section & further directions - set theoretic types section
+- Minor wording and maths notation amendments to help clarify several of the small questions made in the original reviews
+- Fixes to figures in section 2
+- Rewritten type application section, extending the example (figure 11)
 
 ## Further Changes
 We also made a few further changes too:
@@ -15,7 +19,7 @@ We also made a few further changes too:
 - Some examples of other mechanics to integrate / base precision on (Subtyping, set types etc.) instead of / in conjunction with the gradual types and holes that this paper's calculus decides to use.
 
 ## Non-changes
-The only change we didn't do was moving section 2.2 after 3.1.2. The reason is that defining this is important in specifying the scope of languages which slicing applies to in its foundational form.
+The only change we didn't do was moving section 2.2 after 3.1.2. The reason is that defining this is important in specifying the scope of languages which slicing applies to in its foundational form. Which isn't restricted to the particular notion of precision via gradual types and 'holes' as used by the core calculus.
 
 We have compensated for this by adding some additional context on what `precision' is in an abstract sense, and mentioning that the Core Calculus later (section 3) will use the particular sense of precision corresponding to gradual types and Hazel.
 
