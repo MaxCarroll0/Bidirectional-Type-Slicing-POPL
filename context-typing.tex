@@ -21,7 +21,8 @@ Formally we must first define one-hole contexts on terms themselves (Figure~\ref
 \C &::= \cmark \mid \lambda x \mathbin{:} \tau.\; \C \mid \lambda x.\; \C \mid \C(e) \mid e(\C) \mid \C\langle\tau\rangle \\
   &\quad\mid\; (\C,\; e) \mid (e,\; \C) \mid \iota_1\; \C \mid \iota_2\; \C \mid \pi_1\; \C \mid \pi_2\; \C \\
   &\quad\mid\; (\mathbf{case}\;\C\;\mathbf{of}\;x.\;e \mid y.\;e) \\
-  &\quad\mid\; (\mathbf{case}\;e\;\mathbf{of}\;x.\;\C \mid y.\;e) \mid (\mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;\C) \\
+  &\quad\mid\; (\mathbf{case}\;e\;\mathbf{of}\;x.\;\C \mid y.\;e) \\
+  &\quad\mid\; (\mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;\C) \\
   &\quad\mid\; \Lambda\alpha.\; \C \mid \mathbf{let}\;x = \C\;\mathbf{in}\;e \mid \mathbf{let}\;x = e\;\mathbf{in}\;\C
 \end{align*}
 \end{minipage}\hfill
@@ -57,11 +58,12 @@ Then, we notate context typing by a judgement $\ctxclass{\C}{d}{\Delta';\ \Gamma
 
 The \textit{outer derivation mode} $d$ records whether the whole expression $\C[e]$ is in a synthesis derivation producing type $\tau$ ($d = \synmode\;\tau$) or an analysis derivation against $\tau$ ($d = \anamode\;\tau$). The \textit{focus mode} $m$ records the type the focus $e$ must synthesise ($m = \synmode\;\tau'$), or the type it is checked against ($m = \anamode\;\tau'$). Finally, $\Gamma'$ records the \textit{focus assumptions}. Each rule in these derivations is subject to \textit{additional premises} matching the corresponding term typing rules.
 
-\paragraph{Example.} Consider the derivation of $\synthesis{e_1(e_2)}{\tau_2}$ via \synr{App}, where $\synthesis{e_1}{\tau}$, $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$, and $\analysis{e_2}{\tau_1}$.
+\begin{exmp} Consider the derivation of $\synthesis{e_1(e_2)}{\tau_2}$ via \synr{App}, where $\synthesis{e_1}{\tau}$, $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$, and $\analysis{e_2}{\tau_1}$.
 \begin{itemize}
 \item \textbf{Function position} ($e_1$ is the focus, $\C = \cmark(e_2)$): The corresponding context typing is: $\ctxclass{\cmark(e_2)}{\synmode\;\tau_2}{\Delta;\,\Gamma}{\synmode\;\tau}$. The focus must synthesise type $\tau$ as per the focus mode, with the extra premises being $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ and $\analysis{e_2}{\tau_1}$.
 \item \textbf{Argument position} ($e_2$ is the focus, $\C = e_1(\cmark)$): The corresponding context typing is: $\ctxclass{e_1(\cmark)}{\synmode\;\tau_2}{\Delta;\,\Gamma}{\anamode\;\tau_1}$. The focus analyses against $\tau_1$ as per the focus mode, with the extra premises being: $\synthesis{e_1}{\tau}$ and $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$.
 \end{itemize}
+\end{exmp}
 
 Specifying these rules is systematic, one for each typing rule and focus location. We give a few representative rules in Figure~\ref{fig:context-classification}. The only additional rules are for identity contexts $\texttt{s}\cmark$ and $\texttt{a}\cmark$ (the base cases) where the focus mode must match the outer derivation mode.
 
@@ -86,7 +88,6 @@ Specifying these rules is systematic, one for each typing rule and focus locatio
 
 Correctness of context typing is formalised via a \textit{totality} theorem: every well-typed expression can be decomposed into context and expression at some focus, with a context typing matching a (consistent) typing derivation of the focused term. Conversely, a \textit{soundness} theorem states that a valid context typing and expression satisfying the focus typing mode can be composed into a well-typed plugged expression.
 
-\begin{majortheorembox}
 \begin{theorem}[Plug Decomposition -- Totality]\label{thm:plug-decomposition}
 For any context $\C$, expression $e$, and outer derivation mode $d$:
 \begin{itemize}
@@ -95,24 +96,19 @@ For any context $\C$, expression $e$, and outer derivation mode $d$:
 \end{itemize}
 Here ``$e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$'' means: if $m = \synmode\;\tau'$ then $\Delta';\,\Gamma' \vdash e\;\synmode\;\tau'$; if $m = \anamode\;\tau'$ then $\Delta';\,\Gamma' \vdash e\;\anamode\;\tau'$.
 \end{theorem}
-\end{majortheorembox}
 
-\begin{majortheorembox}
 \begin{theorem}[Plug Composition -- Soundness]\label{thm:plug-composition}
 For any context $\C$, expression $e$, outer mode $d$, and focus mode $m$: if\/ $\ctxclass{\C}{d}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$, then $\C[e]$ satisfies outer derivation mode $d$ under $\Delta;\,\Gamma$.
 \end{theorem}
-\end{majortheorembox}
 
 In order to apply the same ideas as synthesis slices, we also prove substantial DSGGs (\S\ref{sec:core-typing}) for context typings, defining precision on modes $m' \sqsubseteq m$ by lifting: $\synmode\,\tau' \sqsubseteq \synmode\,\tau$ iff $\tau' \sqsubseteq \tau$, and likewise for $\anamode$. The focus mode's class itself (analysis or synthesis) is propagated unchanged through every context typing rule.
 
-\begin{majortheorembox}
 \begin{theorem}[Downwards Static Gradual Guarantee -- Context, Synthesis Position]\label{thm:graduality-syn-cls}
 If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{\synmode\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\tau_p'$, $\Gamma_f'$, and $m'$ with $\tau_p' \sqsubseteq \tau_p$, $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{\synmode\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.
 \end{theorem}
 \begin{theorem}[Downwards Static Gradual Guarantee -- Context, Analysis Position]\label{thm:graduality-ana-cls}
 If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, $\tau_p' \sqsubseteq \tau_p$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{\anamode\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\Gamma_f'$ and $m'$ with $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{\anamode\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.
 \end{theorem}
-\end{majortheorembox}
 
 %%% Local Variables:
 %%% mode: LaTeX

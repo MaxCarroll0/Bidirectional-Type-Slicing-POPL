@@ -25,22 +25,19 @@ An \textit{analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\D
 
 $\minanaslice{\mathit{Cls}}{\upsilon}$ is defined analogously to Definition~\ref{def:isminimal}, minimising over the context slice $(\kappa, \gamma)$. And as before, existence of minimal analysis slices and monotonicity follow from finiteness and the DSGG.
 
-\begin{majortheorembox}
 \begin{theorem}[Existence of minimal analysis slices]\label{thm:ana-min-exists}
 For every $s : \anaslice{\mathit{Cls}}{\upsilon}$, there exists $m : \minanaslice{\mathit{Cls}}{\upsilon}$ with $m \sqsubseteq s$.
 \end{theorem}
-\end{majortheorembox}
 
-\begin{majortheorembox}
 \begin{theorem}[Monotonicity of minimal analysis slices]\label{thm:ana-mono}
 If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and\\$m_2 : \minanaslice{\mathit{Cls}}{\upsilon_2}$, then there exists $m_1 : \minanaslice{\mathit{Cls}}{\upsilon_1}$ with $m_1 \sqsubseteq m_2$.
 \end{theorem}
-\end{majortheorembox}
 
 \subsection{Minimally Scoped Analysis Slices}
 \noindent As mentioned earlier, a synthesising term derives all of its type information internally.\footnote{Again, given that assumptions are tracked externally.} Therefore, the type is actually only enforced by the context up until the innermost subderivation with a synthesis outer derivation mode.
 
-\paragraph{Example.} For a nested annotation $(e : \tau) : \tau'$,\footnote{Annotations are encoded as $(e : \tau) \triangleq (\lambda x \mathbin{:} \tau.\; x)(e)$.} only the inner annotation $\tau$ actually enforces a type on $e$, not the outer $\tau'$. Therefore, an algorithm need only check this region (the outer context can be fully omitted).
+\begin{exmp} For a nested annotation $(e : \tau) : \tau'$,\footnote{Annotations are encoded as $(e : \tau) \triangleq (\lambda x \mathbin{:} \tau.\; x)(e)$.} only the inner annotation $\tau$ actually enforces a type on $e$, not the outer $\tau'$. Therefore, an algorithm need only check this region (the outer context can be fully omitted).
+\end{exmp}
 
 %%% Local Variables:
 %%% mode: LaTeX

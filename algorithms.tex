@@ -47,7 +47,7 @@
 
 We earlier suggested recursively calculating minimal slices of subterms and composing them together (\S\ref{sec:decompositions}). However, this cannot be done naively: the product of two minimal slices is not necessarily minimal.
 
-\paragraph{Example.} Consider the following if statement:
+\begin{exmp} Consider the following if statement:
 \[ \Gamma = (x \mathbin{:} \mathbf{1} \funarr \mathbf{1},\; y \mathbin{:} \mathbf{1} \funarr \mathbf{1}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y, \qquad \tau = \mathbf{1} \funarr \mathbf{1}, \]
 and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \mathbf{1} \funarr \mathbf{1}$. There are \textit{four} incomparable minimal full slices, displayed together as underlines, each colour underlining the terms \textit{retained} by that slice:
 
@@ -110,6 +110,7 @@ Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are minimal because each 
 \end{center}
 
 When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right projection's use of $x$ is strictly more precise than that of slices {\color{BrickRed}(A)}, {\color{NavyBlue}(B)}, and {\color{Mulberry}(D)}; we are \textit{aliasing} this variable's assumption. Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice {\color{Mulberry}(D)} is still valid because it does not actually use $x$.
+\end{exmp}
 
 \subsection{Term-Minimal Slices}
 \label{sec:term-minimal-slices}
@@ -129,12 +130,9 @@ A $\mintmslice{D}{\upsilon}$ is a $\tmslice{D}{\upsilon}$ minimal in $\tmslice{D
 
 Crucially, the two notions of minimality do not coincide: term-minimality is a strictly more restrictive condition. Not all minimal slices are term-minimal under maximal assumptions.
 
-\begin{counterexamplebox}
-%
 \begin{counterexample}[Minimal $\not\Rightarrow$ Term-Minimal]\label{lem:min-not-tmin}
 Slices (A) and (B) (\S\ref{sec:product-revisited}) are minimal synthesis slices but are \textbf{not} term-minimal.
 \end{counterexample}
-\end{counterexamplebox}
 
 \subsection{Calculating Term-Minimal Slices}
 \label{sec:term-minimal-calculus}
@@ -185,20 +183,21 @@ The type function itself is sliced with a matched query $\widehat{\upsilon}$: of
 
 \begin{figure}[tbp]
 \centering
-\begin{tabular}{@{}r@{\;\;}l@{}}
-\textbf{For Sliced term} & $\synthesis[]{e}{\forall\alpha.\,(\alpha \times \alpha \times \mathbf{Bool})}$ applied at $\sigma = \mathbf{1} \funarr (\mathbf{Bool} \times \mathbf{Bool})$, so \\[2pt]
- & $\synthesis[]{e\langle\sigma\rangle}{\sigma \times \sigma \times \mathbf{Bool}}$, queried on $\upsilon = \mathbf{1} \funarr \gap \times \gap \funarr (\mathbf{Bool} \times \gap)$ \\[8pt]
-\textbf{1. Match \& collect $\upsilon$ vs $\alpha \times \alpha \times \mathbf{Bool}$} & $\upsilon \;=\; \underbrace{\sli[teal]{\mathbf{1} \funarr \gap}}_{\alpha} \;\times\; \underbrace{\sli[teal]{\gap \funarr (\mathbf{Bool} \times \gap)}}_{\alpha} \;\times\; \gap$ \\[16pt]
- & giving $\mathbf{1} \funarr \gap \;\sqsubseteq\; \alpha$ and $\gap \funarr (\mathbf{Bool} \times \gap) \;\sqsubseteq\; \alpha$ \\[8pt]
-\textbf{2. Slice the function $e$ into $\varsigma$} & on the matched query $\widehat{\upsilon} \;=\; \forall \alpha.\; \alpha \;\times\; \alpha \;\times\; \gap$, giving $\varsigma$ \\[2pt]
- & (no constraint here is trivial, so both $\alpha$ are kept) \\[8pt]
-\textbf{3. Join the constraints to get sliced type argument} & $\hat\sigma \;=\; (\mathbf{1} \funarr \gap) \;\sqcup\; (\gap \funarr (\mathbf{Bool} \times \gap)) \;=\; \mathbf{1} \funarr (\mathbf{Bool} \times \gap)$ \\[8pt]
-\textbf{4. Combine} & $\varsigma\langle\hat\sigma\rangle$, synthesising $\hat\sigma \times \hat\sigma \times \gap \;\sqsupseteq\; \upsilon$ \\
+\begin{tabular}{@{}l@{}}
+\textbf{Sliced term:} $\synthesis[]{e}{\forall\alpha.\,(\alpha \times \alpha \times \mathbf{Bool})}$ applied at $\sigma = \mathbf{1} \funarr (\mathbf{Bool} \times \mathbf{Bool})$, \\[2pt]
+\quad so $\synthesis[]{e\langle\sigma\rangle}{\sigma \times \sigma \times \mathbf{Bool}}$, queried on $\upsilon = \mathbf{1} \funarr \gap \times \gap \funarr (\mathbf{Bool} \times \gap)$ \\[10pt]
+\textbf{1. Match \& collect} $\upsilon$ against $\alpha \times \alpha \times \mathbf{Bool}$: \\[4pt]
+\quad $\upsilon \;=\; \underbrace{\sli[teal]{\mathbf{1} \funarr \gap}}_{\alpha} \;\times\; \underbrace{\sli[teal]{\gap \funarr (\mathbf{Bool} \times \gap)}}_{\alpha} \;\times\; \gap$ \\[16pt]
+\quad giving $\mathbf{1} \funarr \gap \;\sqsubseteq\; \alpha$ and $\gap \funarr (\mathbf{Bool} \times \gap) \;\sqsubseteq\; \alpha$ \\[10pt]
+\textbf{2. Slice the function} $e$ into $\varsigma$, on the matched query $\widehat{\upsilon} \;=\; \forall \alpha.\; \alpha \;\times\; \alpha \;\times\; \gap$ \\[2pt]
+\quad (no constraint here is trivial, so both $\alpha$ are kept) \\[10pt]
+\textbf{3. Join the constraints} to get the sliced type argument: \\[4pt]
+\quad $\hat\sigma \;=\; (\mathbf{1} \funarr \gap) \;\sqcup\; (\gap \funarr (\mathbf{Bool} \times \gap)) \;=\; \mathbf{1} \funarr (\mathbf{Bool} \times \gap)$ \\[10pt]
+\textbf{4. Combine:} $\varsigma\langle\hat\sigma\rangle$, synthesising $\hat\sigma \times \hat\sigma \times \gap \;\sqsupseteq\; \upsilon$ \\
 \end{tabular}
 \caption{Step-by-step slicing of a type application.}
 \label{fig:tapp-minsub}
 \end{figure}
-
 
 \subsection{Case Expressions}
 \label{sec:fixed-point}
@@ -211,20 +210,19 @@ To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1
 
 Then, a disjoint cover of query $\upsilon$ is one such that $\upsilon\heytingminus \upsilon_1 = \upsilon_2$ and $\upsilon \heytingminus \upsilon_2 = \upsilon_1$. The case expression will necessarily synthesise $\upsilon_1 \sqcup \upsilon_2$ which equals $\upsilon$ by standard co-Heyting algebra rules. Note that the lattice is \textit{not} a boolean algebra, so $\upsilon_1 \sqcap \upsilon_2 \neq \gap$ in general.
 
-\paragraph{Example of overflow.} An arbitrary disjoint cover alone is not necessarily minimal; take the aliasing of \cref{lem:exact-not-exist} as one branch:
+\begin{exmp}[Overflow] An arbitrary disjoint cover alone is not necessarily minimal; take the aliasing of \cref{lem:exact-not-exist} as one branch:
 \[ \Gamma = (x \mathbin{:} \mathbf{1} \funarr \mathbf{1},\; y \mathbin{:} \mathbf{1} \funarr \mathbf{1}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;(x, x)\;\mathbf{else}\;(y, y), \]
 Querying this at $\upsilon = (\mathbf{1} \funarr \mathbf{1}) \times (\mathbf{1} \funarr \mathbf{1})$, has a disjoint the cover $\upsilon_1 = (\mathbf{1} \funarr \gap) \times (\gap \funarr \mathbf{1})$ and $\upsilon_2 = (\gap \funarr \mathbf{1}) \times (\mathbf{1} \funarr \gap)$. 
 However, minimally slicing the \textbf{true} branch, $(x,x)$, at $\upsilon_1$ is not exact (\cref{lem:exact-not-exist}), synthesising the full query $\upsilon$. Thereby, slicing the \textbf{else} branch by $\upsilon_2$ is redundant, despite the disjoint cover requesting non-gap $\upsilon_2$. Combining the two slices without further checks or iteration would give a non-minimal result: and $\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;(x,x)\;\mathbf{else}\;(y, y)$.
+\end{exmp}
 
 \paragraph{Hazel Approximation. }The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider aliased variables at the leaves.
 
 \paragraph{Soundness.} Every other construct has a fully compositional rule in linear time preserving minimality, so only case expressions are approximated by this algorithm.
 
-\begin{majortheorembox}
 \begin{theorem}[Soundness of Term-Minimal Slice Calculation]\label{thm:tm-sound}
 Let $D : \synthesis{e}{\tau}$ and $\upsilon \in \lfloor\tau\rfloor$. If $\tmrule{e}{\tau}{\upsilon}{\varsigma}{\psi}{\gamma}$ is derivable without \synr{case}, then $\varsigma : \mintmslice{D}{\upsilon}$, and $(\gamma, \varsigma) : \minsynslice{D}{\upsilon}$.
 \end{theorem}
-\end{majortheorembox}
 
 \subsection{Calculating Analysis Slices}
 \label{sec:ana-slice-calculus}

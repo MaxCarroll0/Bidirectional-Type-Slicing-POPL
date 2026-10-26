@@ -311,13 +311,12 @@
 \newaliascnt{remark}{theorem}
 \newtheorem{remark}[remark]{Remark}
 \aliascntresetthe{remark}
-\theoremstyle{acmdefinition}
+\theoremstyle{acmplain}
 \let\definition\relax \let\enddefinition\relax
 \newaliascnt{definition}{theorem}
 \newtheorem{definition}[definition]{Definition}
 \aliascntresetthe{definition}
-\@ifundefined{example}{\newtheorem{example}[theorem]{Example}}{}
-\theoremstyle{acmplain}
+\newtheorem*{exmp}{Example}
 \makeatother
 
 \crefname{lemma}{Lemma}{Lemmas}
@@ -353,12 +352,6 @@
 \newtcolorbox{originalerror}[1][]{
   colback=red!3, colframe=red!40, fonttitle=\bfseries,
   title={Error (Original)#1}, sharp corners, boxrule=0.5pt
-}
-\newtcolorbox{majortheorembox}{
-  colback=green!3, colframe=OliveGreen!60, sharp corners, boxrule=0.5pt, enhanced
-}
-\newtcolorbox{counterexamplebox}{
-  colback=orange!3, colframe=orange!50, sharp corners, boxrule=0.5pt, enhanced
 }
 
 % Multi-slice highlighting

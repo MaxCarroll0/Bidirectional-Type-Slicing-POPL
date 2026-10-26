@@ -142,10 +142,10 @@ However, type slicing is flexible. A user who \emph{does} want to trust the surr
 The shape-mismatch marks all occur in similar situations: the syntactic position of the focus requires a type kind, but the focus's synthesised type does not match this.
 
 \vspace{3pt}\noindent
-\begin{minipage}[c]{0.68\linewidth}
+\begin{minipage}[c]{0.66\linewidth}
 \hspace*{9pt}A representative example is $e = \texttt{((), ())}\,(\,\texttt{true}\,)$, where $\texttt{((),())}$ is syntactically in a function position, but synthesises $\texttt{1}\times\texttt{1}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
 \end{minipage}\hfill
-\begin{minipage}[c]{0.28\linewidth}
+\begin{minipage}[c]{0.30\linewidth}
 \centering
 \queryblock{\texttt{1}\sli{\times}\texttt{1}}{\text{---}}
 $\markbox{\markarrow[(\texttt{()}\sli,\texttt{()})]}\,(\,\texttt{true}\,).$
