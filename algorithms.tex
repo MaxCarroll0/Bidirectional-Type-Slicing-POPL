@@ -45,9 +45,11 @@
 \label{sec:product-revisited}
 
 
-We earlier suggested recursively calculating minimal slices of subterms and composing them together (\S\ref{sec:decompositions}). However, this cannot be done naively: the product of two minimal slices is not necessarily minimal. Consider the following if statement:
+We earlier suggested recursively calculating minimal slices of subterms and composing them together (\S\ref{sec:decompositions}). However, this cannot be done naively: the product of two minimal slices is not necessarily minimal.
+
+\paragraph{Example.} Consider the following if statement:
 \[ \Gamma = (x \mathbin{:} \mathbf{1} \funarr \mathbf{1},\; y \mathbin{:} \mathbf{1} \funarr \mathbf{1}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y, \qquad \tau = \mathbf{1} \funarr \mathbf{1}, \]
-and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \mathbf{1} \funarr \mathbf{1}$. There are \textit{four} incomparable minimal full slices, displayed together as underlines:
+and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \mathbf{1} \funarr \mathbf{1}$. There are \textit{four} incomparable minimal full slices, displayed together as underlines, each colour underlining the terms \textit{retained} by that slice:
 
 \begin{center}
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
@@ -83,7 +85,7 @@ and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \m
 \item[{\color{Mulberry}(D)}] Symmetric to (C): \textbf{then}-branch omitted.
 \end{description}
 
-Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are minimal because each variable is sliced \textit{differently} across the two uses, and none are \textit{program} slices of each other. However, notice that {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are not subslices of the product with $x$, where only 2 minima exist:
+Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are minimal because each variable is sliced \textit{differently} across the two uses, and none are \textit{program} slices of each other. However, notice that {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are not subslices of the product with $x$ (at query $\upsilon = (\mathbf{1} \funarr \mathbf{1}) \times (\mathbf{1} \funarr \mathbf{1})$), where only 2 minima exist:
 
 \begin{center}
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
@@ -107,16 +109,16 @@ Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are minimal because each 
 \end{tikzpicture}
 \end{center}
 
-When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right projection's use of $x$ is strictly stronger than that of slices {\color{BrickRed}(A)}, {\color{NavyBlue}(B)}, and {\color{Mulberry}(D)}; we are \textit{aliasing} this variable's assumption. Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice {\color{Mulberry}(D)} is still valid because it does not actually use $x$.
+When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right projection's use of $x$ is strictly more precise than that of slices {\color{BrickRed}(A)}, {\color{NavyBlue}(B)}, and {\color{Mulberry}(D)}; we are \textit{aliasing} this variable's assumption. Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice {\color{Mulberry}(D)} is still valid because it does not actually use $x$.
 
 \subsection{Term-Minimal Slices}
 \label{sec:term-minimal-slices}
 
-To rule out slices like (A) and (B) (\S\ref{sec:product-revisited}), we strengthen the notion of slices. We first calculate the minimal expression under \textit{maximal} typing assumptions, and then minimise the assumptions afterwards. By graduality, this is a minimal synthesis slice.
+To rule out slices like (A) and (B) (\S\ref{sec:product-revisited}), we strengthen the notion of slices. We first calculate the minimal expression under \textit{maximal} typing assumptions, and then minimise the assumptions afterwards. By the DSGG, this is a minimal synthesis slice.
 
 \begin{definition}[Term-minimal slice]
 \label{def:term-minimal-slice}
-A \textit{term-minimal slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\tmslice{D}{\upsilon}$, is a term slice $\varsigma \in \lfloor e \rfloor$ such that $\Delta;\,\Gamma \vdash \varsigma\;\synmode\;\psi$ for some $\psi \sqsupseteq \upsilon$ (with $\psi \in \lfloor \tau \rfloor$ by graduality, \cref{thm:graduality-syn}).
+A \textit{term-minimal slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\tmslice{D}{\upsilon}$, is a term slice $\varsigma \in \lfloor e \rfloor$ such that $\Delta;\,\Gamma \vdash \varsigma\;\synmode\;\psi$ for some $\psi \sqsupseteq \upsilon$ (with $\psi \in \lfloor \tau \rfloor$ by the DSGG, \cref{thm:graduality-syn}).
 \end{definition}
 
 Minimality lifts directly from the slice lattice on $e$ alone, and existence and monotonicity follow analogously to synthesis slices (\cref{thm:min-exists,thm:mono}).
@@ -125,7 +127,7 @@ Minimality lifts directly from the slice lattice on $e$ alone, and existence and
 A $\mintmslice{D}{\upsilon}$ is a $\tmslice{D}{\upsilon}$ minimal in $\tmslice{D}{\upsilon}$ under term-slice precision on $\lfloor e \rfloor$.
 \end{definition}
 
-Crucially, the two notions of minimality do not coincide: term-minimality is strictly stronger. Not all minimal slices are term-minimal under maximal assumptions.
+Crucially, the two notions of minimality do not coincide: term-minimality is a strictly more restrictive condition. Not all minimal slices are term-minimal under maximal assumptions.
 
 \begin{counterexamplebox}
 %
@@ -177,27 +179,26 @@ Notice that this is the \textit{opposite} direction to typechecking, e.g. let bi
 \subsubsection{Type Application}
 \label{sec:term-min-tapp}
 
-Type application works by matching the type function's type against the query to collect a list of constraints on the type variable, the \textit{join} of which gives the sliced type argument $\hat\sigma$. The type function is then sliced with a matched query $\widehat{\upsilon}$, where each position corresponding to the type variable $\alpha$ in the type function's type is replaced by $\alpha$ itself and other positions are carried over from the query unchanged. Figure~\ref{fig:tapp-minsub} illustrates the construction on a query whose two subparts are matched with an $\alpha$ with differing constraints.
+Type application works by matching the type function's type, $\forall \alpha.\ \tau$, against the query, $\upsilon$, to collect a list of constraints on the type variable: matching the $\tau$ against $\upsilon$ at positions where $\tau$ uses the type variable ($\alpha$). The constraints have the following form $\upsilon_1 \sqsubseteq \alpha$ when the query $\upsilon$ contains sub-term $\upsilon_1$ at a position corresponding to $\alpha$ in $\tau$. The \textit{join} of the constraints gives the minimal slice of the type argument $\hat\sigma$. 
 
-\begin{figure}[H]
+The type function itself is sliced with a matched query $\widehat{\upsilon}$: of $\forall \alpha.\ \tau$, but omitting type variable occurrences which have a trivial `non-contributing' constraint ($\gap \sqsubseteq \alpha$). Other positions which don't relate to the type variable take the queried component from $\upsilon$ directly. Figure~\ref{fig:tapp-minsub} illustrates this construction with an example.
+
+\begin{figure}[tbp]
 \centering
-$e \mathbin{\synmode} \forall\alpha.\,(\alpha \times \alpha \times \mathbf{Bool})$,\quad applied at\quad $\sigma = \mathbf{1} \funarr (\mathbf{Bool} \times \mathbf{Bool})$:
-
-\medskip
-
-So $e\langle\sigma\rangle \mathbin{\synmode} (\mathbf{1} \funarr (\mathbf{Bool} \times \mathbf{Bool})) \times (\mathbf{1} \funarr (\mathbf{Bool} \times \mathbf{Bool})) \times \mathbf{Bool}$.
-
-\medskip
-
-\begin{tabular}{r@{\;\;}l}
-\textbf{Query}             & $\upsilon \;=\; \underbrace{\sli[teal]{\mathbf{1} \funarr \gap}}_{\alpha} \;\times\; \underbrace{\sli[teal]{\gap \funarr (\mathbf{Bool} \times \gap)}}_{\alpha} \;\times\; \gap$ \\[16pt]
-\textbf{Matched query}     & $\widehat{\upsilon} \;=\; \alpha \;\times\; \alpha \;\times\; \gap$ \\[8pt]
-\textbf{Constraints}       & $\mathbf{1} \funarr \gap \;\sqsubseteq\; \alpha \qquad \gap \funarr (\mathbf{Bool} \times \gap) \;\sqsubseteq\; \alpha$ \\[8pt]
-\textbf{Constraints Join}  & $\hat\sigma \;=\; \mathbf{1} \funarr (\mathbf{Bool} \times \gap)$ \\
+\begin{tabular}{@{}r@{\;\;}l@{}}
+\textbf{For Sliced term} & $\synthesis[]{e}{\forall\alpha.\,(\alpha \times \alpha \times \mathbf{Bool})}$ applied at $\sigma = \mathbf{1} \funarr (\mathbf{Bool} \times \mathbf{Bool})$, so \\[2pt]
+ & $\synthesis[]{e\langle\sigma\rangle}{\sigma \times \sigma \times \mathbf{Bool}}$, queried on $\upsilon = \mathbf{1} \funarr \gap \times \gap \funarr (\mathbf{Bool} \times \gap)$ \\[8pt]
+\textbf{1. Match \& collect $\upsilon$ vs $\alpha \times \alpha \times \mathbf{Bool}$} & $\upsilon \;=\; \underbrace{\sli[teal]{\mathbf{1} \funarr \gap}}_{\alpha} \;\times\; \underbrace{\sli[teal]{\gap \funarr (\mathbf{Bool} \times \gap)}}_{\alpha} \;\times\; \gap$ \\[16pt]
+ & giving $\mathbf{1} \funarr \gap \;\sqsubseteq\; \alpha$ and $\gap \funarr (\mathbf{Bool} \times \gap) \;\sqsubseteq\; \alpha$ \\[8pt]
+\textbf{2. Slice the function $e$ into $\varsigma$} & on the matched query $\widehat{\upsilon} \;=\; \forall \alpha.\; \alpha \;\times\; \alpha \;\times\; \gap$, giving $\varsigma$ \\[2pt]
+ & (no constraint here is trivial, so both $\alpha$ are kept) \\[8pt]
+\textbf{3. Join the constraints to get sliced type argument} & $\hat\sigma \;=\; (\mathbf{1} \funarr \gap) \;\sqcup\; (\gap \funarr (\mathbf{Bool} \times \gap)) \;=\; \mathbf{1} \funarr (\mathbf{Bool} \times \gap)$ \\[8pt]
+\textbf{4. Combine} & $\varsigma\langle\hat\sigma\rangle$, synthesising $\hat\sigma \times \hat\sigma \times \gap \;\sqsupseteq\; \upsilon$ \\
 \end{tabular}
-\caption{Type application query constraints.}
+\caption{Step-by-step slicing of a type application.}
 \label{fig:tapp-minsub}
 \end{figure}
+
 
 \subsection{Case Expressions}
 \label{sec:fixed-point}
@@ -210,7 +211,20 @@ To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1
 
 Then, a disjoint cover of query $\upsilon$ is one such that $\upsilon\heytingminus \upsilon_1 = \upsilon_2$ and $\upsilon \heytingminus \upsilon_2 = \upsilon_1$. The case expression will necessarily synthesise $\upsilon_1 \sqcup \upsilon_2$ which equals $\upsilon$ by standard co-Heyting algebra rules. Note that the lattice is \textit{not} a boolean algebra, so $\upsilon_1 \sqcap \upsilon_2 \neq \gap$ in general.
 
-The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider aliased variables at the leaves.
+\paragraph{Example of overflow.} An arbitrary disjoint cover alone is not necessarily minimal; take the aliasing of \cref{lem:exact-not-exist} as one branch:
+\[ \Gamma = (x \mathbin{:} \mathbf{1} \funarr \mathbf{1},\; y \mathbin{:} \mathbf{1} \funarr \mathbf{1}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;(x, x)\;\mathbf{else}\;(y, y), \]
+Querying this at $\upsilon = (\mathbf{1} \funarr \mathbf{1}) \times (\mathbf{1} \funarr \mathbf{1})$, has a disjoint the cover $\upsilon_1 = (\mathbf{1} \funarr \gap) \times (\gap \funarr \mathbf{1})$ and $\upsilon_2 = (\gap \funarr \mathbf{1}) \times (\mathbf{1} \funarr \gap)$. 
+However, minimally slicing the \textbf{true} branch, $(x,x)$, at $\upsilon_1$ is not exact (\cref{lem:exact-not-exist}), synthesising the full query $\upsilon$. Thereby, slicing the \textbf{else} branch by $\upsilon_2$ is redundant, despite the disjoint cover requesting non-gap $\upsilon_2$. Combining the two slices without further checks or iteration would give a non-minimal result: and $\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;(x,x)\;\mathbf{else}\;(y, y)$.
+
+\paragraph{Hazel Approximation. }The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider aliased variables at the leaves.
+
+\paragraph{Soundness.} Every other construct has a fully compositional rule in linear time preserving minimality, so only case expressions are approximated by this algorithm.
+
+\begin{majortheorembox}
+\begin{theorem}[Soundness of Term-Minimal Slice Calculation]\label{thm:tm-sound}
+Let $D : \synthesis{e}{\tau}$ and $\upsilon \in \lfloor\tau\rfloor$. If $\tmrule{e}{\tau}{\upsilon}{\varsigma}{\psi}{\gamma}$ is derivable without \synr{case}, then $\varsigma : \mintmslice{D}{\upsilon}$, and $(\gamma, \varsigma) : \minsynslice{D}{\upsilon}$.
+\end{theorem}
+\end{majortheorembox}
 
 \subsection{Calculating Analysis Slices}
 \label{sec:ana-slice-calculus}
@@ -229,7 +243,7 @@ An \textit{inner analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\anamode\,\tau
 \[
 \ctxclass[\Delta;\,\gamma]{\kappa}{\anamode\,\upsilon_{\mathrm{outer}}}{\Delta'';\,\Gamma''}{\anamode\,\phi}
 \]
-for some inner-type witness $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor\tau\rfloor$ by graduality, \cref{thm:graduality-ana-cls}).
+for some inner-type witness $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor\tau\rfloor$ by the DSGG, \cref{thm:graduality-ana-cls}).
 \end{definition}
 \vspace{-0.5em}
 
@@ -254,24 +268,25 @@ As slices can be inexact, efficiently calculating a minimal context providing su
 
 For terms in analysis mode, the full type slice is just the analysis slice, as the empty focus (with type $\gap$) analyses successfully against any type.
 
-\clearpage
 \section{Minimum-Size Slices}
 \label{sec:min-size}
 
-Minimal slices are not unique, and some are actually larger than others in the sheer number of terms highlighted. So, one might rank them by \textit{size}: the number of highlighted positions, asking for a \textit{minimum-size} slice. For this core calculus, finding such a slice is \textbf{NP-hard} in general. This implies that an algorithm attempting to also reduce the absolute size of slices should use heuristics to avoid or reduce the likelihood of cases with exponential time complexity.
+Minimal slices are not unique, and some are actually larger than others in the sheer number of terms highlighted. So, one might rank them by \textit{size}: the number of highlighted positions, asking for a \textit{minimum-size} slice. For this core calculus, finding such a slice is \textbf{NP-hard} in general, in the size of the program and its types. Finding \textit{some} minimal slice is, by contrast, polynomial in that same measure (\S\ref{sec:min-exists}), so the hardness is specific to minimising size. This implies that an algorithm attempting to also reduce the absolute size of slices should use heuristics to avoid or reduce the likelihood of cases with exponential time complexity. 
 
-We can construct a reduction from the NP-hard set cover optimisation problem as follows, and shown in \cref{fig:nphard}:
+Our aim was therefore to classify the space of minimal slices and to find or approximate one efficiently. Ranking slices by size is computationally hard, and this does not even consider further tradeoffs beyond absolute size, problem as follows, factor within slices, and locality of omitted code / assumptions; we leave exploration of these empirical considerations to future work.
+
+\subsection{Set Cover Reduction} The NP-hardness argument is as follows: by constructing a reduction from the NP-hard set cover optimisation, as in \cref{fig:nphard}, and described below:
 \begin{itemize}
   \item Encode a universe $U = \{1,\dots,n\}$ as a type $\tau = 1 \times \cdots \times 1$ ($n$ factors, one position per element)
 \item Encode each of $m$-many sets $S_j$ in the set cover problem by an assumption $x_j : T_j \sqsubseteq \tau$ in $\Gamma$ with $T_j$ defined by the $i$th projection of $T_j$ being $1$ if and only if $i \in S_j$.
 \item Construct a case tree with empty scrutinees and placing all $(x_j, I_j)$, defining $I_j$ as the $m$-ary product with $j$th projection being $1$ and all others $\gap$.
 \end{itemize}
 
-Then, if a synthesis slice is queried on this case tree with $\tau \times 1 \times \dots \times 1$, each $I_j$ must be retained, so the whole tree structure must be retained, and the only variance in the size of the slices is purely dependent on which variables $x_j$ were retained.
+Then, if a synthesis slice is queried on this case tree with $\tau \times 1 \times \dots \times 1$, each $I_j$ must be retained to cover the query, so every leaf and case expression is retained (a constant size contribution). Further, no minimal slice retains the same position in two different assumptions $T'_j \sqsubseteq T_j$, as replacing a duplicate with $\gap$ leaves $\bigsqcup_{j}T'_j = \tau$ (with the slice remaining valid); the retained assumptions thus cover each element of $U$ exactly once, contributing a constant $n$ highlighted positions. So the only variance in the size of the slices is purely dependent on which variables $x_j$ were retained; these $x_j$ will correspond to the sets $S_j$ chosen in the set cover.
 
-As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau$, which implies there are $m$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e. $x_j : T'_j \sqsubseteq T_j$} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^mS'_j = U$. Hence, the retained $S_j$ form a set-cover. Finally, the only variance in the size of the slice was in the number of variables $x_j$ chosen, i.e. the number of sets chosen; hence, a minimum-size synthesis slice corresponds to a minimum set cover.
+As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau$, which implies there are $m$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e. $x_j : T'_j \sqsubseteq T_j$} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^mS'_j = U$; as $S'_j \subseteq S_j$, this gives $\bigcup_{j=1}^m S_j \supseteq U$. Hence, the retained $S_j$ form a set-cover. Finally, as the only variance in the size of the slice was in the number of variables $x_j$ chosen, i.e. the number of sets chosen, a minimum-size synthesis slice corresponds to a minimum set cover.
 
-\begin{figure}[ht]
+\begin{figure}[H]
 \centering
 \begin{tikzpicture}[scale=0.92, transform shape,
     sc/.style={draw, rounded corners=2pt, inner sep=2pt, minimum height=4mm, font=\footnotesize},
@@ -334,6 +349,8 @@ As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau
 \caption{NP-Hardness of Minimum-Size Slicing}
 \label{fig:nphard}
 \end{figure}
+
+Writing $p$ for the program size and $t$ for the total size of the types in its derivation, by \cref{thm:min-exists} a minimal slice is computable in $\mathcal{O}(p\,(p+t))$ (\S\ref{sec:min-exists}). Here $p = \mathcal{O}(nm + m^2)$, as the $m$ assumptions have $n$ positions each and each of the $m$ leaves carries an $m$-ary tuple $I_j$; and $t = \mathcal{O}(nm + m^2)$, as the $\mathcal{O}(m)$ variables, pairs, and case nodes each carry a slice of $\tau \times \mathbf{1} \times \dots \times \mathbf{1}$, of size $\mathcal{O}(n + m)$, alongside the $m^2$ tuple components. So $p + t = \mathcal{O}(nm + m^2)$, polynomial in the $\Theta(nm)$ size of the set cover instance. Thus some minimal slice can indeed be calculated in polynomial time, so the exponential time must come from correctly choosing the minimum-size slice.
 
 
 

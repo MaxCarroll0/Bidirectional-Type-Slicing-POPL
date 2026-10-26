@@ -19,21 +19,25 @@ Such languages have two fundamental rules:
   \inference[\textsc{Sub}]{\synthesis{e}{\tau}}{\analysis{e}{\tau}}\]
 Variables synthesise their type from the typing assumptions. Subsumption bridges the two modes: any term that can synthesise a type also analyses against that same type.
 
-\subsection{Downwards Static Graduality}
+\subsection{The Downwards Static Gradual Guarantee}
 \label{sec:gradual-types}
 
-To calculate a type slice we will need a way to \textit{gradually} omit sub-expressions from the program, and type check these less \textit{`precise'} partial programs at less or equally `precise' types. Formally, precision must form two partial orders (notated $\sqsubseteq$) over types and expressions, which can be lifted onto typing assumptions $\Gamma$.
+To calculate a type slice we will need an ordering of programs and types by information content, so that less \textit{`precise'} programs can be type checked at less or equally `precise' types. Formally, precision must form two partial orders (notated $\sqsubseteq$) over types and expressions, which can be lifted onto typing assumptions $\Gamma$. We will consider less precise versions of programs as `slices', and seek out a suitably `small' (minimally precise) slice which retains some queried type information.
 
-\begin{definition} A bidirectional calculus satisfies \textit{downwards static graduality} if, for all $\Delta, \Gamma', \Gamma, e', e, \tau$ such that $\Gamma' \sqsubseteq \Gamma$ and $e' \sqsubseteq e$, both:
+For example, the particular calculus we explore in this paper is a gradually type calculus \cite{GradualFunctional} with \textit{holes}, that is, you can remove information by omitting sub-terms of expressions or types, replacing them with holes. We type check these by giving them the `unknown' (dynamic) type. 
+
+However, up until \cref{sec:marking}, the foundational theory applies to any calculi / precision orderings satisfying the \textit{Downwards Static Gradual Guarantee} below. Instead of, or in conjunction with gradual types and holes, this may include suitable orderings based upon, for example, \textit{subtyping, row polymorphism, or set-theoretic types}.
+
+The \textit{Downwards Static Gradual Guarantee} is based on a particular subcase of the refined criteria for gradual typing \cite{GradualRefined}. It captures a downwards monotonicity property that: a less or equally precise program and assumptions, contains less or equal type information under their respective $\sqsubseteq$ orderings. \textit{`Removing information from a program cannot introduce new type information.'} Formally:
+
+\begin{definition} A bidirectional calculus satisfies the \textit{downwards static gradual guarantee} (DSGG)\footnote{Note the orientation: the less precise term is the left. This differs from most gradual typing literature and subtyping direction which puts the MORE specific type (subtype) on the left.} if, for all $\Delta, \Gamma', \Gamma, e', e, \tau$ such that $\Gamma' \sqsubseteq \Gamma$ and $e' \sqsubseteq e$, both:
 \begin{itemize}
   \item If $\synthesis{e}{\tau}$ then there exists $\tau' \sqsubseteq \tau$ such that $\synthesis[\Delta;\ \Gamma']{e'}{\tau'}$.
 \item For all $\tau' \sqsubseteq \tau$, if $\analysis{e}{\tau}$ then $\analysis[\Delta; \Gamma']{e'}{\tau'}$.
 \end{itemize}
 \end{definition}
 
-For example, this precision order can correspond to the precision relation on types in a gradually typed system \cite{GradualFunctional}. In this situation this graduality theorem corresponds to the downwards static case\footnote{Hence the name.} of the graduality theorem in the refined criteria for gradual types \cite{GradualRefined}, adapted to a bidirectional setting. The calculus we demonstrate type slicing on in this paper goes even further by allowing maximally incomplete programs, omitting any program sub-expression, based upon the Hazel calculus~\cite{HazelLivePaper}.
-
-Although not necessary, it is also useful that precision forms a lattice with meets and joins to perform optimisations to type slicing calculation (\S\ref{sec:algorithms}).
+Although not necessary, it is also useful that the precision relation forms a lattice with meets and joins to perform optimisations to type slicing calculation (\S\ref{sec:algorithms}), giving ways to \textit{compose} slices together.
 
 %%% Local Variables:
 %%% mode: LaTeX

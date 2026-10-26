@@ -86,6 +86,7 @@
 
 % capitalise: \cref prints capitalised names everywhere ("Theorem 4.5",
 % "Fig. 2", "Table 1"), matching caption labels; \Cref unchanged.
+\usepackage{aliascnt}
 \usepackage[capitalise]{cleveref}
 % Abbreviated section cross-references: \cref -> "Sec. 3" mid-sentence,
 % \Cref -> "Section 3" at sentence start. Sub(sub)sections inherit these.
@@ -108,18 +109,6 @@
 % Universal-property diagram convention: assumed (Class 2), induced (Class 3)
 \colorlet{assumed}{BurntOrange!80!black}
 \colorlet{induced}{TealBlue!45!black}
-
-% ---------------------------------------------------------------------------
-% Review-edit highlighting (every reworded/new span is wrapped for the author).
-% \edited{...} for inline spans; editedblock for new paragraphs / display math.
-% ---------------------------------------------------------------------------
-% lua-ul \highLight survives line breaks and arbitrary macros (\cref, footnotes)
-% under lualatex, unlike soul's \hl.
-\usepackage{luacolor}
-\usepackage{lua-ul}
-\newcommand{\edited}[1]{\highLight[cyan!22]{#1}}
-\newtcolorbox{editedblock}{breakable, enhanced, colback=cyan!6, colframe=cyan!45,
-  boxrule=0.3pt, left=4pt, right=4pt, top=3pt, bottom=3pt, sharp corners}
 
 % ---------------------------------------------------------------------------
 % Code / slice text fonts
@@ -152,10 +141,10 @@
 \def\sqsupseteq{\mathrel{{\color{latticecolor}\sqsupseteqOriginal}}}
 \def\sqsubset{\mathrel{{\color{latticecolor}\OLDsqsubset}}}
 \def\sqsupset{\mathrel{{\color{latticecolor}\OLDsqsupset}}}
-\newcommand{\heytingto}{\mathbin{{\color{latticecolor}\to}}}
-\newcommand{\heytingminus}{\mathbin{{\color{latticecolor}\setminus}}}
-\newcommand{\latticetop}{{\color{latticecolor}\top}}
-\newcommand{\latticebot}{{\color{latticecolor}\bot}}
+\newcommand{\heytingto}{\ensuremath{\mathbin{{\color{latticecolor}\to}}}}
+\newcommand{\heytingminus}{\ensuremath{\mathbin{{\color{latticecolor}\setminus}}}}
+\newcommand{\latticetop}{\ensuremath{{\color{latticecolor}\top}}}
+\newcommand{\latticebot}{\ensuremath{{\color{latticecolor}\bot}}}
 
 % ---------------------------------------------------------------------------
 % Highlighting
@@ -168,9 +157,9 @@
 \newcommand{\hlcmaths}[2][yellow!50]{\colorbox{#1}{$\displaystyle #2$}}
 
 \newcommand{\dyn}{{\color{teal}\texttt{?}}}          % dynamic type
-\newcommand{\gap}{{\color{teal}\Box}}
-\newcommand{\hole}[1][]{{\color{teal}\llparenthesis} #1 {\color{teal}\rrparenthesis}} % hole
-\newcommand{\cmark}{{\color{blue}\Circle}}            % context mark
+\newcommand{\gap}{\ensuremath{{\color{teal}\Box}}}
+\newcommand{\hole}[1][]{\ensuremath{{\color{teal}\llparenthesis} #1 {\color{teal}\rrparenthesis}}} % hole
+\newcommand{\cmark}{\ensuremath{{\color{blue}\Circle}}}            % context mark
 \newcommand{\type}[1]{\llbracket #1 \rrbracket}       % type interpretation
 \newcommand{\id}{\mathrm{id}}
 \newcommand{\code}[1]{\texttt{#1}}
@@ -179,9 +168,9 @@
 \newcommand{\wf}[2][\Delta]{#1 \vdash #2\;\mathsf{wf}}
 
 % Synthesis / analysis judgements
-\newcommand{\funarr}{\mathbin{\to}}
-\newcommand{\synmode}{\mathrel{{\color{BrickRed}\Rightarrow}}}
-\newcommand{\anamode}{\mathrel{{\color{BlueViolet}\Leftarrow}}}
+\newcommand{\funarr}{\ensuremath{\mathbin{\to}}}
+\newcommand{\synmode}{\ensuremath{\mathrel{{\color{BrickRed}\Rightarrow}}}}
+\newcommand{\anamode}{\ensuremath{\mathrel{{\color{BlueViolet}\Leftarrow}}}}
 \newcommand{\synthesis}[3][\Delta;\,\Gamma]{#1 \vdash #2 \synmode #3}
 \newcommand{\analysis}[3][\Delta;\,\Gamma]{#1 \vdash #2 \anamode #3}
 
@@ -309,17 +298,36 @@
 \makeatletter
 \theoremstyle{acmplain}
 \@ifundefined{theorem}{\newtheorem{theorem}{Theorem}[section]}{}
-\@ifundefined{lemma}{\newtheorem{lemma}[theorem]{Lemma}}{}
 \@ifundefined{proposition}{\newtheorem{proposition}[theorem]{Proposition}}{}
 \@ifundefined{corollary}{\newtheorem{corollary}[theorem]{Corollary}}{}
 \@ifundefined{conjecture}{\newtheorem{conjecture}[theorem]{Conjecture}}{}
-\@ifundefined{counterexample}{\newtheorem{counterexample}[theorem]{Counterexample}}{}
+\let\lemma\relax \let\endlemma\relax
+\newaliascnt{lemma}{theorem}
+\newtheorem{lemma}[lemma]{Lemma}
+\aliascntresetthe{lemma}
+\newaliascnt{counterexample}{theorem}
+\newtheorem{counterexample}[counterexample]{Counterexample}
+\aliascntresetthe{counterexample}
+\newaliascnt{remark}{theorem}
+\newtheorem{remark}[remark]{Remark}
+\aliascntresetthe{remark}
 \theoremstyle{acmdefinition}
-\@ifundefined{definition}{\newtheorem{definition}[theorem]{Definition}}{}
+\let\definition\relax \let\enddefinition\relax
+\newaliascnt{definition}{theorem}
+\newtheorem{definition}[definition]{Definition}
+\aliascntresetthe{definition}
 \@ifundefined{example}{\newtheorem{example}[theorem]{Example}}{}
 \theoremstyle{acmplain}
-\@ifundefined{remark}{\newtheorem{remark}[theorem]{Remark}}{}
 \makeatother
+
+\crefname{lemma}{Lemma}{Lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{counterexample}{Counterexample}{Counterexamples}
+\Crefname{counterexample}{Counterexample}{Counterexamples}
+\crefname{definition}{Definition}{Definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{remark}{Remark}{Remarks}
+\Crefname{remark}{Remark}{Remarks}
 
 % Master-theorem sub-numbering: produces "Theorem N.M.k"
 \newcounter{subthm}

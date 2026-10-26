@@ -1,5 +1,5 @@
 \PassOptionsToPackage{dvipsnames}{xcolor}
-\documentclass[acmsmall,screen,review,anonymous,nonacm]{acmart}
+\documentclass[acmsmall,screen,review,nonacm]{acmart}
 
 \settopmatter{printacmref=false}
 \input{preamble.tex}
@@ -12,15 +12,32 @@
 \begin{document}
 
 \title{Polymorphic Type Slicing: Supplementary Material}
-\author{Anonymous Author(s)}
+\author{Max Carroll}
+\orcid{0009-0007-9636-8502}
 \affiliation{%
-  \institution{Anonymous Institution}
-  \country{}}
+  \institution{University of Cambridge}
+  \department{Department of Computer Science and Technology}
+  \city{Cambridge}
+  \country{UK}}
+\author{Anil Madhavapeddy}
+\orcid{0000-0001-8954-2428}
+\affiliation{%
+  \institution{University of Cambridge}
+  \department{Department of Computer Science and Technology}
+  \city{Cambridge}
+  \country{UK}}
+\author{Cyrus Omar}
+\orcid{}
+\affiliation{%
+  \institution{University of Michigan}
+  \city{Ann Arbor}
+  \country{USA}}
 \maketitle
 
 \noindent This supplement collects the rule sets and theorems deferred from the
-main paper: the complete bidirectional typing rules, the full (unmarked and
-marked) context typing rules, and the marked-context metatheory.
+main paper: the complete bidirectional typing rules, the term-minimal slice
+calculus, the full (unmarked and marked) context typing rules, and the
+marked-context metatheory.
 
 \section{Full Typing Rules}
 \label{supp:typing-rules}
@@ -63,6 +80,12 @@ marked) context typing rules, and the marked-context metatheory.
 
 \section{Term-Minimal Slice Calculus}
 \label{supp:tmrules}
+
+The premises of each rule below are the coherence conditions under which
+composition preserves term minimality. Any derivation in this calculus that does not
+use \synr{case} therefore yields a term-minimal slice, and with its assumptions a
+minimal synthesis slice, as stated by the soundness theorem in the Optimising section
+of the main paper; \synr{case} is only approximated there.
 
 \begin{figure}[H]
 \centering

@@ -1,7 +1,7 @@
 \section{The Core Calculus}
 \label{sec:core-calculus}
 
-In this section, we present the core calculus which type slicing builds upon. It is a bidirectional, gradually typed lambda calculus, with precision on types and terms, based on the Hazel calculus~\cite{HazelLivePaper}, extended with products, sums, and explicit System~F polymorphism. We prove that this calculus satisfies graduality (\S\ref{sec:gradual-types}), and we define and prove several lattice structures on precision.
+In this section, we present the core calculus which type slicing builds upon. It is a bidirectional, gradually typed lambda calculus, with precision on types and terms, based on the Hazel calculus~\cite{HazelLivePaper}, extended with products, sums, and explicit System~F polymorphism. We prove that this calculus satisfies the DSGG (\S\ref{sec:gradual-types}), and we define and prove several lattice structures on precision.
 
 \subsection{Syntax \& Relations}
 \label{sec:core-syntax}
@@ -16,7 +16,7 @@ e &::= \gap \mid () \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\
   &\quad\mid\; \iota_1\; e \mid \iota_2\; e \mid (\mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;e) \mid \Lambda\alpha.\; e \mid e\langle\tau\rangle \mid \mathbf{let}\;x = e\;\mathbf{in}\;e
 \end{align*}
 
-\caption{Syntax of the core calculus up to $\alpha$-equivalence (on variables $x$).}
+\caption{Syntax of the core calculus up to $\alpha$-equivalence (on variables $x$). $\iota_1$ and $\iota_2$ are the sum injections.}
 \label{fig:syntax}
 \end{figure}
 
@@ -41,9 +41,9 @@ Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in stand
 
 \subsubsection{Precision}
 
-Precision (Figure~\ref{fig:precision}) is a partial order that organises terms by \textit{information content}: for types, $\tau' \sqsubseteq \tau$ means $\tau$ has at least as much type information as $\tau'$. Here, $\gap$ is the global minimum. Expression precision is defined analogously; for instance, the slices of $\lambda x \mathbin{:} 1.\; x$ form the precision chain $\gap \sqsubseteq \lambda x \mathbin{:} \gap.\; \gap \sqsubseteq \lambda x \mathbin{:} 1.\; \gap \sqsubseteq \lambda x \mathbin{:} 1.\; x$, each step filling in one more part of the term.
+Precision (Figure~\ref{fig:precision}) is a partial order that organises terms by \textit{information content}: for types, $\tau' \sqsubseteq \tau$ means $\tau$ has at least as much type information as $\tau'$. Here, $\gap$ is the global minimum. Expression precision is defined analogously, so $e' \sqsubseteq e$ means $e'$ is less or equally precise: zero or more terms replaced with holes; for instance, the slices of $\lambda x \mathbin{:} 1.\; x$ can form a precision chain $\gap \sqsubseteq \lambda x \mathbin{:} \gap.\; \gap \sqsubseteq \lambda x \mathbin{:} 1.\; \gap \sqsubseteq \lambda x \mathbin{:} 1.\; x$, each step filling in one more part of the term.
 
-\begin{figure}[H]
+\begin{figure}[tbp]
 \fbox{$\tau \sqsubseteq \tau'$}\ \ \ $\tau$ is less precise than $\tau'$
 \[\inference[$\sqsubseteq\gap$]{}{\gap \sqsubseteq \tau} \qquad
   \inference[$\sqsubseteq{1}$]{}{1 \sqsubseteq 1} \qquad
@@ -101,9 +101,9 @@ Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{
 \subsection{Typing Rules}
 \label{sec:core-typing}
 
-The bidirectional typing judgements are mostly standard; the complete synthesis and analysis rule sets appear in the supplementary material, and Figure~\ref{fig:typing-rules-excerpt} presents some of the major rules. $\wf{\tau}$ denotes when a type $\tau$ is \textit{well-formed} under available type variables $\Delta$.
+The bidirectional typing judgements are mostly standard; the complete synthesis and analysis rule sets appear in the supplementary material, and Figure~\ref{fig:typing-rules-excerpt} presents some of the major rules. $\wf{\tau}$ denotes when a type $\tau$ is \textit{well-formed} under available type variables $\Delta$, that is, $\tau$ only mentions type variables present in $\Delta$.
 
-\begin{figure}[h!t]
+\begin{figure}[H]
 \small
 \[\inference[\synr{Var}]{x : \tau \in \Gamma}{\synthesis{x}{\tau}} \qquad
   \inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \funarr \tau_2}}\]
@@ -112,13 +112,18 @@ The bidirectional typing judgements are mostly standard; the complete synthesis 
 \[\inference[\synr{App}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \analysis{e_2}{\tau_1}}{\synthesis{e_1(e_2)}{\tau_2}}\]
 \[\inference[\synr{TApp}]{\wf{\sigma} & \synthesis{e}{\tau} & \tau \sqcup \forall\alpha.\;\gap \equiv \forall\alpha.\;\tau'}{\synthesis{e\langle\sigma\rangle}{[\alpha \mapsto \sigma]\,\tau'}}\]
 \[\inference[\synr{case}]{\synthesis{e}{\tau} & \tau \sqcup (\gap + \gap) \equiv \tau_1 + \tau_2 & \tau_1' \sim \tau_2' \\ \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e_1}{\tau_1'} & \synthesis[\Delta;\,\Gamma, y \mathbin{:} \tau_2]{e_2}{\tau_2'}}{\synthesis{\mathbf{case}\;e\;\mathbf{of}\;x.\;e_1 \mid y.\;e_2}{\tau_1' \sqcup \tau_2'}}\]
-\caption{Selected synthesis rules.}
+%
+\[\inference[\anar{Sub}]{\synthesis{e}{\tau'} & \tau \sim \tau'}{\analysis{e}{\tau}} \qquad
+  \inference[\anar{$\lambda$}]{\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\analysis{\lambda x.\; e}{\tau}}\]
+\caption{Selected synthesis and analysis rules.}
 \label{fig:typing-rules-excerpt}
 \end{figure}
 
-We use joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding into the body. The typing rules satisfy graduality (\S\ref{sec:gradual-types}).
+We use joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. For instance $(\mathit{Int} \funarr \mathit{Bool}) \sqcup (\gap \funarr \gap) = \mathit{Int} \funarr \mathit{Bool}$ and $\gap \sqcup (\gap \funarr \gap) = \gap \funarr \gap$, whereas for $\tau = \mathit{Int}$ the join is undefined and \synr{App} does not apply.
+
+Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding into the body. The typing rules satisfy the DSGG (\S\ref{sec:gradual-types}).
 \begin{theorem}\label{thm:graduality-syn}
-The synthesis judgement $\synthesis[\_]{\_}{\_}$ and analysis judgement $\analysis[\_]{\_}{\_}$ satisfy downwards static graduality.
+The synthesis judgement $\synthesis[\_]{\_}{\_}$ and analysis judgement $\analysis[\_]{\_}{\_}$ satisfy the downwards static gradual guarantee.
 \end{theorem}
 
 %%% Local Variables:

@@ -16,17 +16,15 @@
 \subsection{Synthesis Slices}
 \label{sec:syn-slice-def}
 
-Consider a `program' $P = (\Gamma, e)$, that is, typing assumptions and an expression. When the program synthesises a type (in some type variable context $\Delta$)\footnote{Type variable contexts are not sliced as the only information such slices would encode is whether a type variable was used, which can be extracted purely syntactically from the resulting slice. Typing assumptions are different because we can \textit{partially} require an assumption.}, all of its type information is contained within the synthesis derivation $D \;:\; \synthesis{e}{\tau}$.
+Consider a `program' $P = (\Gamma, e)$, that is, typing assumptions and an expression. When the program synthesises a type (in some type variable context $\Delta$), all of its type information is contained within the synthesis derivation $D \;:\; \synthesis{e}{\tau}$. Type variable contexts are kept separate from $\Gamma$ and are never sliced: the only information such a slice would encode is whether a type variable was used, which can be extracted purely syntactically from the resulting slice. Typing assumptions are different because we can \textit{partially} require an assumption.
 
-Given the derivation $D$, we may \textit{query} the type $\tau$ by taking a slice $\upsilon$ in $\lfloor \tau \rfloor$. A synthesis slice is a `program slice' $\rho = (\gamma, \varsigma)$ in $\lfloor \Gamma , e\rfloor$ which synthesises a type at least as precise as the query $\upsilon$; this corresponds to a highlighted version of the original program. 
-
-Intuitively, $\upsilon$ specifies the part of $\tau$ we wish to explain; for example, querying $\upsilon = \mathit{Int} \funarr \gap$ for $\tau = \mathit{Int} \funarr \mathit{Bool}$ asks ``which parts of the program account for the domain being $\mathit{Int}$?''. The slice might not include \textit{all} the program regions relevant to the query type, but will necessarily provide a consistent subset which suffices to totally \textit{explain} (independently synthesise) the query.
+Given the derivation $D$, we may \textit{query} the type $\tau$ by taking a slice $\upsilon$ in $\lfloor \tau \rfloor$. A synthesis slice is a `program slice' $\rho = (\gamma, \varsigma)$ in $\lfloor \Gamma , e\rfloor$ which synthesises a type at least as precise as the query $\upsilon$; this corresponds to a highlighted version of the original program. Intuitively, $\upsilon$ specifies the part of $\tau$ we wish to explain.
 
 \noindent
 \begin{minipage}[c]{0.56\linewidth}
 \begin{definition}[Synthesis slice]
 \label{def:syn-slice}
-A \textit{synthesis slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\synslice{D}{\upsilon}$, is a pair $(\gamma, \varsigma) \in \lfloor \Gamma, e\rfloor$ such that $\Delta;\gamma \vdash \varsigma\;\synmode\;\phi$ for some $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor \tau \rfloor$ by graduality, \cref{thm:graduality-syn}).
+A \textit{synthesis slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor \tau \rfloor$, written $\synslice{D}{\upsilon}$, is a pair $\rho = (\gamma, \varsigma)$ $\in \lfloor \Gamma, e\rfloor$ such that $\Delta;\gamma \vdash \varsigma\;\synmode\;\phi$ for some $\phi \sqsupseteq \upsilon$, a property we call \textit{validity}\footnotemark{}.
 \end{definition}
 \end{minipage}\hfill
 \begin{minipage}[c]{0.40\linewidth}
@@ -34,20 +32,33 @@ A \textit{synthesis slice} of $D : \synthesis{e}{\tau}$ on $\upsilon \in \lfloor
 \vspace{6pt}
 \begin{tikzcd}[column sep=large, row sep=normal]
 & \rho \arrow[r, "\sqsubseteq" {sloped}] \arrow[d, "\synmode"'] & (\Gamma, e) \arrow[d, "\synmode"] \\
-\upsilon \arrow[r, "\sqsubseteq" {sloped}] & \phi \arrow[r, induced, "\sqsubseteq" {sloped}, "\text{(by graduality)}"', dashed] & \tau
+\upsilon \arrow[r, "\sqsubseteq" {sloped}] & \phi \arrow[r, induced, "\sqsubseteq" {sloped}, "\text{(by the DSGG)}"', dashed] & \tau
 \end{tikzcd}
 \end{minipage}
+\footnotetext{Here $\phi \in \lfloor \tau \rfloor$ by the DSGG, \cref{thm:graduality-syn}, so synthesised types inhabit the same finite lattice as the queries and can be compared, joined, and subtracted against them (\S\ref{sec:fixed-point}).}
 
 \medskip
 
-Many such synthesis slices exist. In particular, the original program $(\Gamma, e)$ is necessarily a synthesis slice; and for $\synslice{D}{\gap}$, every slice of $(\Gamma, e)$ is a valid synthesis slice. We refer to the $\upsilon \sqsubseteq \phi$ condition as \textit{validity}. It is intentional that this is \textit{not} an exact equality, as demonstrated by the counterexample below:
+Many such synthesis slices exist. In particular, the original program $(\Gamma, e)$ is necessarily a synthesis slice; and for $\synslice{D}{\gap}$, every slice of $(\Gamma, e)$ is a valid synthesis slice. To demonstrate the intuition here, consider the following example.
+
+\paragraph{Example.} For some arbitrary expression $\synthesis[]{f}{\mathit{Int} \funarr \mathit{Bool}}$. Querying $\upsilon = \mathit{Int} \funarr \gap$ on $f$ is asking ``why does $f$ take an $\mathit{Int}$?''. We may have many syntactic slices of $f$, some of which may be invalid, below supposes four slices $f_1, f_2, f_3, f_4$, of which only $f_1, f_2$ are valid:
+
+\[\begin{array}{l@{\qquad}l}
+\synthesis[]{f_1}{\mathit{Int} \funarr \mathit{Bool}} & \text{\textbf{valid:} explains the query, and more (the codomain)} \\
+\synthesis[]{f_2}{\mathit{Int} \funarr \gap} & \text{\textbf{valid:} explains the query exactly} \\
+\synthesis[]{f_3}{\gap \funarr \mathit{Bool}} & \text{\textbf{invalid:} explains the codomain, but not the queried domain} \\
+\synthesis[]{f_4}{\gap} & \text{\textbf{invalid:} explains nothing}
+\end{array}\]
+The third is \textit{incomparable} to $\upsilon$: it does not carry strictly less type information than the query, but carries it where the query does not ask.
+
+It is intentional that validity is \textit{not} an exact equality, as demonstrated by this counterexample:
 
 \begin{counterexamplebox}
 %
 \begin{counterexample}[Non-Existence of all Exact Synthesis Slices]\label{lem:exact-not-exist}\leavevmode\\
 Consider $x \mathbin{:} \mathbf{1} \funarr \mathbf{1} \vdash (x, x) \synmode (1 \funarr 1) \times (1 \funarr 1)$, and query $\upsilon = (\mathbf{1} \funarr \gap) \times (\gap \funarr \mathbf{1})$.
 
-Any strictly smaller slice of either $x : 1 \funarr 1$ or $(x, x)$ synthesises a type strictly less precise than $\upsilon$. Yet the original program synthesises $(1 \funarr 1) \times (1 \funarr 1)$, strictly more precise than $\upsilon$.
+Any strictly smaller slice of either $x : 1 \funarr 1$ or $(x, x)$ synthesises an invalid type (\textbf{not} more or equally precise than $\upsilon$). Yet the original program synthesises $(1 \funarr 1) \times (1 \funarr 1)$, strictly more precise than $\upsilon$.
 \end{counterexample}
 \end{counterexamplebox}
 
@@ -61,7 +72,7 @@ Synthesis slices provide \textit{some} explanation of the query, but many are cl
 For an element $a$ of a poset, $a$ is minimal, $\isMin{a}$, when every $a'$ with $a' \sqsubseteq a$ is in fact equal to $a$.
 \end{definition}
 \begin{definition}[Minimal Synthesis Slices]
-A $\minsynslice{D}{\upsilon}$ is a $\synslice{D}{\upsilon}$ minimal in $\synslice{D}{\upsilon}$ under program-slice precision on $\lfloor \Gamma, e\rfloor$.
+For $D \;:\; \synthesis{e}{\tau}$. An element of $\minsynslice{D}{\upsilon}$ is a minimal element of $\synslice{D}{\upsilon}$ under program-slice precision on $\lfloor \Gamma, e\rfloor$.
 \end{definition}
 
 \subsection{Existence of Minimal Slices}
@@ -77,13 +88,13 @@ For every $s : \synslice{D}{\upsilon}$, there exists $m : \minsynslice{D}{\upsil
 \end{majortheorembox}
 
 \begin{proof}
-The slice lattice $\lfloor \Gamma, e \rfloor$ is finite. Hence, $\{\,s' : \synslice{D}{\upsilon} \mid s' \sqsubset s\,\}$ is finite and computable by enumeration. If this set is empty, then $s$ is minimal; otherwise, recurse on any of its elements. Each step strictly decreases precision, so finiteness ensures termination.
+The slice lattice $\lfloor s \rfloor$ is finite. Hence, $\{\,s' : \synslice{D}{\upsilon} \mid s' \sqsubseteq s\,\}$ is nonempty as $s \sqsubseteq s$, and finite and computable by decidability of type checking and precision. The set is finite, thereby cannot include an infinite strictly descending precision chain, so there must exist a finite chain with a minimal element $m$ as the set is nonempty.
 \end{proof}
 
 Consequently, any derivation $D$ has a minimal synthesis slice, as the original program is a trivial inhabitant of $\synslice{D}{\upsilon}$ for all $\upsilon$.
-\paragraph{A Brute-Force Algorithm via Graduality} The proof above is not a practical algorithm. In practice, for any term, the list of maximal slices strictly less precise than a given term can be computed efficiently by omitting exactly \textit{one} leaf from the AST.
+\paragraph{A Brute-Force Algorithm via the DSGG} The proof above is not a practical algorithm. In practice, for any term, the list of maximal slices strictly less precise than a given term can be computed efficiently by omitting exactly \textit{one} leaf from the AST individually at each position.
 
-The algorithm picks the first maximal strict slice that satisfies the query and recurses; if none of the slices satisfy the query, then a minimal slice has been found, by graduality (\cref{thm:graduality-syn}). This is $\mathcal{O}(n \times T)$ where $n$ is the program size and $T$ the type checking complexity; type checking is linear in the program size for this calculus, so finding a minimal slice is $\mathcal{O}(n^2)$.
+Starting from $s$, a brute-force algorithm picks the first maximal strict slice that satisfies the query and recurses; if none of the slices satisfy the query, then a minimal slice has been found, by the DSGG (\cref{thm:graduality-syn}). This is $\mathcal{O}(n \times T)$ time complexity where $n$ is the program size (assumptions included) and $T$ the type checking complexity. For the core calculus, type checking is linear in the size of the program and the types in the derivation $t$\footnote{Which may asymptotically exceed the program size}, $T = \mathcal{O}(n + t)$, so finding a minimal slice is $\mathcal{O}(n\,(n+t))$.
 
 See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend through, stopping just before descending below the given query; all three minima are marked.
 
@@ -151,7 +162,7 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 \node[anchor=north west, font=\scriptsize\bfseries, OliveGreen!35!black] at (-3.85,9.6) {$\upsilon \sqsubseteq \phi_i$};
 \node[anchor=south west, font=\scriptsize\bfseries, gray!50!black] at (-3.85,0.7) {$\upsilon \not\sqsubseteq \phi_i$};
 \end{tikzpicture}
-\caption{Synthesis slices above query $\upsilon$ in the shaded region, with 3 minima consisting of 2 inexact minima (ellipses) and one minimum (square) synthesising exactly $\upsilon$.}
+\caption{Synthesis slices valid for query $\upsilon$ in the shaded region, with 3 minima consisting of 2 inexact minimal slices (ellipses) and one exact minimal slice (square) synthesising exactly $\upsilon$.}
 \label{fig:syn-slice-existence}
 \end{subfigure}\hfill
 \begin{subfigure}[t]{0.49\linewidth}
@@ -193,7 +204,7 @@ See Figure~\ref{fig:syn-slice-existence} for an example lattice to descend throu
 
 \subsection{Refined Slices}
 \label{sec:sub-slices}
-In practice, the user may look at a large query $\upsilon$ getting a large program slice $\rho$. Therefore they may want to refine the query to focus on a subpart, $\upsilon' \sqsubseteq \upsilon$, that they do not quite understand. It is always possible to pick a consistent program slice $\rho' \sqsubseteq \rho$ which is a refinement of the previous slice by \textit{monotonicity} (which follows from graduality, \cref{thm:graduality-syn}):
+In practice, the user may look at a large query $\upsilon$ getting a large program slice $\rho$. Therefore they may want to refine the query to focus on a subpart, $\upsilon' \sqsubseteq \upsilon$, that they do not quite understand. It is always possible to pick a consistent program slice $\rho' \sqsubseteq \rho$ which is a refinement of the previous slice by \textit{monotonicity} (which follows from the DSGG, \cref{thm:graduality-syn}):
 
 \begin{majortheorembox}
 \begin{theorem}[Monotonicity of minimal slices]\label{thm:mono}
@@ -203,7 +214,9 @@ If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and $m_2 : \minsy
 
 This is desirable because the user will not be shown \textit{additional} information after a query refinement which would require further reasoning by the user to understand. \Cref{fig:syn-slice-refinement} illustrates a monotonic refinement path along 3 refined queries on the example lattice. If we did not follow a monotonic path during refinement we would get `branch hopping':
 
-\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. For example, refining $\upsilon = \mathbf{1}\funarr\mathbf{1}$ to $\upsilon' = \gap\funarr\mathbf{1}$:
+\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. 
+
+\paragraph{Example.} Refining $\upsilon = \mathbf{1}\funarr\mathbf{1}$ to $\upsilon' = \gap\funarr\mathbf{1}$:
 \begin{center}
 \begin{tikzpicture}[baseline=(t.base), every node/.style={inner sep=3pt}]
   \node[draw, line width=0.9pt, rounded corners,
@@ -217,6 +230,8 @@ This is desirable because the user will not be shown \textit{additional} informa
   \node[right=6pt of a] (t) {$\sli{\mathbf{if}}\;\mathbf{true}\;\sli{\mathbf{then}}\;x\;\sli{\mathbf{else}\;y}$};
 \end{tikzpicture}
 \end{center}
+
+See how the latter slice shows additional information not in the previous one, e.g.\ the variable assumption $y$ and its branch.
 
 On the other hand, monotonicity does not necessarily hold in the upwards direction. Consider the $\rho_j$ node in \Cref{fig:syn-slice-refinement}, which is minimal under query $\upsilon_0$, but no minimum for query $\upsilon_1$ is strictly more precise than $\rho_j$.
 
@@ -250,14 +265,16 @@ A more subtle case is that of let-bindings, which have different assumptions for
   &
   \synthesis[\Delta;\,\Gamma, x:\tau_1]{e_2}{\tau_2}
 }{\synthesis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}}\]
-A slice of a let-expression can be constructed from a slice $(\gamma_1, \varsigma_1)$ of the definition (synthesising $\phi_1$) and a slice $(\gamma_2, \varsigma_2)$ of the body, constrained with an assumption consistency condition: the body's used assumptions for the bound variable $x$ must be \textit{at most as precise as} the type synthesised by the slice of the definition, $\gamma_2(x) \mathbin{\sqsubseteq} \phi_1$.
+A slice of a let-expression can be constructed from a slice $(\gamma_1, \varsigma_1) : \synslice{D_1}{\upsilon_1}$ of the definition (synthesising $\phi_1$) and a slice $(\gamma_2, \varsigma_2) : \synslice{D_2}{\upsilon_2}$ of the body (synthesising $\phi_2$), constrained with an assumption consistency condition: the body's used assumptions for the bound variable $x$ must be \textit{at most as precise as} the type synthesised by the slice of the definition, $\gamma_2(x) \mathbin{\sqsubseteq} \phi_1$.
 
-Then, upon joining the assumptions for the two slices, we must remove the assumption on $x$ from the body (notated $\gamma_{\setminus x}$), as this is now provided by the definition:
+Then, upon joining the assumptions for the two slices, we must remove the assumption on $x$ from the body (notated $\gamma_{\setminus x}$), as this is now provided by the definition. We get a valid $(\gamma_1, \varsigma_1)\; \mathbin{\mathsf{def}} (\gamma_2, \varsigma_2) : \synslice{\synr{Let}\ D_1\ D_2}{\upsilon_2}$:
 \[(\gamma_1, \varsigma_1) \mathbin{\mathsf{def}} (\gamma_2, \varsigma_2) \triangleq (\gamma_1 \sqcup (\gamma_2)_{\setminus x},\; \mathbf{let}\;x = \varsigma_1\;\mathbf{in}\;\varsigma_2)\]
+
+Similarly to the products, this let expressions synthesises some $\phi_2' \sqsupseteq \phi_2 \sqsupseteq \upsilon_2$. We get a similar decomposition theorem. And the other constructs are all similar.
 
 \begin{majortheorembox}
 \begin{thmcase}[Binding Decomposition]\label{thm:min-def-decomp}
-Let $m : \minsynslice{\synr{Let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_1 \in \lfloor\tau_1\rfloor$ and minimal slices $m_1 : \minsynslice{D_1}{\phi_1}$ (synthesising $\phi_1'$) and $m_2 = (\gamma_2, \varsigma_2) : \minsynslice{D_2}{\upsilon}$ satisfying $\gamma_2(x) \sqsubseteq \phi_1'$, with $m = m_1 \mathbin{\mathsf{def}} m_2$.
+Let $m : \minsynslice{\synr{Let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_1 \in \lfloor\tau_1\rfloor$ and minimal slices $m_1 : \minsynslice{D_1}{\phi_1}$ (synthesising some $\phi_1' \sqsupseteq \phi_1$) and $m_2 = (\gamma_2, \varsigma_2) : \minsynslice{D_2}{\upsilon}$ satisfying $\gamma_2(x) \sqsubseteq \phi_1'$, with $m = m_1 \mathbin{\mathsf{def}} m_2$.
 \end{thmcase}
 \end{majortheorembox}
 

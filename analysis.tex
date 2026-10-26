@@ -12,19 +12,18 @@ Intuitively, slices of the context explain why a sub-term is \textit{expected} b
 
 \subsection{Definition}
 \label{sec:ana-slice-def}
-Structurally, analysis slices are identical to synthesis slices (\S\ref{sec:syn-slice-def}), but with expression slices $\varsigma$ replaced by context slices $\kappa \in \lfloor\C\rfloor$.
+Structurally, analysis slices are identical to synthesis slices (\S\ref{sec:syn-slice-def}), but with expression slices $\varsigma$ replaced by context slices $\kappa \in \lfloor\C\rfloor$, and using context typing. That is, for query $\upsilon$, that $\kappa$ is a context enforcing some $\phi \sqsubseteq \upsilon$ upon the focus.
 
 \begin{definition}
 \label{def:ana-slice}
-An \textit{analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\anamode\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ such that $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta'';\,\Gamma''}{\anamode\,\phi}$ for some inner-type witness $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor\tau\rfloor$ and $\psi \in \lfloor\tau_p\rfloor$ by graduality, \cref{thm:graduality-syn-cls}).
+An \textit{analysis slice} of $\mathit{Cls} : \ctxclass{\C}{\synmode\,\tau_p}{\Delta';\,\Gamma'}{\anamode\,\tau}$ on $\upsilon \in \lfloor\tau\rfloor$, written $\anaslice{\mathit{Cls}}{\upsilon}$, is a pair $(\kappa, \gamma) \in \lfloor\C, \Gamma\rfloor$ with $\ctxclass[\Delta;\,\gamma]{\kappa}{\synmode\,\psi}{\Delta'';\,\Gamma''}{\anamode\,\phi}$ for some inner-type witness $\phi \sqsupseteq \upsilon$ (with $\phi \in \lfloor\tau\rfloor$ and $\psi \in \lfloor\tau_p\rfloor$ by the DSGG).
 \end{definition}
-
 
 \subsection{Minimality}
 \label{sec:ana-minimality}
 
 
-$\minanaslice{\mathit{Cls}}{\upsilon}$ is defined analogously to Definition~\ref{def:isminimal}, minimising over the context slice $(\kappa, \gamma)$. And as before, existence of minimal analysis slices and monotonicity follow from finiteness and graduality.
+$\minanaslice{\mathit{Cls}}{\upsilon}$ is defined analogously to Definition~\ref{def:isminimal}, minimising over the context slice $(\kappa, \gamma)$. And as before, existence of minimal analysis slices and monotonicity follow from finiteness and the DSGG.
 
 \begin{majortheorembox}
 \begin{theorem}[Existence of minimal analysis slices]\label{thm:ana-min-exists}
@@ -41,7 +40,7 @@ If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and\\$m_2 : \mina
 \subsection{Minimally Scoped Analysis Slices}
 \noindent As mentioned earlier, a synthesising term derives all of its type information internally.\footnote{Again, given that assumptions are tracked externally.} Therefore, the type is actually only enforced by the context up until the innermost subderivation with a synthesis outer derivation mode.
 
-For example, for an annotated term nested inside another annotation, only the inner annotation actually enforces a type on the inner term. Therefore, an algorithm need only check this region (the outer context can be fully omitted).
+\paragraph{Example.} For a nested annotation $(e : \tau) : \tau'$,\footnote{Annotations are encoded as $(e : \tau) \triangleq (\lambda x \mathbin{:} \tau.\; x)(e)$.} only the inner annotation $\tau$ actually enforces a type on $e$, not the outer $\tau'$. Therefore, an algorithm need only check this region (the outer context can be fully omitted).
 
 %%% Local Variables:
 %%% mode: LaTeX

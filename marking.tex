@@ -43,7 +43,7 @@ $\markvar{k}$      & scope & Variables & Variable $k$ has no binding in scope \\
 \label{tab:mark-forms}
 \end{table}
 
-Importantly, marked terms can be type-checked by treating the marks as `non-empty' holes, synthesising $\gap$ (and recursively marking and type-checking the inner term).
+Importantly, marked terms can be type-checked by treating the marks as `non-empty' holes, synthesising $\gap$ (and recursively marking and type-checking the inner term); an unbound variable, for instance, gets marked as an error, and then synthesises $\gap$.
 
 The validity of this method is formalised by two theorems: \textit{totality} ensures marks account for every possible typing error, and \textit{erasure} ensures adding marks does not change a term's structure.
 
@@ -66,7 +66,7 @@ likewise for analysis.
 \label{sec:marking-classification}
 
 
-In this style, we extend context typing (\S\ref{sec:context-typing}) to \textit{marked} context typing $\mctxclass[\Delta;\,\Gamma]{\C}{\chk{\C}}{p}{\Delta';\,\Gamma'}{m}$, threading a marked context $\chk{\C}$ alongside $\C$ (with context marks defined analogously to expressions), adding one error rule per mark form of \cref{tab:mark-forms}. We have proven analogous totality and soundness theorems hold for marked contexts, mirroring the unmarked plug decomposition and composition (\cref{thm:plug-decomposition,thm:plug-composition}).
+We extend context typing (\S\ref{sec:context-typing}) to \textit{marked} context typing $\mctxclass[\Delta;\,\Gamma]{\C}{\chk{\C}}{p}{\Delta';\,\Gamma'}{m}$, in a similar style, threading a marked context $\chk{\C}$ alongside $\C$ (with context marks defined analogously to expressions), adding one error rule per mark form of \cref{tab:mark-forms}. We have proven analogous totality and soundness theorems hold for marked contexts, mirroring the unmarked plug decomposition and composition (\cref{thm:plug-decomposition,thm:plug-composition}).
 
 \subsection{The Debugging Recipe by Example}
 \label{sec:marking-recipes}
