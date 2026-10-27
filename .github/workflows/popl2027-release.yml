@@ -4,21 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Release tag to create or update
-        default: POPL2027
+        description: Release tag for the paper PDFs
+        default: POPL2027-paper
         required: false
 
 permissions:
   contents: write
 
 jobs:
-  pdfs:
+  paper:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@v17
@@ -39,23 +37,18 @@ jobs:
           install -m 644 result/main.pdf upload/main.pdf
           install -m 644 result/supplement.pdf upload/supplement.pdf
 
-      - name: Build the diff against the July 2026 submission
-        run: |
-          set -euo pipefail
-          nix develop --command scripts/make-submission-diff.sh
-          install -m 644 export/main-diff-vs-submission.pdf upload/main-diff-vs-submission.pdf
-
-      - name: Upload to the release
+      - name: Create or update the paper release
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.tag || 'POPL2027' }}
+          TAG: ${{ inputs.tag || 'POPL2027-paper' }}
         run: |
           set -euo pipefail
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" --clobber upload/*.pdf
+            gh release upload "$TAG" --clobber upload/main.pdf upload/supplement.pdf
           else
-            gh release create "$TAG" --title "POPL 2027: Bidirectional Type Slicing" \
-              --notes "Artefacts for *Bidirectional Type Slicing* (POPL 2027). The two tarballs are uploaded separately with scripts/build-artifacts.sh." \
-              upload/*.pdf
+            gh release create "$TAG" \
+              --title "POPL 2027: Bidirectional Type Slicing" \
+              --notes 'The paper and its supplementary material (deferred rule sets and metatheory).' \
+              upload/main.pdf upload/supplement.pdf
           fi
           gh release view "$TAG" --json assets --jq '.assets[] | "\(.name)\t\(.size)"'
