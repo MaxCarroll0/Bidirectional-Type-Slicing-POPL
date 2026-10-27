@@ -24,7 +24,7 @@ Base types such as booleans are omitted from the core syntax, being encoded usin
 
 \subsubsection{Consistency}
 
-Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in standard gradual type systems (\S\ref{sec:gradual-types}). That is, a weakening of equality, where every type is consistent with $\gap$, and compound types are consistent when their components are. Consistency is reflexive and symmetric but \textit{not} transitive.
+Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in standard gradual type systems~\cite{GradualFunctional}. That is, a weakening of equality, where every type is consistent with $\gap$, and compound types are consistent when their components are. Consistency is reflexive and symmetric but \textit{not} transitive.
 
 \begin{figure}[H]
 \fbox{$\tau_1 \sim \tau_2$}\ \ \ $\tau_1$ is consistent with $\tau_2$
@@ -56,7 +56,7 @@ Precision (Figure~\ref{fig:precision}) is a partial order that organises terms b
 \label{fig:precision}
 \end{figure}
 
-\paragraph{Precision on Typing Assumptions.} In this calculus, we represent typing assumptions as \textit{finite} partial functions from variable names to types, with domain $\mathrm{dom}(\Gamma)$. Precision is defined by domain inclusion and pointwise precision on types in the (smaller) domain:
+\paragraph{Precision on Typing Assumptions.} In this calculus, we represent typing assumptions as \textit{finite} partial functions from variable names to types, with domain $\mathrm{dom}(\Gamma)$. We write $\gamma$ for typing assumptions that are slices of some $\Gamma$ (i.e.\ less or equally precise, in the sense below). Precision is defined by domain inclusion and pointwise precision on types in the (smaller) domain:
 \[\gamma_1 \sqsubseteq \gamma_2 \iff \mathrm{dom}(\gamma_1) \subseteq \mathrm{dom}(\gamma_2) \text{ and } \gamma_1(x) \sqsubseteq \gamma_2(x) \text{ for all } x \in \mathrm{dom}(\gamma_1)\]
 That is, a less precise type assumptions set either assumes fewer variables' types, or assumes less precise types on the present variables.
 

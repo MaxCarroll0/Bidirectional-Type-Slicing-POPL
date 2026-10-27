@@ -101,7 +101,7 @@ Here ``$e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$'' means: if $m = \
 For any context $\C$, expression $e$, outer mode $d$, and focus mode $m$: if\/ $\ctxclass{\C}{d}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$, then $\C[e]$ satisfies outer derivation mode $d$ under $\Delta;\,\Gamma$.
 \end{theorem}
 
-In order to apply the same ideas as synthesis slices, we also prove substantial DSGGs (\S\ref{sec:core-typing}) for context typings, defining precision on modes $m' \sqsubseteq m$ by lifting: $\synmode\,\tau' \sqsubseteq \synmode\,\tau$ iff $\tau' \sqsubseteq \tau$, and likewise for $\anamode$. The focus mode's class itself (analysis or synthesis) is propagated unchanged through every context typing rule.
+In order to apply the same ideas as synthesis slices, we also prove analogous DSGGs (\S\ref{sec:gradual-types}) for context typings, defining precision on modes $m' \sqsubseteq m$ by lifting: $\synmode\,\tau' \sqsubseteq \synmode\,\tau$ iff $\tau' \sqsubseteq \tau$, and likewise for $\anamode$. The focus mode's class itself (analysis or synthesis) is propagated unchanged through every context typing rule.
 
 \begin{theorem}[Downwards Static Gradual Guarantee -- Context, Synthesis Position]\label{thm:graduality-syn-cls}
 If\/ $\Gamma' \sqsubseteq \Gamma$, $\C' \sqsubseteq \C$, and\/ $\ctxclass[\Delta;\,\Gamma]{\C}{\synmode\,\tau_p}{\Delta_f;\,\Gamma_f}{m}$, then there exist $\tau_p'$, $\Gamma_f'$, and $m'$ with $\tau_p' \sqsubseteq \tau_p$, $\Gamma_f' \sqsubseteq \Gamma_f$, $m' \sqsubseteq m$, and\/ $\ctxclass[\Delta;\,\Gamma']{\C'}{\synmode\,\tau_p'}{\Delta_f;\,\Gamma_f'}{m'}$.

@@ -109,7 +109,7 @@ Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are minimal because each 
 \end{tikzpicture}
 \end{center}
 
-When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right projection's use of $x$ is strictly more precise than that of slices {\color{BrickRed}(A)}, {\color{NavyBlue}(B)}, and {\color{Mulberry}(D)}; we are \textit{aliasing} this variable's assumption. Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice {\color{Mulberry}(D)} is still valid because it does not actually use $x$.
+When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;x\;\mathbf{else}\;y,\; x)$, the two assumptions are joined. However, the right component's use of $x$ is strictly more precise than that of slices {\color{BrickRed}(A)}, {\color{NavyBlue}(B)}, and {\color{Mulberry}(D)}; we are \textit{aliasing} this variable's assumption. Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are no longer minimal under this aliased assumption, meaning they are not subslices of the overall product. Slice {\color{Mulberry}(D)} is still valid because it does not actually use $x$.
 \end{exmp}
 
 \subsection{Term-Minimal Slices}
@@ -143,7 +143,7 @@ read ``the typing $\Gamma \vdash e \synmode \tau$ at query $\upsilon$ produces t
 \noindent The cases that deserve commentary are products, the binding constructs, function application, and type application.
 
 \subsubsection{Products}
-With term minimality, we now have that two minimal synthesis slices which are also term-minimal can be composed into a term-minimal, minimal synthesis slice. For a query $\upsilon_1\times \upsilon_2$ on the product, the projections are queried with $\upsilon_1$ and $\upsilon_2$ individually:
+With term minimality, we now have that two minimal synthesis slices which are also term-minimal can be composed into a term-minimal, minimal synthesis slice. For a query $\upsilon_1\times \upsilon_2$ on the product, the components are queried with $\upsilon_1$ and $\upsilon_2$ individually:
 
 \[
 \inference[\synr{Pair}]{
@@ -185,7 +185,7 @@ The type function itself is sliced with a matched query $\widehat{\upsilon}$: of
 \centering
 \begin{tabular}{@{}l@{}}
 \textbf{Sliced term:} $\synthesis[]{e}{\forall\alpha.\,(\alpha \times \alpha \times \mathbf{Bool})}$ applied at $\sigma = \mathbf{1} \funarr (\mathbf{Bool} \times \mathbf{Bool})$, \\[2pt]
-\quad so $\synthesis[]{e\langle\sigma\rangle}{\sigma \times \sigma \times \mathbf{Bool}}$, queried on $\upsilon = \mathbf{1} \funarr \gap \times \gap \funarr (\mathbf{Bool} \times \gap)$ \\[10pt]
+\quad so $\synthesis[]{e\langle\sigma\rangle}{\sigma \times \sigma \times \mathbf{Bool}}$, queried on $\upsilon = (\mathbf{1} \funarr \gap) \times (\gap \funarr (\mathbf{Bool} \times \gap)) \times \gap$ \\[10pt]
 \textbf{1. Match \& collect} $\upsilon$ against $\alpha \times \alpha \times \mathbf{Bool}$: \\[4pt]
 \quad $\upsilon \;=\; \underbrace{\sli[teal]{\mathbf{1} \funarr \gap}}_{\alpha} \;\times\; \underbrace{\sli[teal]{\gap \funarr (\mathbf{Bool} \times \gap)}}_{\alpha} \;\times\; \gap$ \\[16pt]
 \quad giving $\mathbf{1} \funarr \gap \;\sqsubseteq\; \alpha$ and $\gap \funarr (\mathbf{Bool} \times \gap) \;\sqsubseteq\; \alpha$ \\[10pt]
@@ -212,8 +212,8 @@ Then, a disjoint cover of query $\upsilon$ is one such that $\upsilon\heytingmin
 
 \begin{exmp}[Overflow] An arbitrary disjoint cover alone is not necessarily minimal; take the aliasing of \cref{lem:exact-not-exist} as one branch:
 \[ \Gamma = (x \mathbin{:} \mathbf{1} \funarr \mathbf{1},\; y \mathbin{:} \mathbf{1} \funarr \mathbf{1}), \qquad e = \mathbf{if}\;\mathbf{true}\;\mathbf{then}\;(x, x)\;\mathbf{else}\;(y, y), \]
-Querying this at $\upsilon = (\mathbf{1} \funarr \mathbf{1}) \times (\mathbf{1} \funarr \mathbf{1})$, has a disjoint the cover $\upsilon_1 = (\mathbf{1} \funarr \gap) \times (\gap \funarr \mathbf{1})$ and $\upsilon_2 = (\gap \funarr \mathbf{1}) \times (\mathbf{1} \funarr \gap)$. 
-However, minimally slicing the \textbf{true} branch, $(x,x)$, at $\upsilon_1$ is not exact (\cref{lem:exact-not-exist}), synthesising the full query $\upsilon$. Thereby, slicing the \textbf{else} branch by $\upsilon_2$ is redundant, despite the disjoint cover requesting non-gap $\upsilon_2$. Combining the two slices without further checks or iteration would give a non-minimal result: and $\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;(x,x)\;\mathbf{else}\;(y, y)$.
+Querying this at $\upsilon = (\mathbf{1} \funarr \mathbf{1}) \times (\mathbf{1} \funarr \mathbf{1})$ has the disjoint cover $\upsilon_1 = (\mathbf{1} \funarr \gap) \times (\gap \funarr \mathbf{1})$ and $\upsilon_2 = (\gap \funarr \mathbf{1}) \times (\mathbf{1} \funarr \gap)$. 
+However, minimally slicing the \textbf{true} branch, $(x,x)$, at $\upsilon_1$ is not exact (\cref{lem:exact-not-exist}), synthesising the full query $\upsilon$. Thereby, slicing the \textbf{else} branch by $\upsilon_2$ is redundant, despite the disjoint cover requesting non-gap $\upsilon_2$. Combining the two slices without further checks or iteration would give a non-minimal result: $\mathbf{if}\;\mathbf{true}\;\mathbf{then}\;(x,x)\;\mathbf{else}\;(y, y)$.
 \end{exmp}
 
 \paragraph{Hazel Approximation. }The Hazel implementation simply does a disjoint split and ignores the overflow issue to work in linear time complexity. This is why it is an approximation. But, it is perfectly feasible to use this approximation and then continue with the brute force algorithm, as we expect the approximation to be very close to the minimum in almost all cases. Further, as overflow only occurs due to variable aliasing, the brute force search need only consider aliased variables at the leaves.
@@ -271,7 +271,7 @@ For terms in analysis mode, the full type slice is just the analysis slice, as t
 
 Minimal slices are not unique, and some are actually larger than others in the sheer number of terms highlighted. So, one might rank them by \textit{size}: the number of highlighted positions, asking for a \textit{minimum-size} slice. For this core calculus, finding such a slice is \textbf{NP-hard} in general, in the size of the program and its types. Finding \textit{some} minimal slice is, by contrast, polynomial in that same measure (\S\ref{sec:min-exists}), so the hardness is specific to minimising size. This implies that an algorithm attempting to also reduce the absolute size of slices should use heuristics to avoid or reduce the likelihood of cases with exponential time complexity. 
 
-Our aim was therefore to classify the space of minimal slices and to find or approximate one efficiently. Ranking slices by size is computationally hard, and this does not even consider further tradeoffs beyond absolute size, such as: branching factor within slices, and locality of omitted code / assumptions; we leave exploration of these empirical considerations to future work.
+Our aim was therefore to classify the space of minimal slices and to find or approximate one efficiently. Ranking slices by size is computationally hard, and this does not even consider further tradeoffs beyond absolute size, such as the branching factor within slices and the locality of omitted code / assumptions; we leave exploration of these empirical considerations to future work.
 
 \subsection{Set Cover Reduction} The NP-hardness argument is as follows: by constructing a reduction from the NP-hard set cover optimisation, as in \cref{fig:nphard}, and described below:
 \begin{itemize}

@@ -70,6 +70,7 @@ Synthesis slices provide \textit{some} explanation of the query, but many are cl
 For an element $a$ of a poset, $a$ is minimal, $\isMin{a}$, when every $a'$ with $a' \sqsubseteq a$ is in fact equal to $a$.
 \end{definition}
 \begin{definition}[Minimal Synthesis Slices]
+\label{def:min-syn-slice}
 For $D : \synthesis{e}{\tau}$, elements of $\minsynslice{D}{\upsilon}$ are minimal in $\synslice{D}{\upsilon}$ under program-slice precision on $\lfloor \Gamma, e\rfloor$.
 \end{definition}
 
@@ -262,7 +263,7 @@ A slice of a let-expression can be constructed from a slice $(\gamma_1, \varsigm
 Then, upon joining the assumptions for the two slices, we must remove the assumption on $x$ from the body (notated $\gamma_{\setminus x}$), as this is now provided by the definition. We get a valid $(\gamma_1, \varsigma_1)\; \mathbin{\mathsf{def}}\; (\gamma_2, \varsigma_2) : \synslice{\synr{Let}\ D_1\ D_2}{\upsilon_2}$:
 \[(\gamma_1, \varsigma_1) \mathbin{\mathsf{def}} (\gamma_2, \varsigma_2) \triangleq (\gamma_1 \sqcup (\gamma_2)_{\setminus x},\; \mathbf{let}\;x = \varsigma_1\;\mathbf{in}\;\varsigma_2)\]
 
-Similarly to the products, this let expressions synthesises some $\phi_2' \sqsupseteq \phi_2 \sqsupseteq \upsilon_2$. We get a similar decomposition theorem. And the other constructs are all similar.
+As with products, this let expression synthesises some $\phi_2' \sqsupseteq \phi_2 \sqsupseteq \upsilon_2$, and we get a similar decomposition theorem; the remaining constructs are analogous.
 
 \begin{thmcase}[Binding Decomposition]\label{thm:min-def-decomp}
 Let $m : \minsynslice{\synr{Let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_1 \in \lfloor\tau_1\rfloor$ and minimal slices $m_1 : \minsynslice{D_1}{\phi_1}$ (synthesising some $\phi_1' \sqsupseteq \phi_1$) and $m_2 = (\gamma_2, \varsigma_2) : \minsynslice{D_2}{\upsilon}$ satisfying $\gamma_2(x) \sqsubseteq \phi_1'$, with $m = m_1 \mathbin{\mathsf{def}} m_2$.

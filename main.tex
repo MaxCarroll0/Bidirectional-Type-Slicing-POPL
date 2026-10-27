@@ -56,11 +56,11 @@ This paper comes enclosed with a mechanisation of most results in the paper. Det
 A build of the Hazel implementation is available as a web interpreter, to play with the tool itself. Hazel is being rapidly developed, so this artefact version is not fully up to date with the main branch on \url{hazel.org}. Available at \url{https://github.com/MaxCarroll0/Bidirectional-Type-Slicing-POPL/releases/download/POPL2027-artifact/POPL2027-hazel-web.tar.gz}.
 
 \section{Disclosure of Use of AI in Research}
-LLMs have been used in proof automation, in particular copying similar proofs to difference contexts (e.g. the lattice proofs). In rare cases they have also been used to weaken preconditions of theorems.
+LLMs have been used in proof automation, in particular copying similar proofs to different contexts (e.g. the lattice proofs). In rare cases they have also been used to weaken the preconditions of theorems.
 
-Importantly, we have a script checking for `proof cheating', e.g. listing holes and postulates (and we also have performed manual checks beyond this). All postulates remaining are intentional, were manually added, and have been explicitly listed in the supplement with reasoning.
+Importantly, we use a script that checks for `proof cheating', e.g.\ by listing holes and postulates, and we have also performed manual checks beyond this. All postulates remaining are intentional, were manually added, and have been explicitly listed in the supplement with reasoning.
 
-In recent times, the Hazel project making use of AI in developing the language, as such, much of the Hazel artefact was developed using AI. Type Slicing has been implemented in a similar way, generally following a TDD strategy, used for expanding initial written cases to wider language features.
+The Hazel project has recently made use of AI in developing the language, so much of the Hazel artefact was developed using AI. Type slicing was implemented in the same way, generally following a test-driven development strategy to extend initially hand-written cases to wider language features.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
