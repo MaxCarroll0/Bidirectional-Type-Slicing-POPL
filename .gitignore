@@ -20,3 +20,6 @@ figures/
 *.synctex.gz
 \#*\#
 .\#*
+
+dist/
+!export/main-diff-vs-submission.pdf

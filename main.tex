@@ -51,16 +51,37 @@
 \input{conclusions.tex}
 
 \section{Data Availability Statement}
-This paper comes enclosed with a mechanisation of most results in the paper. Detailed with a supplemental PDF index. Type checking passes on our machines, and is also reproducible via a Nix flake. TODO: link to git publish
+All artefacts accompanying this paper are published as assets of the
+\texttt{POPL2027} release at
+\url{https://github.com/MaxCarroll0/Bidirectional-Type-Slicing-POPL/releases/tag/POPL2027},
+in the repository that also holds the sources of the paper itself.
 
-A build of the Hazel implementation is available as a web interpreter, to play with the tool itself. Hazel is being rapidly developed, so this artefact version is not fully up to date with the main branch on \url{hazel.org}. TODO: link to paper artefact in POPL tex (no source code).
+\paragraph{Mechanisation.} \texttt{POPL2027-mechanisation.tar.gz} contains the
+Agda development mechanising most results of the paper, together with the Nix
+flake and scripts that type-check it, and the type-checking results we obtained.
+Type checking passes on our machines and is reproducible with a single
+\texttt{nix build}; the bundle's \texttt{README.md} gives that recipe and a
+manual one against Agda 2.8.0 and the standard library 2.3. The bundle is paired
+with \texttt{mechanisation-crossref.pdf}, also a standalone asset, which indexes
+every numbered result of the paper against its Agda declaration, records a
+mechanisation status for each, and lists every remaining postulate with its
+justification; the modules the check covers contain no live holes. The development is also maintained at
+\url{https://github.com/MaxCarroll0/polymorphic-type-slicing-formalism}.
+
+\paragraph{Implementation.} \texttt{POPL2027-hazel-web.tar.gz} contains a
+prebuilt, fully static build of the Hazel web environment implementing type
+slicing, so the tool can be exercised directly: \texttt{bash serve.sh} serves it
+on \texttt{localhost} and needs only Python~3. The programs used in the figures
+ship alongside as an importable scratchpad. Hazel is being rapidly developed, so
+this artefact is a snapshot and is not fully up to date with the main branch at
+\url{https://hazel.org}.
 
 \section{Disclosure of Use of AI in Research}
-LLMs have been used in proof automation, in particular copying similar proofs to difference contexts (e.g. the lattice proofs). In rare cases they have also been used to weaken preconditions of theorems.
+LLMs have been used in proof automation, in particular copying similar proofs to different contexts (e.g. the lattice proofs). In rare cases they have also been used to weaken preconditions of theorems.
 
-Importantly, we have a script checking for `proof cheating', e.g. listing holes and postulates (and we also have performed manual checks beyond this). All postulates remaining are intentional, were manually added, and have been explicitly listed in the supplement with reasoning.
+Importantly, we have a script checking for `proof cheating', e.g. listing holes and postulates (and we also have performed manual checks beyond this). All postulates remaining are intentional, were manually added, and have been explicitly listed, with reasoning, in the mechanisation cross-reference accompanying the artefact.
 
-In recent times, the Hazel project making use of AI in developing the language, as such, much of the Hazel artefact was developed using AI. Type Slicing has been implemented in a similar way, generally following a TDD strategy, used for expanding initial written cases to wider language features.
+The Hazel project has in recent times made use of AI in developing the language, and as such much of the Hazel artefact was developed using AI. Type Slicing has been implemented in a similar way, generally following a TDD strategy, used for expanding initial written cases to wider language features.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}

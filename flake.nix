@@ -13,6 +13,9 @@
             scheme-basic
             latex-bin
             latexmk
+            latexdiff
+            geometry
+            lm
 
             acmart
             natbib
