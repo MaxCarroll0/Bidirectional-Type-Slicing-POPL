@@ -271,7 +271,7 @@ For terms in analysis mode, the full type slice is just the analysis slice, as t
 
 Minimal slices are not unique, and some are actually larger than others in the sheer number of terms highlighted. So, one might rank them by \textit{size}: the number of highlighted positions, asking for a \textit{minimum-size} slice. For this core calculus, finding such a slice is \textbf{NP-hard} in general, in the size of the program and its types. Finding \textit{some} minimal slice is, by contrast, polynomial in that same measure (\S\ref{sec:min-exists}), so the hardness is specific to minimising size. This implies that an algorithm attempting to also reduce the absolute size of slices should use heuristics to avoid or reduce the likelihood of cases with exponential time complexity. 
 
-Our aim was therefore to classify the space of minimal slices and to find or approximate one efficiently. Ranking slices by size is computationally hard, and this does not even consider further tradeoffs beyond absolute size, problem as follows, factor within slices, and locality of omitted code / assumptions; we leave exploration of these empirical considerations to future work.
+Our aim was therefore to classify the space of minimal slices and to find or approximate one efficiently. Ranking slices by size is computationally hard, and this does not even consider further tradeoffs beyond absolute size, such as: branching factor within slices, and locality of omitted code / assumptions; we leave exploration of these empirical considerations to future work.
 
 \subsection{Set Cover Reduction} The NP-hardness argument is as follows: by constructing a reduction from the NP-hard set cover optimisation, as in \cref{fig:nphard}, and described below:
 \begin{itemize}

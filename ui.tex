@@ -137,7 +137,7 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 \caption{Explain-error slice for the parser combinator.}
 \label{fig:explain-error}
 \end{figure}
-\clearpage
+
 {\Cref{fig:explain-error} considers a much more complex error where a sequencing parser combinator has been defined incorrectly, but used correctly. As is usual, the error has been incorrectly localised to the usage site, trusting the (incorrect) annotation. Specifically, \texttt{seq}'s continuation is annotated as if it returns an \texttt{Option} immediately, rather than first accepting the remaining \texttt{String} threaded out of the previous parser. The use site provides the intended parser continuation.
 
 \emph{Explain error} queries the slices on only the outermost inconsistency in the types (the function vs the option in the return type); the resulting slice collapses the program to just the function shape of the continuation and the offending annotation.
