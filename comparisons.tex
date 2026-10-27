@@ -33,7 +33,7 @@ Wand~\cite{Wand1986} and Haack and Wells~\cite{HaackWells2003} work in a globall
 
 These slices are not structure-preserving programs but flat sets of constraints and sources, so the results cannot themselves be type checked or executed. Tip and Dinesh~\cite{TipDinesh2001} are the exception: slicing explicitly typed languages by dependence tracking in a rewriting-based checker, their slices are programs guaranteed to reproduce the same error when type checked.
 
-The scope also differs: type error slicing answers \emph{``why does this program fail to type-check?''}, whereas type slicing answers \emph{``why does this expression have this type?''}. Via marking (\S\ref{sec:marking})~\cite{Marking2024}, which elaborates every well-formed expression into a totally typed derivation, type slicing applies also to ill-typed programs. So, here, the question of ``why this type?'' subsumes ``why this fails to type-check?''.
+The scope also differs: type error slicing answers \emph{``why does this program fail to type-check?''}, whereas type slicing answers \emph{``why does this expression have this type?''}. Via marking (\S\ref{sec:marking})~\cite{Marking2024}, which elaborates every well-formed expression into a totally typed derivation, type slicing applies also to ill-typed programs. So, here, the question of ``why this type?'' subsumes ``why does this fail to type-check?''.
 
 \subsection{Type-Directed Slicing}
 \label{sec:cmp-type-directed}
@@ -55,7 +55,7 @@ A large body of work explores many other ways of improving error reporting: cons
 
 Our method has four primary advantages: \textbf{(1)} a slice shows a complete context; \textbf{(2)} slices are themselves programs, so type slices compose with any of the tools above, or with other analyses in general; \textbf{(3)} queries can be refined interactively; and \textbf{(4)} slices explain well-typed code, not just errors. None of the systems above provides all four. 
 
-One may ask why we couldn't sidestep (4), by just using the common debugging method of inserting type annotations around a well-typed expression to intentionally force an error and explain the error; indirectly explaining ``why not this other type?'' to approximate our question of ``why this type?''. Besides not all languages even supporting this, and ambiguities in making an appropriate choice of annotation, you will often find that adding an annotation will result in \textbf{multiple} errors surfacing, and the tools (including error slicing) above typically have no way of jointly minimising or relating \textit{multiple related errors}.
+One may ask why we could not sidestep (4), by just using the common debugging method of inserting type annotations around a well-typed expression to intentionally force an error and explain the error; indirectly explaining ``why not this other type?'' to approximate our question of ``why this type?''. Besides not all languages even supporting this, and ambiguities in making an appropriate choice of annotation, you will often find that adding an annotation will result in \textbf{multiple} errors surfacing, and the tools (including error slicing) above typically have no way of jointly minimising or relating \textit{multiple related errors}.
 
 %%% Local Variables:
 %%% mode: LaTeX

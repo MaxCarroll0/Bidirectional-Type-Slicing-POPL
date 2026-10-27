@@ -80,7 +80,7 @@ and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \m
 
 \begin{description}
 \item[{\color{BrickRed}(A)}] Both branches are retained; the assumption slice keeps $x$'s domain only and $y$'s codomain only (joining to $1 \funarr 1$).
-\item[{\color{NavyBlue}(B)}] Symmetric to (A), taking the opposite choices for the assumption slice
+\item[{\color{NavyBlue}(B)}] Symmetric to (A), taking the opposite choices for the assumption slice.
 \item[{\color{OliveGreen}(C)}] \textbf{Else}-branch omitted.
 \item[{\color{Mulberry}(D)}] Symmetric to (C): \textbf{then}-branch omitted.
 \end{description}
@@ -179,7 +179,7 @@ Notice that this is the \textit{opposite} direction to typechecking, e.g. let bi
 
 Type application works by matching the type function's type, $\forall \alpha.\ \tau$, against the query, $\upsilon$, to collect a list of constraints on the type variable: matching the $\tau$ against $\upsilon$ at positions where $\tau$ uses the type variable ($\alpha$). The constraints have the following form $\upsilon_1 \sqsubseteq \alpha$ when the query $\upsilon$ contains sub-term $\upsilon_1$ at a position corresponding to $\alpha$ in $\tau$. The \textit{join} of the constraints gives the minimal slice of the type argument $\hat\sigma$. 
 
-The type function itself is sliced with a matched query $\widehat{\upsilon}$: of $\forall \alpha.\ \tau$, but omitting type variable occurrences which have a trivial `non-contributing' constraint ($\gap \sqsubseteq \alpha$). Other positions which don't relate to the type variable take the queried component from $\upsilon$ directly. Figure~\ref{fig:tapp-minsub} illustrates this construction with an example.
+The type function itself is sliced with a matched query $\widehat{\upsilon}$: of $\forall \alpha.\ \tau$, but omitting type variable occurrences which have a trivial `non-contributing' constraint ($\gap \sqsubseteq \alpha$). Other positions which do not relate to the type variable take the queried component from $\upsilon$ directly. Figure~\ref{fig:tapp-minsub} illustrates this construction with an example.
 
 \begin{figure}[tbp]
 \centering
