@@ -43,7 +43,7 @@ Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in stand
 
 Precision (Figure~\ref{fig:precision}) is a partial order that organises terms by \textit{information content}: for types, $\tau' \sqsubseteq \tau$ means $\tau$ has at least as much type information as $\tau'$. Here, $\gap$ is the global minimum. Expression precision is defined analogously, so $e' \sqsubseteq e$ means $e'$ is less or equally precise: zero or more terms replaced with holes; for instance, the slices of $\lambda x \mathbin{:} 1.\; x$ can form a precision chain $\gap \sqsubseteq \lambda x \mathbin{:} \gap.\; \gap \sqsubseteq \lambda x \mathbin{:} 1.\; \gap \sqsubseteq \lambda x \mathbin{:} 1.\; x$, each step filling in one more part of the term.
 
-\begin{figure}[tbp]
+\begin{figure}[H]
 \fbox{$\tau \sqsubseteq \tau'$}\ \ \ $\tau$ is less precise than $\tau'$
 \[\inference[$\sqsubseteq\gap$]{}{\gap \sqsubseteq \tau} \qquad
   \inference[$\sqsubseteq{1}$]{}{1 \sqsubseteq 1} \qquad
@@ -119,7 +119,7 @@ The bidirectional typing judgements are mostly standard; the complete synthesis 
 \label{fig:typing-rules-excerpt}
 \end{figure}
 
-We use joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. For instance $(\mathit{Int} \funarr \mathit{Bool}) \sqcup (\gap \funarr \gap) = \mathit{Int} \funarr \mathit{Bool}$ and $\gap \sqcup (\gap \funarr \gap) = \gap \funarr \gap$, whereas for $\tau = \mathit{Int}$ the join is undefined and \synr{App} does not apply.
+We use joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. For instance $(\mathit{Int} \funarr \mathit{Bool}) \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ implies that $\tau_1 \equiv \mathit{Int}$ and $\tau_2 \equiv \mathit{Bool}$, and $\gap \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ implies that $\tau_1 \equiv \gap$ and $\tau_2 \equiv \gap$, whereas for $\tau = \mathit{Int}$ the join is undefined and \synr{App} does not apply.
 
 Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding into the body. The typing rules satisfy the DSGG (\S\ref{sec:gradual-types}).
 \begin{theorem}\label{thm:graduality-syn}

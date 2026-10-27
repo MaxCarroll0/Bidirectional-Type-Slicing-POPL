@@ -259,7 +259,7 @@ A more subtle case is that of let-bindings, which have different assumptions for
 }{\synthesis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}}\]
 A slice of a let-expression can be constructed from a slice $(\gamma_1, \varsigma_1) : \synslice{D_1}{\upsilon_1}$ of the definition (synthesising $\phi_1$) and a slice $(\gamma_2, \varsigma_2) : \synslice{D_2}{\upsilon_2}$ of the body (synthesising $\phi_2$), constrained with an assumption consistency condition: the body's used assumptions for the bound variable $x$ must be \textit{at most as precise as} the type synthesised by the slice of the definition, $\gamma_2(x) \mathbin{\sqsubseteq} \phi_1$.
 
-Then, upon joining the assumptions for the two slices, we must remove the assumption on $x$ from the body (notated $\gamma_{\setminus x}$), as this is now provided by the definition. We get a valid $(\gamma_1, \varsigma_1)\; \mathbin{\mathsf{def}} (\gamma_2, \varsigma_2) : \synslice{\synr{Let}\ D_1\ D_2}{\upsilon_2}$:
+Then, upon joining the assumptions for the two slices, we must remove the assumption on $x$ from the body (notated $\gamma_{\setminus x}$), as this is now provided by the definition. We get a valid $(\gamma_1, \varsigma_1)\; \mathbin{\mathsf{def}}\; (\gamma_2, \varsigma_2) : \synslice{\synr{Let}\ D_1\ D_2}{\upsilon_2}$:
 \[(\gamma_1, \varsigma_1) \mathbin{\mathsf{def}} (\gamma_2, \varsigma_2) \triangleq (\gamma_1 \sqcup (\gamma_2)_{\setminus x},\; \mathbf{let}\;x = \varsigma_1\;\mathbf{in}\;\varsigma_2)\]
 
 Similarly to the products, this let expressions synthesises some $\phi_2' \sqsupseteq \phi_2 \sqsupseteq \upsilon_2$. We get a similar decomposition theorem. And the other constructs are all similar.
