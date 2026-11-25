@@ -61,7 +61,7 @@ Hazel renders each slice by folding away every fragment the queried type does no
 \Cref{fig:parse-digit-synthesis} slices a small character parser. The synthesis slice reduces the function to the \texttt{String} domain annotation and the first branch determining the result option type (Hazel does not infer the type parameter without an annotation), folding away all other branches.
 
 Refined queries may target \emph{part} of a reported type: for example, asking only about the domain of a function type, by folding away the returned sum type (\synsrc{\texttt{String -> }$\fold$}). The resulting program shrinks the slice to exclude the entire function body (\cref{fig:parse-digit-analysis}). This same slice is also the minimal \textit{analysis} slice which \textit{enforces} \anasrc{\texttt{String}} to be expected on the argument.
-\begin{figure}[h]
+\begin{figure}[t]
 \centering
 
 \begin{subfigure}[t]{0.49\linewidth}
@@ -99,7 +99,7 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 \label{fig:parse-digit-analysis}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[t]
 \centering
 
 \begin{tikzpicture}

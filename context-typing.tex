@@ -14,7 +14,7 @@ Slicing this context derivation is what we use for \textit{analysis slices} (\S\
 
 Formally we must first define one-hole contexts on terms themselves (Figure~\ref{fig:contexts}). The focus of the context is notated $\cmark$ and is restricted to a single position in an expression. For any context, a term may be placed at the focus to produce a complete term. This is notated by $\C[e]$, `plugging $e$ into context $\C$'.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \begin{minipage}[t]{0.54\linewidth}
 \fbox{Syntax}\ \ \ One-hole expression contexts $\C$
 \begin{align*}
@@ -67,7 +67,7 @@ The \textit{outer derivation mode} $d$ records whether the whole expression $\C[
 
 Specifying these rules is systematic, one for each typing rule and focus location. We give a few representative rules in Figure~\ref{fig:context-classification}. The only additional rules are for identity contexts $\texttt{s}\cmark$ and $\texttt{a}\cmark$ (the base cases) where the focus mode must match the outer derivation mode.
 
-\begin{figure}[tbp]
+\begin{figure}[t]
 \small
 \fbox{$\ctxclass{\C}{d}{\Delta';\,\Gamma'}{m}$}\ \ \ Context $\C$ at outer derivation mode $d$ types its focus under $\Delta';\,\Gamma'$ in focus mode $m$
 

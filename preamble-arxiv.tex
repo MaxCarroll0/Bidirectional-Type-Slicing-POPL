@@ -1,0 +1,13 @@
+% preamble-arxiv.tex - theorem and counterexample boxes for the arXiv version only.
+\newtcolorbox{majortheorembox}{
+  colback=green!3, colframe=OliveGreen!60, sharp corners, boxrule=0.5pt, enhanced
+}
+\newtcolorbox{counterexamplebox}{
+  colback=orange!3, colframe=orange!50, sharp corners, boxrule=0.5pt, enhanced
+}
+\BeforeBeginEnvironment{theorem}{\begin{majortheorembox}}
+\AfterEndEnvironment{theorem}{\end{majortheorembox}}
+\BeforeBeginEnvironment{thmcase}{\begin{majortheorembox}}
+\AfterEndEnvironment{thmcase}{\end{majortheorembox}}
+\BeforeBeginEnvironment{counterexample}{\begin{counterexamplebox}}
+\AfterEndEnvironment{counterexample}{\end{counterexamplebox}}

@@ -22,8 +22,10 @@ structure as $e$ but wraps each point of local type failure in a \emph{mark}. Th
 
 The core calculus studied gives rise to four classes of errors: \textit{type inconsistencies} when subsumption cannot be applied, \textit{shape errors} when rules expect a sub-term to join (match) a specific type shape, \textit{mode limitations} where syntax which cannot synthesise its type is expected to provide type information; and variable \textit{scoping errors}, which do not pertain to types and so cannot be debugged by type slicing.
 
-\begin{table}[h]
+\begin{table}[t]
 \centering
+\caption{Error Mark Forms Classified}
+\label{tab:mark-forms}
 \small
 \begin{tabularx}{\linewidth}{lll : X}
 \toprule
@@ -39,8 +41,6 @@ $\marklam[\lambda x.\,e]$ & mode limitation & Lambda Analysis  & Unannotated lam
 $\markvar{k}$      & scope & Variables & Variable $k$ has no binding in scope \\
 \bottomrule
 \end{tabularx}
-\caption{Error Mark Forms Classified}
-\label{tab:mark-forms}
 \end{table}
 
 Importantly, marked terms can be type-checked by treating the marks as `non-empty' holes, synthesising $\gap$ (and recursively marking and type-checking the inner term); an unbound variable, for instance, gets marked as an error, and then synthesises $\gap$.
@@ -81,7 +81,7 @@ We may now relate the tools developed over the last four sections to explain typ
 
 We give some worked examples, notating with a \markbox{\text{marked term}}, a \sli{\text{synthesis slice}}, and/or an \sli[OliveGreen]{\text{analysis slice}}. `Purely structural' slice regions which do not add or manipulate type information (i.e. bindings) are in a lighter shade.
 
-\subsubsection{Type inconsistency: {$\markincon{\tau'}{\tau}$}}
+\subsubsection{Type Inconsistency: {$\markincon{\tau'}{\tau}$}}
 \label{sec:marking-recipes-incon}
 
 Consider the program
@@ -123,7 +123,7 @@ $\mathit{MinAnaSlice}$ at the minimal $\psi \sqsubseteq 1 \funarr 1$ that still 
   \psi = \gap\,{\funarr}\,\gap.
 \]
 
-\paragraph{\textbf{Full view:}} The slices pick out exactly what each side contributes to the failure.
+\paragraph{\textbf{Full View:}} The slices pick out exactly what each side contributes to the failure.
 
 \queryblock{\texttt{Bool}\sli{\times}\texttt{Bool}\;\;(\equiv\;\gap \times \gap)}{\texttt{1}\sli[OliveGreen]{\funarr}\texttt{1}\;\;(\equiv\;\gap \funarr \gap)}
 \[
@@ -136,7 +136,7 @@ We can see that this recipe does not \textit{arbitrarily} blame either the synth
 
 However, type slicing is flexible. A user who \emph{does} want to trust the surrounding context (annotations), as is often done in conventional type error highlighting, can simply only query the synthesis-side. Or vice versa, to trust the implementation, which is useful when refactoring code to a different type, which conflicts with existing annotations.
 
-\subsubsection{Shape mismatches: $\markarrow$, $\marksum$, $\markprod$, $\markforall$}
+\subsubsection{Shape Mismatches: $\markarrow$, $\marksum$, $\markprod$, $\markforall$}
 \label{sec:marking-recipes-shape}
 
 The shape-mismatch marks all occur in similar situations: the syntactic position of the focus requires a type kind, but the focus's synthesised type does not match this.
@@ -171,7 +171,7 @@ $\slist{\mathbf{let}}\;b\,\slist{:}\,\sli[OliveGreen]{\texttt{Bool}}\,\slist{=}\
   \markbox{\marklam[\lambda y.\,y]}\,\slist{\mathbf{in}}\;b.$
 \end{minipage}
 
-\subsubsection{Unbound variable: $\markvar{k}$}
+\subsubsection{Unbound Variable: $\markvar{k}$}
 \label{sec:marking-recipes-unbound}
 
 The free-variable mark records a \emph{scope} failure. There are no types involved, so type slicing is inapplicable.

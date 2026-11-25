@@ -208,7 +208,7 @@ If $\upsilon_1 \sqsubseteq \upsilon_2$ in $\lfloor\tau\rfloor$ and $m_2 : \minsy
 
 This is desirable because the user will not be shown \textit{additional} information after a query refinement which would require further reasoning by the user to understand. \Cref{fig:syn-slice-refinement} illustrates a monotonic refinement path along 3 refined queries on the example lattice. If we did not follow a monotonic path during refinement we would get `branch hopping':
 
-\paragraph{Branch hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. 
+\paragraph{Branch Hopping.} This is where highlighted regions switch between branches when refining the query, requiring the user to switch their reasoning between the contents in each branch. 
 
 \begin{exmp} Refining $\upsilon = \mathbf{1}\funarr\mathbf{1}$ to $\upsilon' = \gap\funarr\mathbf{1}$:
 \begin{center}
@@ -273,7 +273,7 @@ Let $m : \minsynslice{\synr{Let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_
 \label{sec:join-slices}
 
 
-Finally, a minimal slice only provides an explanation; it does not show \textit{all} information \textit{contributing} in any way to a query type. The latter is a useful notion when performing refactors which change the type, where quickly identifying the regions of the program which rely on the old type is crucial.
+Finally, a minimal slice only provides an explanation; it does not show \textit{all} information \textit{contributing} in any way to a query type. The latter is a useful notion when performing refactors which change the type, where quickly identifying the complete region of the program which produces the old type is crucial.
 
 Such a region can be uniquely expressed as the \textit{join} of all minimal slices for the query. The contribution slice is efficient in the sense that it is a \textit{least} upper bound of actual minimal slices. For this to work, synthesis slices must be closed under joins: the joined slice must also be \textit{valid}:
 

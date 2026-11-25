@@ -18,6 +18,8 @@
             lm
 
             acmart
+            doclicense
+            ccicons
             natbib
             libertine
             newtx
@@ -55,6 +57,7 @@
 
             hyperref
             needspace
+            wrapfig
             setspace
             lastpage
             cleveref
@@ -119,6 +122,9 @@
           buildPhase = ''
             export TEXMFVAR=$(mktemp -d)
             export SOURCE_DATE_EPOCH=1700000000
+            if [ "${name}" != supplement ]; then
+              cp vendor/acmart-2.21/acmart.cls vendor/acmart-2.21/ACM-Reference-Format.bst .
+            fi
             latexmk -interaction=nonstopmode -halt-on-error -pdf -lualatex \
               -pretex="\pdfvariable suppressoptionalinfo 512\relax" -usepretex ${name}.tex
           '';
@@ -132,6 +138,7 @@
       packages = forEachSystem (pkgs: {
         texenv = tex pkgs;
         main = mkDoc pkgs "main";
+        arxiv = mkDoc pkgs "arxiv";
         supplement = mkDoc pkgs "supplement";
         default = pkgs.symlinkJoin {
           name = "type-slicing-docs";

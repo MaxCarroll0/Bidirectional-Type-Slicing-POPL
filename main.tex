@@ -1,40 +1,40 @@
 \PassOptionsToPackage{dvipsnames}{xcolor}
-\documentclass[acmsmall,screen,review,nonacm]{acmart}
+\documentclass[acmsmall]{acmart}
 
-\settopmatter{printacmref=false}
 \input{preamble.tex}
-
-\citestyle{acmnumeric}
-\providecommand{\textcite}{\citet}
-\providecommand{\autocite}{\cite}
-\providecommand{\parencite}{\citep}
+\input{meta.tex}
 
 \begin{document}
 
-\title{Bidirectional Type Slicing}
-
-\author{Max Carroll}
-\orcid{0009-0007-9636-8502}
-\affiliation{%
-  \institution{University of Cambridge}
-  \department{Department of Computer Science and Technology}
-  \city{Cambridge}
-  \country{UK}}
-\author{Anil Madhavapeddy}
-\orcid{0000-0001-8954-2428}
-\affiliation{%
-  \institution{University of Cambridge}
-  \department{Department of Computer Science and Technology}
-  \city{Cambridge}
-  \country{UK}}
-\author{Cyrus Omar}
-\orcid{0000-0003-4502-7971}
-\affiliation{%
-  \institution{University of Michigan}
-  \city{Ann Arbor}
-  \country{USA}}
+\input{front.tex}
 
 \input{abstract.tex}
+
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10003752.10003790.10011740</concept_id>
+       <concept_desc>Theory of computation~Type theory</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10003752.10010124.10010138.10010143</concept_id>
+       <concept_desc>Theory of computation~Program analysis</concept_desc>
+       <concept_significance>500</concept_significance>
+       </concept>
+   <concept>
+       <concept_id>10011007.10011074.10011099.10011102.10011103</concept_id>
+       <concept_desc>Software and its engineering~Software testing and debugging</concept_desc>
+       <concept_significance>300</concept_significance>
+       </concept>
+ </ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Theory of computation~Type theory}
+\ccsdesc[500]{Theory of computation~Program analysis}
+\ccsdesc[300]{Software and its engineering~Software testing and debugging}
+
+\keywords{type slicing, bidirectional typing, gradual typing, program slicing, type error debugging, Hazel}
 
 \maketitle
 
@@ -50,17 +50,7 @@
 \input{comparisons.tex}
 \input{conclusions.tex}
 
-\section*{Data Availability Statement}
-This paper comes enclosed with a mechanisation of most results in the paper. Detailed with a supplemental PDF index. Type checking passes on our machines, and is also reproducible via a Nix flake. Available at \url{https://github.com/MaxCarroll0/Bidirectional-Type-Slicing-POPL/releases/download/POPL2027-artifact/POPL2027-mechanisation.tar.gz}, with the index at \url{https://github.com/MaxCarroll0/Bidirectional-Type-Slicing-POPL/releases/download/POPL2027-artifact/mechanisation-crossref.pdf}.
-
-A build of the Hazel implementation is available as a web interpreter, to play with the tool itself. Hazel is being rapidly developed, so this artefact version is not fully up to date with the main branch on \url{hazel.org}. Available at \url{https://github.com/MaxCarroll0/Bidirectional-Type-Slicing-POPL/releases/download/POPL2027-artifact/POPL2027-hazel-web.tar.gz}.
-
-\section*{Disclosure of Use of AI in Research}
-LLMs have been used in proof automation, in particular copying similar proofs to different contexts (e.g. the lattice proofs). In rare cases they have also been used to weaken the preconditions of theorems.
-
-Importantly, we use a script that checks for `proof cheating', e.g.\ by listing holes and postulates, and we have also performed manual checks beyond this. All postulates remaining are intentional, were manually added, and have been explicitly listed in the supplement with reasoning.
-
-The Hazel project has recently made use of AI in developing the language, so much of the Hazel artefact was developed using AI. Type slicing was implemented in the same way, generally following a test-driven development strategy to extend initially hand-written cases to wider language features.
+\input{statements.tex}
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}

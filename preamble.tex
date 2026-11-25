@@ -80,6 +80,7 @@
 
 \usepackage{etoolbox}
 \usepackage{needspace}
+\usepackage{wrapfig}
 % NOTE: acmart errors on redefining sectioning commands ("An attempt to redefine
 % \subsection detected"), so the \pretocmd{\subsection}{\needspace{...}} hack from
 % the dissertation is removed for the POPL version.
@@ -424,3 +425,7 @@
 \newcommand{\marginnote}[2][]{\@ifnextchar[\@mn@gobble\relax}
 \def\@mn@gobble[#1]{}
 \makeatother
+
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000

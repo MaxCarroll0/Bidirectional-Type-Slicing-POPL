@@ -181,7 +181,7 @@ Type application works by matching the type function's type, $\forall \alpha.\ \
 
 The type function itself is sliced with a matched query $\widehat{\upsilon}$: of $\forall \alpha.\ \tau$, but omitting type variable occurrences which have a trivial `non-contributing' constraint ($\gap \sqsubseteq \alpha$). Other positions which do not relate to the type variable take the queried component from $\upsilon$ directly. Figure~\ref{fig:tapp-minsub} illustrates this construction with an example.
 
-\begin{figure}[tbp]
+\begin{figure}[t]
 \centering
 \begin{tabular}{@{}l@{}}
 \textbf{Sliced term:} $\synthesis[]{e}{\forall\alpha.\,(\alpha \times \alpha \times \mathbf{Bool})}$ applied at $\sigma = \mathbf{1} \funarr (\mathbf{Bool} \times \mathbf{Bool})$, \\[2pt]
@@ -284,7 +284,7 @@ Then, if a synthesis slice is queried on this case tree with $\tau \times 1 \tim
 
 As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau$, which implies there are $m$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e. $x_j : T'_j \sqsubseteq T_j$} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^mS'_j = U$; as $S'_j \subseteq S_j$, this gives $\bigcup_{j=1}^m S_j \supseteq U$. Hence, the retained $S_j$ form a set-cover. Finally, as the only variance in the size of the slice was in the number of variables $x_j$ chosen, i.e. the number of sets chosen, a minimum-size synthesis slice corresponds to a minimum set cover.
 
-\begin{figure}[H]
+\begin{figure}[t]
 \centering
 \begin{tikzpicture}[scale=0.92, transform shape,
     sc/.style={draw, rounded corners=2pt, inner sep=2pt, minimum height=4mm, font=\footnotesize},
