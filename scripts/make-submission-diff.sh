@@ -27,9 +27,11 @@ cp -r vendor "$work/new/" 2>/dev/null || true
 cp -r media "$work/old/" 2>/dev/null || true
 cp -r vendor "$work/old/" 2>/dev/null || true
 
-latexdiff --flatten --encoding=utf8 \
+latexdiff --flatten --encoding=utf8 --config="VERBATIMENV=(?:verbatim\*?|CCSXML)" \
   --append-safecmd="edited,hatraSelfCite,priorDissertationSelfCite" \
   "$work/old/main.tex" "$work/new/main.tex" > "$work/new/main-diff.tex"
+perl -0pi -e 's/\\looseness\\DIFadd\{=(-?\d+) \}/\\looseness=$1 /g' "$work/new/main-diff.tex"
+perl -0pi -e 's/(\\DIFdelbegin %DIFDELCMD < \n)\n(%DIFDELCMD < %%%\n\\DIFdelend)/$1$2/g' "$work/new/main-diff.tex"
 
 cd "$work/new"
 latexmk -interaction=nonstopmode -pdf -lualatex main-diff.tex >/dev/null 2>&1 || true
