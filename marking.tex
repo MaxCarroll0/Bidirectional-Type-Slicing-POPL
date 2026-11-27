@@ -79,7 +79,7 @@ We may now relate the tools developed over the last four sections to explain typ
 \item Pick queries to explore the error. For type-inconsistency marks \textit{both} the synthesis and analysis slices exist (two context typings exist from step 1). From these, \textit{only} the inconsistent parts need be queried to explain the error. For shape errors, simply query just the outermost shape of the synthesised type; mode-limitation errors are analogous on the analysis side.
 \end{enumerate}
 
-We give some worked examples, notating with a \markbox{\text{marked term}}, a \sli{\text{synthesis slice}}, and/or an \sli[OliveGreen]{\text{analysis slice}}. `Purely structural' slice regions which do not add or manipulate type information (i.e. bindings) are in a lighter shade.
+We give some worked examples, notating with a \markbox{\text{marked term}}, a \sli{\text{synthesis slice}}, and/or an \sli[OliveGreen]{\text{analysis slice}}. `Purely structural' slice regions which do not add or manipulate type information (i.e.\ bindings) are in a lighter shade.
 
 \subsubsection{Type Inconsistency: {$\markincon{\tau'}{\tau}$}}
 \label{sec:marking-recipes-incon}
@@ -143,7 +143,7 @@ The shape-mismatch marks all occur in similar situations: the syntactic position
 
 \vspace{3pt}\noindent
 \begin{minipage}[c]{0.66\linewidth}
-\hspace*{9pt}A representative example is $e = \texttt{((), ())}\,(\,\texttt{true}\,)$, where $\texttt{((),())}$ is syntactically in a function position, but synthesises $\texttt{1}\times\texttt{1}$, which is \textit{not} a function, i.e. does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
+\hspace*{9pt}A representative example is $e = \texttt{((), ())}\,(\,\texttt{true}\,)$, where $\texttt{((),())}$ is syntactically in a function position, but synthesises $\texttt{1}\times\texttt{1}$, which is \textit{not} a function, i.e.\ does not join with $\gap \funarr \gap$. We can therefore query just why it is a product, and not a function.
 \end{minipage}\hfill
 \begin{minipage}[c]{0.30\linewidth}
 \centering

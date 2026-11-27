@@ -172,7 +172,7 @@ All the synthesised type information from a function application is derived from
 
 Rules which bind variables are more complex, as they abstract a variable used in the minimised body. The general method is to slice them by first slicing the \textit{body}, extracting the assumption it needed on the bound variable from the minimal assumptions $\gamma$, then slice the definition / type annotation using this. 
 
-Notice that this is the \textit{opposite} direction to typechecking, e.g. let bindings type the definition first, then use the result to type the body, but slicing slices the body first to determine the minimal assumption to slice the definition with.
+Notice that this is the \textit{opposite} direction to typechecking, e.g.\ let bindings type the definition first, then use the result to type the body, but slicing slices the body first to determine the minimal assumption to slice the definition with.
 
 \subsubsection{Type Application}
 \label{sec:term-min-tapp}
@@ -206,7 +206,7 @@ The case rule is the difficult one, appearing to require an iterative fixed poin
 
 However, when the branch slices exactly synthesise disjoint type queries, then there is no redundancy and the result is minimal. The scrutinee can be sliced using the join of the minimal assumptions on the branches, much like with let bindings. 
 
-To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1 \heytingminus \upsilon_2$, which is the least slice whose join with $\upsilon_2$ recovers $\upsilon_1$, i.e. ``the part of $\upsilon_1$ not already covered by $\upsilon_2$'', e.g. $\sli{1 \times 1} \;\heytingminus\; \sli{1 \times}\,\gap \;=\; \gap\,\sli{\times 1}$.
+To express disjoint types we can use \textit{co-Heyting subtraction} $\upsilon_1 \heytingminus \upsilon_2$, which is the least slice whose join with $\upsilon_2$ recovers $\upsilon_1$, i.e.\ ``the part of $\upsilon_1$ not already covered by $\upsilon_2$'', e.g.\ $\sli{1 \times 1} \;\heytingminus\; \sli{1 \times}\,\gap \;=\; \gap\,\sli{\times 1}$.
 
 Then, a disjoint cover of query $\upsilon$ is one such that $\upsilon\heytingminus \upsilon_1 = \upsilon_2$ and $\upsilon \heytingminus \upsilon_2 = \upsilon_1$. The case expression will necessarily synthesise $\upsilon_1 \sqcup \upsilon_2$ which equals $\upsilon$ by standard co-Heyting algebra rules. Note that the lattice is \textit{not} a boolean algebra, so $\upsilon_1 \sqcap \upsilon_2 \neq \gap$ in general.
 
@@ -282,7 +282,7 @@ Our aim was therefore to classify the space of minimal slices and to find or app
 
 Then, if a synthesis slice is queried on this case tree with $\tau \times 1 \times \dots \times 1$, each $I_j$ must be retained to cover the query, so every leaf and case expression is retained (a constant size contribution). Further, no minimal slice retains the same position in two different assumptions $T'_j \sqsubseteq T_j$, as replacing a duplicate with $\gap$ leaves $\bigsqcup_{j}T'_j = \tau$ (with the slice remaining valid); the retained assumptions thus cover each element of $U$ exactly once, contributing a constant $n$ highlighted positions. So the only variance in the size of the slices is purely dependent on which variables $x_j$ were retained; these $x_j$ will correspond to the sets $S_j$ chosen in the set cover.
 
-As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau$, which implies there are $m$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e. $x_j : T'_j \sqsubseteq T_j$.} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^mS'_j = U$; as $S'_j \subseteq S_j$, this gives $\bigcup_{j=1}^m S_j \supseteq U$. Hence, the retained $S_j$ form a set cover. Finally, as the only variance in the size of the slice was in the number of variables $x_j$ chosen, i.e. the number of sets chosen, a minimum-size synthesis slice corresponds to a minimum set cover.
+As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau$, which implies there are $m$ subsets\footnote{Subsets, as a minimal slice can use less precise assumptions $x_j$, i.e.\ $x_j : T'_j \sqsubseteq T_j$.} $S_j' \subseteq S_j$ such that $\bigcup_{j=1}^mS'_j = U$; as $S'_j \subseteq S_j$, this gives $\bigcup_{j=1}^m S_j \supseteq U$. Hence, the retained $S_j$ form a set cover. Finally, as the only variance in the size of the slice was in the number of variables $x_j$ chosen, i.e.\ the number of sets chosen, a minimum-size synthesis slice corresponds to a minimum set cover.
 
 \begin{figure}[t]
 \centering
