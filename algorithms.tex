@@ -164,7 +164,7 @@ All the synthesised type information from a function application is derived from
   \upsilon \neq \gap
   &
   \tmrule{e_1}{\tau_1 \funarr \tau_2}{\gap \funarr \upsilon}{\varsigma_{\mathit{fn}}}{\psi_1}{\gamma}
-}{\tmrule{e_1\,e_2}{\tau_2}{\upsilon}{\varsigma_{\mathit{fn}}(\gap)}{\mathsf{cod}(\psi_1)}{\gamma}}
+}{\tmrule{e_1(e_2)}{\tau_2}{\upsilon}{\varsigma_{\mathit{fn}}(\gap)}{\mathsf{cod}(\psi_1)}{\gamma}}
 \]
 
 \subsubsection{Binding Constructs}
@@ -227,7 +227,7 @@ Let $D : \synthesis{e}{\tau}$ and $\upsilon \in \lfloor\tau\rfloor$. If $\tmrule
 \subsection{Calculating Analysis Slices}
 \label{sec:ana-slice-calculus}
 
-Analysis slices are calculated directly from synthesis slices. The only rule that creates a type checking judgement is function application. Consider the analysis slice of a function argument with query type $\upsilon_1$; it is just the function application and a slice of the function under $\gap \to \upsilon_1$. That is, to explain why a function argument must be a given type, we ask why the corresponding function has that type as its domain.
+Analysis slices are calculated directly from synthesis slices. The only rule that creates a type checking judgement is function application. Consider the analysis slice of a function argument with query type $\upsilon_1$; it is just the function application and a slice of the function under $\gap \funarr \upsilon_1$. That is, to explain why a function argument must be a given type, we ask why the corresponding function has that type as its domain.
 
 However, to recursively calculate the analysis slice of an application when the focus is deep inside the argument, the analysis slice of the argument itself must be calculated, but its outer derivation mode is in \textit{analysis}. The analysis slices defined earlier (\S\ref{sec:ana-slice-def}) do not apply here.
 
