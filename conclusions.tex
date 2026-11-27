@@ -11,15 +11,16 @@ Globally inferred languages have much more confusing typing derivations and erro
 \subsection{Cast Slicing \& Dynamics}
 \label{sec:cast-dynamics}
 
-A gradually-typed language elaborates programs into a cast calculus and runs the casts dynamically. Type slices can be attached to those casts, letting casts explain their insertion by pointing back to code: the source is a slice of the term being cast, the target a slice of its context.
-
 \begin{wrapfigure}{r}{0.38\linewidth}
+\vspace{-18pt}
 \centering
 \includegraphics[width=0.85\linewidth]{media/simple_cast_error}
 \Description{Screenshot of the Hazel editor showing a failed cast with the associated type slice highlighted in the program.}
 \caption{Type slice associated with a cast error, from a preliminary workshop paper~\hatraSelfCite{} built on differing foundations~\priorDissertationSelfCite{}.}
 \label{fig:cast-slice}
 \end{wrapfigure}
+A gradually-typed language elaborates programs into a cast calculus and runs the casts dynamically. Type slices can be attached to those casts, letting casts explain their insertion by pointing back to code: the source is a slice of the term being cast, the target a slice of its context.
+
 This is useful for debugging dynamic type errors, which would not otherwise point back to code: gradual typing's blame~\cite{WadlerFindler2009} identifies \emph{which} cast failed but implicates only the cast site; a slice widens this to every source fragment contributing to either side.
 
 However, slices are no longer slices of the original program once dynamic reductions are performed. Tracking dynamic execution, perhaps integrating ideas from Perera~\cite{Perera2012,PereraGarg2016}, would allow tracing casts back to source with stronger guarantees; dynamic slices measurably aid diagnosis of run-time type errors in gradual languages~\cite{TypeSlicer2025}.

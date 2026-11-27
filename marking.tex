@@ -22,7 +22,7 @@ structure as $e$ but wraps each point of local type failure in a \emph{mark}. Th
 
 The core calculus studied gives rise to four classes of errors: \textit{type inconsistencies} when subsumption cannot be applied, \textit{shape errors} when rules expect a sub-term to join (match) a specific type shape, \textit{mode limitations} where syntax which cannot synthesise its type is expected to provide type information; and variable \textit{scoping errors}, which do not pertain to types and so cannot be debugged by type slicing.
 
-\begin{table}[t]
+\begin{table}[b]
 \centering
 \caption{Error mark forms, classified.}
 \label{tab:mark-forms}
@@ -147,7 +147,7 @@ The shape-mismatch marks all occur in similar situations: the syntactic position
 \end{minipage}\hfill
 \begin{minipage}[c]{0.30\linewidth}
 \centering
-\queryblock{\texttt{1}\sli{\times}\texttt{1}}{\text{---}}
+\queryblock{\texttt{1}\sli{\times}\texttt{1}}{\text{--}}
 $\markbox{\markarrow[(\texttt{()}\sli,\texttt{()})]}\,(\,\texttt{true}\,).$
 \end{minipage}
 
@@ -166,7 +166,7 @@ $\texttt{Bool}$. Taking the $\mathit{MinAnaSlice}$ on the enclosing context witn
 \end{minipage}\hfill
 \begin{minipage}[c]{0.38\linewidth}
 \centering
-\queryblock{\text{---}}{\sli[OliveGreen]{\texttt{Bool}}}
+\queryblock{\text{--}}{\sli[OliveGreen]{\texttt{Bool}}}
 $\slist{\mathbf{let}}\;b\,\slist{:}\,\sli[OliveGreen]{\texttt{Bool}}\,\slist{=}\,
   \markbox{\marklam[\lambda y.\,y]}\,\slist{\mathbf{in}}\;b.$
 \end{minipage}

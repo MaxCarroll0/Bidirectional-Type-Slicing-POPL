@@ -8,7 +8,7 @@ In this section, we present the core calculus which type slicing builds upon. It
 
 The syntax of the core calculus is given in Figure~\ref{fig:syntax}. $1$ is the unit type, and $\gap$ is a gap / hole serving a dual role: in the gradual typing interpretation it is the dynamic type, and in the slicing interpretation it represents unrequired type information (to explain a query). Similarly a $\gap$ in expressions represents omitted sub-expressions, irrelevant to the explanation resulting from a query. In type checking, omitted expressions synthesise the dynamic (omitted) type.
 
-\begin{figure}[t]
+\begin{figure}[b]
 \fbox{Syntax}\ \ \ Types $\tau$ and expressions $e$
 \begin{align*}
 \tau &::= \gap \mid 1 \mid \tau \funarr \tau \mid \tau \times \tau \mid \tau + \tau \mid \forall\alpha.\;\tau \mid \alpha \\[4pt]
@@ -107,7 +107,7 @@ Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{
 
 The bidirectional typing judgements are mostly standard; the complete synthesis and analysis rule sets appear in the supplementary material, and Figure~\ref{fig:typing-rules-excerpt} presents some of the major rules. $\wf{\tau}$ denotes when a type $\tau$ is \textit{well-formed} under available type variables $\Delta$, that is, $\tau$ only mentions type variables present in $\Delta$.
 
-\begin{figure}[t]
+\begin{figure}[b]
 \small
 \[\inference[\synr{Var}]{x : \tau \in \Gamma}{\synthesis{x}{\tau}} \qquad
   \inference[\synr{$\lambda$Ann}]{\wf{\tau_1} & \synthesis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\synthesis{\lambda x \mathbin{:} \tau_1.\; e}{\tau_1 \funarr \tau_2}}\]
