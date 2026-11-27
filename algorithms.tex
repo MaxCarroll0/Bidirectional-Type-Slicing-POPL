@@ -278,7 +278,7 @@ Our aim was therefore to classify the space of minimal slices and to find or app
 \begin{itemize}
   \item Encode a universe $U = \{1,\dots,n\}$ as a type $\tau = 1 \times \cdots \times 1$ ($n$ factors, one position per element)
 \item Encode each of $m$-many sets $S_j$ in the set cover problem by an assumption $x_j : T_j \sqsubseteq \tau$ in $\Gamma$ with $T_j$ defined by the $i$th projection of $T_j$ being $1$ if and only if $i \in S_j$.
-\item Construct a case tree with empty scrutinees and placing all $(x_j, I_j)$, defining $I_j$ as the $m$-ary product with $j$th projection being $1$ and all others $\gap$.
+\item Construct a case tree with empty scrutinees and placing all $(x_j, I_j)$ at the leaves, defining $I_j$ as the $m$-ary product with $j$th projection being $1$ and all others $\gap$.
 \end{itemize}
 
 Then, if a synthesis slice is queried on this case tree with $\tau \times 1 \times \dots \times 1$, each $I_j$ must be retained to cover the query, so every leaf and case expression is retained (a constant size contribution). Further, no minimal slice retains the same position in two different assumptions $T'_j \sqsubseteq T_j$, as replacing a duplicate with $\gap$ leaves $\bigsqcup_{j}T'_j = \tau$ (with the slice remaining valid); the retained assumptions thus cover each element of $U$ exactly once, contributing a constant $n$ highlighted positions. So the only variance in the size of the slices is purely dependent on which variables $x_j$ were retained; these $x_j$ will correspond to the sets $S_j$ chosen in the set cover.
