@@ -53,6 +53,7 @@ Hazel renders each slice by folding away every fragment the queried type does no
 \end{scope}
 \end{tikzpicture}
 
+\Description{Two screenshots of the Hazel editor. In the first, the function parse\_digit is selected and the cursor inspector reports its synthesised type. In the second, after pressing the slicing icon, the program is folded down to the String annotation and the first branch of the function body.}
 \caption{Synthesis slice for \synsrc{\texttt{parse\_digit}}.}
 \label{fig:parse-digit-slices}
 \label{fig:parse-digit-synthesis}
@@ -95,6 +96,7 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 \label{fig:parse-digit-argument-analysis}
 \end{subfigure}
 
+\Description{Two screenshots of the Hazel editor. On the left, the result type is folded within the query and the whole function body folds away. On the right, the argument is selected and the String annotation enforcing its expected type is highlighted.}
 \caption{Refined synthesis and analysis slices.}
 \label{fig:parse-digit-analysis}
 \end{figure}
@@ -134,6 +136,7 @@ Refined queries may target \emph{part} of a reported type: for example, asking o
 \end{scope}
 \end{tikzpicture}
 
+\Description{Two screenshots of the Hazel editor showing a type error in a parser combinator program. In the first, a curried function is marked as an error because its synthesised type differs from the type its position demands. In the second, after pressing Explain error, the program folds down to the annotation on seq and the function literals at the use site.}
 \caption{Explain-error slice for the parser combinator.}
 \label{fig:explain-error}
 \end{figure}

@@ -195,6 +195,7 @@ The type function itself is sliced with a matched query $\widehat{\upsilon}$: of
 \quad $\hat\sigma \;=\; (\mathbf{1} \funarr \gap) \;\sqcup\; (\gap \funarr (\mathbf{Bool} \times \gap)) \;=\; \mathbf{1} \funarr (\mathbf{Bool} \times \gap)$ \\[10pt]
 \textbf{4. Combine:} $\varsigma\langle\hat\sigma\rangle$, synthesising $\hat\sigma \times \hat\sigma \times \gap \;\sqsupseteq\; \upsilon$ \\
 \end{tabular}
+\Description{Worked example in four steps: matching the query against the polymorphic type to collect constraints on the type variable, slicing the type function on the matched query, joining the constraints to obtain the sliced type argument, and combining the results.}
 \caption{Step-by-step slicing of a type application.}
 \label{fig:tapp-minsub}
 \end{figure}
@@ -344,6 +345,7 @@ As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau
   {$\ell_1 = (x_1,\; {1} \times \gap \times \gap \times \gap)$\\
    $\ell_3 = (x_3,\; \gap \times \gap \times {1} \times \gap)$};
 \end{tikzpicture}
+\Description{Example set cover instance over a four-element universe with four sets, its encoding as four product types, and the corresponding tree of case expressions in which the two leaves for the minimum cover are retained.}
 \caption{NP-hardness of minimum-size slicing.}
 \label{fig:nphard}
 \end{figure}

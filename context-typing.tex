@@ -37,6 +37,7 @@ Formally we must first define one-hole contexts on terms themselves (Figure~\ref
 \smallskip\noindent(similarly for all other constructors)
 \end{minipage}
 
+\Description{Grammar of one-hole expression contexts and the definition of plugging an expression into a context.}
 \caption{One-hole expression contexts. $\cmark$ marks the hole; $\C[e]$ plugs it.}
 \label{fig:contexts}
 \end{figure}
@@ -82,6 +83,7 @@ Specifying these rules is systematic, one for each typing rule and focus locatio
 \[\inference[\texttt{s$\circ_2$}]{\synthesis{e_1}{\tau} & \tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \ctxclass{\C}{\anamode\;\tau_1}{\Delta';\,\Gamma'}{m}}{\ctxclass{e_1(\C)}{\synmode\;\tau_2}{\Delta';\,\Gamma'}{m}}\]
 
 \[\inference[\texttt{aSub}]{\ctxclass{\C}{\synmode\;\tau'}{\Delta';\,\Gamma'}{m} & \tau \sim \tau'}{\ctxclass{\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}}\]
+\Description{Selected inference rules for the context typing judgement: the two identity contexts, the two application positions, and subsumption.}
 \caption{Selected context typing rules.}
 \label{fig:context-classification}
 \end{figure}

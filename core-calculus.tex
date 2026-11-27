@@ -16,6 +16,7 @@ e &::= \gap \mid () \mid x \mid \lambda x \mathbin{:} \tau.\; e \mid \lambda x.\
   &\quad\mid\; \iota_1\; e \mid \iota_2\; e \mid (\mathbf{case}\;e\;\mathbf{of}\;x.\;e \mid y.\;e) \mid \Lambda\alpha.\; e \mid e\langle\tau\rangle \mid \mathbf{let}\;x = e\;\mathbf{in}\;e
 \end{align*}
 
+\Description{Grammar of types and expressions of the core calculus.}
 \caption{Syntax of the core calculus up to $\alpha$-equivalence (on variables $x$). $\iota_1$ and $\iota_2$ are the sum injections.}
 \label{fig:syntax}
 \end{figure}
@@ -35,6 +36,7 @@ Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in stand
 \[\inference[$\sim{\times}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \times \tau_2 \sim \tau_1' \times \tau_2'} \qquad
   \inference[$\sim{+}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 + \tau_2 \sim \tau_1' + \tau_2'} \qquad
   \inference[$\sim{\forall}$]{\tau \sim \tau'}{\forall\alpha.\;\tau \sim \forall\alpha.\;\tau'}\]
+\Description{Inference rules defining type consistency.}
 \caption{Type consistency.}
 \label{fig:consistency}
 \end{figure}
@@ -52,6 +54,7 @@ Precision (Figure~\ref{fig:precision}) is a partial order that organises terms b
 \[\inference[$\sqsubseteq{\times}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 \times \tau_2 \sqsubseteq \tau_1' \times \tau_2'} \qquad
   \inference[$\sqsubseteq{+}$]{\tau_1 \sqsubseteq \tau_1' & \tau_2 \sqsubseteq \tau_2'}{\tau_1 + \tau_2 \sqsubseteq \tau_1' + \tau_2'} \qquad
   \inference[$\sqsubseteq{\forall}$]{\tau \sqsubseteq \tau'}{\forall\alpha.\;\tau \sqsubseteq \forall\alpha.\;\tau'}\]
+\Description{Inference rules defining type precision.}
 \caption{Type precision.}
 \label{fig:precision}
 \end{figure}
@@ -115,6 +118,7 @@ The bidirectional typing judgements are mostly standard; the complete synthesis 
 %
 \[\inference[\anar{Sub}]{\synthesis{e}{\tau'} & \tau \sim \tau'}{\analysis{e}{\tau}} \qquad
   \inference[\anar{$\lambda$}]{\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2 & \analysis[\Delta;\,\Gamma, x \mathbin{:} \tau_1]{e}{\tau_2}}{\analysis{\lambda x.\; e}{\tau}}\]
+\Description{Selected inference rules for the synthesis and analysis typing judgements.}
 \caption{Selected synthesis and analysis rules.}
 \label{fig:typing-rules-excerpt}
 \end{figure}
