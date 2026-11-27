@@ -33,7 +33,8 @@ Type consistency (Figure~\ref{fig:consistency}) is exactly as presented in stand
   \inference[$\sim\gap_2$]{}{\gap \sim \tau} \qquad
   \inference[$\sim{1}$]{}{1 \sim 1} \qquad
   \inference[$\sim{\funarr}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \funarr \tau_2 \sim \tau_1' \funarr \tau_2'}\]
-\[\inference[$\sim{\times}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \times \tau_2 \sim \tau_1' \times \tau_2'} \qquad
+\[\inference[$\sim{\alpha}$]{}{\alpha \sim \alpha} \qquad
+  \inference[$\sim{\times}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 \times \tau_2 \sim \tau_1' \times \tau_2'} \qquad
   \inference[$\sim{+}$]{\tau_1 \sim \tau_1' & \tau_2 \sim \tau_2'}{\tau_1 + \tau_2 \sim \tau_1' + \tau_2'} \qquad
   \inference[$\sim{\forall}$]{\tau \sim \tau'}{\forall\alpha.\;\tau \sim \forall\alpha.\;\tau'}\]
 \Description{Inference rules defining type consistency.}
