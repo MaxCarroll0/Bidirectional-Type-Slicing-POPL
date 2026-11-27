@@ -172,8 +172,11 @@ of the main paper; \synr{case} is only approximated there.
 \label{supp:marked}
 
 Marked context typing (introduced in the Error Marking section of the main
-paper) is validated by a pair of theorems mirroring the unmarked plug totality and
-soundness theorems.
+paper) is validated by two pairs of theorems. The first pair, decomposition and
+composition, mirrors the unmarked Plug Decomposition and Plug Composition
+theorems. The second pair, totality and erasure of marking for contexts, mirrors
+the Totality of Marking and Erasure of Marking theorems for expressions in the
+main paper.
 
 \begin{theorem}[Marked Plug Decomposition -- Totality]\label{supp:thm:mplug-decompose}
 For any context $\C$, expression $e$, and outer derivation mode $d$:
@@ -186,6 +189,14 @@ Here ``$e$ marks to $\chk e$ at focus mode $m$'' means: if $m = \synmode\;\tau'$
 
 \begin{theorem}[Marked Plug Composition -- Soundness]\label{supp:thm:mplug-compose}
 For any context $\C$, marked context $\chk\C$, outer derivation mode $d$, and focus mode $m$: if\/ $\mctxclass{\C}{\chk\C}{d}{\Delta';\,\Gamma'}{m}$ and $e$ marks to $\chk e$ at focus mode $m$, then $\C[e]$ marks to $\chk\C[\chk e]$ at outer derivation mode $d$.
+\end{theorem}
+
+\begin{theorem}[Totality of Marking for Contexts]\label{supp:thm:mctx-total}
+For every context $\C$ and assumptions $\Delta;\Gamma$ such that every type annotation in $\C$ is well-formed under $\Delta$ (that is, $\C[\gap]$ is well-annotated), there exist a marked context $\chk\C$, a type $\tau$, $\Delta'$, $\Gamma'$, and $m$ such that $\mctxclass{\C}{\chk\C}{\synmode\;\tau}{\Delta';\,\Gamma'}{m}$. And, for every type $\tau'$, there exist $\chk\C'$, $\Delta''$, $\Gamma''$, and $m'$ such that $\mctxclass{\C}{\chk\C'}{\anamode\;\tau'}{\Delta'';\,\Gamma''}{m'}$.
+\end{theorem}
+
+\begin{theorem}[Erasure of Marking for Contexts]\label{supp:thm:mctx-erase}
+For any outer derivation mode $d$: if\/ $\mctxclass{\C}{\chk\C}{d}{\Delta';\,\Gamma'}{m}$ then $\mathrm{erase}(\chk\C) \equiv \C$.
 \end{theorem}
 
 
