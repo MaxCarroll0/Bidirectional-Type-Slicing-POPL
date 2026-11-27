@@ -78,13 +78,13 @@ For $D : \synthesis{e}{\tau}$, elements of $\minsynslice{D}{\upsilon}$ are minim
 \label{sec:min-exists}
 
 
-Crucially, any synthesis slice has a minimal slice below it (or is minimal):
+Crucially, any synthesis slice has a minimal slice below it (or is minimal itself):
 \begin{theorem}[Existence of minimal slices]\label{thm:min-exists}
 For every $s : \synslice{D}{\upsilon}$, there exists $m : \minsynslice{D}{\upsilon}$ with $m \sqsubseteq s$.
 \end{theorem}
 
 \begin{proof}
-The slice lattice $\lfloor s \rfloor$ is finite. Hence, $\{\,s' : \synslice{D}{\upsilon} \mid s' \sqsubseteq s\,\}$ is nonempty as $s \sqsubseteq s$, and finite and computable by decidability of type checking and precision. The set is finite, thereby cannot include an infinite strictly descending precision chain, so there must exist a finite chain with a minimal element $m$ as the set is nonempty.
+The set $\{\,s' : \synslice{D}{\upsilon} \mid s' \sqsubseteq s\,\}$ is nonempty as $s \sqsubseteq s$. The slice lattice $\lfloor s \rfloor$ is finite, hence the set is finite, and computable by decidability of type checking and precision. Being finite, it cannot include an infinite strictly descending precision chain, so there must exist a finite chain with a minimal element $m$ as the set is nonempty.
 \end{proof}
 
 Consequently, any derivation $D$ has a minimal synthesis slice, as the original program is a trivial inhabitant of $\synslice{D}{\upsilon}$ for all $\upsilon$.

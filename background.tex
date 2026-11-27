@@ -26,11 +26,11 @@ To calculate a type slice we will need an ordering of programs and types by info
 
 For example, the particular calculus we explore in this paper is a gradually typed calculus \cite{GradualFunctional} with \textit{holes}, that is, you can remove information by omitting sub-terms of expressions or types, replacing them with holes. We type check these by giving them the `unknown' (dynamic) type. 
 
-However, up until \cref{sec:marking}, the foundational theory applies to any calculi / precision orderings satisfying the \textit{Downwards Static Gradual Guarantee} below. Instead of, or in conjunction with gradual types and holes, this may include suitable orderings based upon, for example, \textit{subtyping, row polymorphism, or set-theoretic types}.
+However, up until \cref{sec:marking}, the foundational theory applies to any calculi / precision orderings satisfying the \textit{Downwards Static Gradual Guarantee} below. Instead of, or in conjunction with, gradual types and holes, this may include suitable orderings based upon, for example, \textit{subtyping, row polymorphism, or set-theoretic types}.
 
 The \textit{Downwards Static Gradual Guarantee} is based on a particular subcase of the refined criteria for gradual typing \cite{GradualRefined}. It captures a downwards monotonicity property that: a less or equally precise program and assumptions, contains less or equal type information under their respective $\sqsubseteq$ orderings. \textit{`Removing information from a program cannot introduce new type information.'} Formally:
 
-\begin{definition} A bidirectional calculus satisfies the \textit{downwards static gradual guarantee} (DSGG)\footnote{Note the orientation: the less precise term is on the left. This differs from most gradual typing literature and subtyping direction which puts the MORE specific type (subtype) on the left.} if, for all $\Delta, \Gamma', \Gamma, e', e, \tau$ such that $\Gamma' \sqsubseteq \Gamma$ and $e' \sqsubseteq e$, both:
+\begin{definition} A bidirectional calculus satisfies the \textit{downwards static gradual guarantee} (DSGG)\footnote{Note the orientation: the less precise term is on the left. This differs from most gradual typing literature and subtyping direction which puts the MORE specific type (subtype) on the left, but our direction is consistent with lattice-based program slicing literature.} if, for all $\Delta, \Gamma', \Gamma, e', e, \tau$ such that $\Gamma' \sqsubseteq \Gamma$ and $e' \sqsubseteq e$, both:
 \begin{itemize}
   \item If $\synthesis{e}{\tau}$ then there exists $\tau' \sqsubseteq \tau$ such that $\synthesis[\Delta;\ \Gamma']{e'}{\tau'}$.
 \item For all $\tau' \sqsubseteq \tau$, if $\analysis{e}{\tau}$ then $\analysis[\Delta; \Gamma']{e'}{\tau'}$.

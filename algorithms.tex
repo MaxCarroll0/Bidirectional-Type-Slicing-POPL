@@ -81,7 +81,7 @@ and ask for slices of $D : \synthesis{e}{\tau}$ at the full query $\upsilon = \m
 
 \begin{description}
 \item[{\color{BrickRed}(A)}] Both branches are retained; the assumption slice keeps $x$'s domain only and $y$'s codomain only (joining to $1 \funarr 1$).
-\item[{\color{NavyBlue}(B)}] Symmetric to (A), taking the opposite choices for the assumption slice.
+\item[{\color{NavyBlue}(B)}] Symmetric to {\color{BrickRed}(A)}, taking the opposite choices for the assumption slice.
 \item[{\color{OliveGreen}(C)}] \textbf{Else}-branch omitted.
 \item[{\color{Mulberry}(D)}] Symmetric to (C): \textbf{then}-branch omitted.
 \end{description}
@@ -100,13 +100,13 @@ Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} are minimal because each 
   \coordinate (col1) at (xmark.east |- a.south);
   \coordinate (col2) at ($(ax.east |- a.south) + (3pt,0)$);
   \coordinate (col3) at (ymark.east |- a.south);
-  \node[font=\tiny\bfseries, OliveGreen, anchor=east, inner sep=1pt] at ([yshift=12pt]col1)  {(C)};
-  \node[font=\tiny\bfseries, Mulberry,   anchor=west, inner sep=1pt] at ([yshift=9.6pt]col2) {(D)};
-  \node[font=\tiny\bfseries, Mulberry,   anchor=east, inner sep=1pt] at ([yshift=9.6pt]col3) {(D)};
+  \node[font=\tiny\bfseries, OliveGreen, anchor=east, inner sep=1pt] at ([yshift=12pt]col1)  {(C$'$)};
+  \node[font=\tiny\bfseries, Mulberry,   anchor=west, inner sep=1pt] at ([yshift=9.6pt]col2) {(D$'$)};
+  \node[font=\tiny\bfseries, Mulberry,   anchor=east, inner sep=1pt] at ([yshift=9.6pt]col3) {(D$'$)};
   \node[right=5em of a] (t)
        {$\sPboth{(}\tokensp\sPboth{\mathbf{if}}\tokensp\mathbf{true}\tokensp\sPboth{\mathbf{then}}\tokensp\sPone{x}\tokensp\sPboth{\mathbf{else}}\tokensp\sPtwo{y}\tokensp\sPboth{\mathbf{,}}\tokensp\sPboth{x}\tokensp\sPboth{)}$};
-  \node[font=\tiny\bfseries, OliveGreen, anchor=east, inner sep=1pt] at ([yshift=12pt]t.south west)  {(C)};
-  \node[font=\tiny\bfseries, Mulberry,   anchor=west, inner sep=1pt] at ([yshift=9.6pt]t.south east) {(D)};
+  \node[font=\tiny\bfseries, OliveGreen, anchor=east, inner sep=1pt] at ([yshift=12pt]t.south west)  {(C$'$)};
+  \node[font=\tiny\bfseries, Mulberry,   anchor=west, inner sep=1pt] at ([yshift=9.6pt]t.south east) {(D$'$)};
 \end{tikzpicture}
 \end{center}
 
@@ -116,7 +116,7 @@ When this expression is embedded in the product $(\mathbf{if}\;\mathbf{true}\;\m
 \subsection{Term-Minimal Slices}
 \label{sec:term-minimal-slices}
 
-To rule out slices like (A) and (B) (\S\ref{sec:product-revisited}), we strengthen the notion of slices. We first calculate the minimal expression under \textit{maximal} typing assumptions, and then minimise the assumptions afterwards. By the DSGG, this is a minimal synthesis slice.
+To rule out slices like {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} (\S\ref{sec:product-revisited}), we strengthen the notion of slices. We first calculate the minimal expression under \textit{maximal} typing assumptions, and then minimise the assumptions afterwards. By the DSGG, this is a minimal synthesis slice.
 
 \begin{definition}[Term-minimal slice]
 \label{def:term-minimal-slice}
@@ -132,7 +132,7 @@ A $\mintmslice{D}{\upsilon}$ is a $\tmslice{D}{\upsilon}$ minimal in $\tmslice{D
 Crucially, the two notions of minimality do not coincide: term-minimality is a strictly more restrictive condition. Not all minimal slices are term-minimal under maximal assumptions.
 
 \begin{counterexample}[Minimal $\not\Rightarrow$ Term-Minimal]\label{lem:min-not-tmin}
-Slices (A) and (B) (\S\ref{sec:product-revisited}) are minimal synthesis slices but are \textbf{not} term-minimal.
+Slices {\color{BrickRed}(A)} and {\color{NavyBlue}(B)} (\S\ref{sec:product-revisited}) are minimal synthesis slices but are \textbf{not} term-minimal.
 \end{counterexample}
 
 \subsection{Calculating Term-Minimal Slices}
@@ -319,12 +319,12 @@ As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau
   {min cover: $\{S_1,S_3\}$};
 
 \node[font=\footnotesize, align=left] at (5.0,0.6)  {$\tau \;=\; 1 \times 1 \times 1 \times 1$};
-\node[font=\footnotesize, align=left] at (5.0,0.0)  {$T_1 \,=\, 1 \times 1 \times \gap \times \gap$};
-\node[font=\footnotesize, align=left] at (5.0,-0.6) {$T_2 \,=\, \gap \times 1 \times 1 \times \gap$};
-\node[font=\footnotesize, align=left] at (5.0,-1.2) {$T_3 \,=\, \gap \times \gap \times 1 \times 1$};
-\node[font=\footnotesize, align=left] at (5.0,-1.8) {$T_4 \,=\, 1 \times \gap \times \gap \times 1$};
+\node[font=\footnotesize, align=left] at (5.0,0.0)  {$x_1 : T_1 \,=\, 1 \times 1 \times \gap \times \gap$};
+\node[font=\footnotesize, align=left] at (5.0,-0.6) {$x_2 : T_2 \,=\, \gap \times 1 \times 1 \times \gap$};
+\node[font=\footnotesize, align=left] at (5.0,-1.2) {$x_3 : T_3 \,=\, \gap \times \gap \times 1 \times 1$};
+\node[font=\footnotesize, align=left] at (5.0,-1.8) {$x_4 : T_4 \,=\, 1 \times \gap \times \gap \times 1$};
 \node[font=\footnotesize\itshape, text=gray!50!black, align=center] at (5.0,-2.5)
-  {encoding $S_j \to T_j$};
+  {encoding $S_j \to x_j : T_j$};
 
 \node[ca] (rt) at (10.5, 0.8) {case};
 \node[ca] (cl) at ( 9.1, 0.0) {case};
@@ -351,7 +351,7 @@ As we queried $\tau$ in the first projection then $\bigsqcup_{j=1}^m{T_j} = \tau
 \label{fig:nphard}
 \end{figure}
 
-Writing $p$ for the program size and $t$ for the total size of the types in its derivation, by \cref{thm:min-exists} a minimal slice is computable in $\mathcal{O}(p\,(p+t))$ (\S\ref{sec:min-exists}). Here $p = \mathcal{O}(nm + m^2)$, as the $m$ assumptions have $n$ positions each and each of the $m$ leaves carries an $m$-ary tuple $I_j$; and $t = \mathcal{O}(nm + m^2)$, as the $\mathcal{O}(m)$ variables, pairs, and case nodes each carry a slice of $\tau \times \mathbf{1} \times \dots \times \mathbf{1}$, of size $\mathcal{O}(n + m)$, alongside the $m^2$ tuple components. So $p + t = \mathcal{O}(nm + m^2)$, polynomial in the $\Theta(nm)$ size of the set cover instance. Thus some minimal slice can indeed be calculated in polynomial time, so the exponential time must come from correctly choosing the minimum-size slice.
+Writing $p$ for the program size and $t$ for the total size of the types in its derivation, by the brute force method (\S\ref{sec:min-exists}) a minimal slice is computable in $\mathcal{O}(p\,(p+t))$. Here $p = \mathcal{O}(nm + m^2)$, as the $m$ assumptions have $n$ positions each and each of the $m$ leaves carries an $m$-ary tuple $I_j$; and $t = \mathcal{O}(nm + m^2)$, as the $\mathcal{O}(m)$ variables, pairs, and case nodes each carry a slice of $\tau \times \mathbf{1} \times \dots \times \mathbf{1}$, of size $\mathcal{O}(n + m)$, alongside the $m^2$ tuple components. So $p + t = \mathcal{O}(nm + m^2)$, polynomial in the $\Theta(nm)$ size of the set cover instance. Thus some minimal slice can indeed be calculated in polynomial time, so the exponential time must come from correctly choosing the minimum-size slice.
 
 
 

@@ -38,7 +38,7 @@ Formally we must first define one-hole contexts on terms themselves (Figure~\ref
 \end{minipage}
 
 \Description{Grammar of one-hole expression contexts and the definition of plugging an expression into a context.}
-\caption{One-hole expression contexts. $\cmark$ marks the hole; $\C[e]$ plugs it.}
+\caption{One-hole expression contexts.}
 \label{fig:contexts}
 \end{figure}
 
@@ -57,7 +57,7 @@ This lemma allows slicing to independently slice the \textit{external} type info
 
 Then, we notate context typing by a judgement $\ctxclass{\C}{d}{\Delta';\ \Gamma'}{m}$, read as: ``under assumptions $\Delta, \Gamma$, context $\C$ in a derivation of outer mode $d$ has its focus typed under $\Delta';\,\Gamma'$ in focus mode $m$''.
 
-The \textit{outer derivation mode} $d$ records whether the whole expression $\C[e]$ is in a synthesis derivation producing type $\tau$ ($d = \synmode\;\tau$) or an analysis derivation against $\tau$ ($d = \anamode\;\tau$). The \textit{focus mode} $m$ records the type the focus $e$ must synthesise ($m = \synmode\;\tau'$), or the type it is checked against ($m = \anamode\;\tau'$). Finally, $\Gamma'$ records the \textit{focus assumptions}. Each rule in these derivations is subject to \textit{additional premises} matching the corresponding term typing rules.
+The \textit{outer derivation mode} $d$ records whether the whole expression $\C[e]$ is in a synthesis derivation producing type $\tau$ ($d = \synmode\;\tau$) or an analysis derivation against $\tau$ ($d = \anamode\;\tau$). The \textit{focus mode} $m$ records the type the focus $e$ must synthesise ($m = \synmode\;\tau'$), or the type it is checked against ($m = \anamode\;\tau'$). Finally, $\Gamma'$ records the \textit{focus' assumptions}. Each rule in these derivations is subject to \textit{additional premises} matching the corresponding term typing rules.
 
 \begin{exmp} Consider the derivation of $\synthesis{e_1(e_2)}{\tau_2}$ via \synr{App}, where $\synthesis{e_1}{\tau}$, $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$, and $\analysis{e_2}{\tau_1}$.
 \begin{itemize}
@@ -88,10 +88,10 @@ Specifying these rules is systematic, one for each typing rule and focus locatio
 \label{fig:context-classification}
 \end{figure}
 
-Correctness of context typing is formalised via a \textit{totality} theorem: every well-typed expression can be decomposed into context and expression at some focus, with a context typing matching a (consistent) typing derivation of the focused term. Conversely, a \textit{soundness} theorem states that a valid context typing and expression satisfying the focus typing mode can be composed into a well-typed plugged expression.
+Correctness of context typing is formalised via a \textit{totality} theorem: every well-typed expression can be decomposed into context and expression at any focus location, with a context typing matching a (consistent) typing derivation of the focused term. Conversely, a \textit{soundness} theorem states that a valid context typing and expression satisfying the focus typing mode can be composed into a well-typed plugged expression.
 
 \begin{theorem}[Plug Decomposition -- Totality]\label{thm:plug-decomposition}
-For any context $\C$, expression $e$, and outer derivation mode $d$:
+For any context $\C$ and expression $e$:
 \begin{itemize}
 \item If\/ $\synthesis{\C[e]}{\tau}$, then there exist $\Delta'$, $\Gamma'$, and $m$ such that\\ $\ctxclass{\C}{\synmode\;\tau}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$.
 \item If\/ $\analysis{\C[e]}{\tau}$, then there exist $\Delta'$, $\Gamma'$, and $m$ such that\\ $\ctxclass{\C}{\anamode\;\tau}{\Delta';\,\Gamma'}{m}$ and $e$ satisfies focus mode $m$ under $\Delta';\,\Gamma'$.

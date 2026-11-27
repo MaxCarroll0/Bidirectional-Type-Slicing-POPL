@@ -98,7 +98,7 @@ Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloo
 \begin{theorem}\label{thm:slice-lattices}
 Each slice lattice $\lfloor\tau\rfloor$, $\lfloor e \rfloor$, $\lfloor \C \rfloor$, and $\lfloor \Gamma \rfloor$ is a bounded distributive lattice.
 \end{theorem}
-Moreover, being finite and distributive, each slice lattice is bi-Heyting~\cite{DaveyPriestley}. We will later introduce and use co-Heyting subtraction to represent `disjoint' types (\S\ref{sec:algorithms}).
+Moreover, being finite and distributive, each slice lattice is bi-Heyting. We will later introduce and use co-Heyting subtraction to represent `disjoint' types (\S\ref{sec:algorithms}).
 
 \paragraph{Notation: Slice Lattices as Highlighted Terms.} An element of a slice lattice can be notated as a highlight of the original (top) term with omitted regions (the \gap{}s) left unhighlighted. For instance, the slice $\mathit{Int} \funarr \gap$ in $\lfloor\mathit{Int} \funarr \mathit{Bool}\rfloor$ can be represented as $\sli{\mathit{Int} \funarr}\, \mathit{Bool}$.
 
@@ -124,7 +124,7 @@ The bidirectional typing judgements are mostly standard; the complete synthesis 
 \label{fig:typing-rules-excerpt}
 \end{figure}
 
-We use joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. For instance $(\mathit{Int} \funarr \mathit{Bool}) \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ implies that $\tau_1 \equiv \mathit{Int}$ and $\tau_2 \equiv \mathit{Bool}$, and $\gap \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ implies that $\tau_1 \equiv \gap$ and $\tau_2 \equiv \gap$, whereas for $\tau = \mathit{Int}$ the join is undefined and \synr{App} does not apply.
+We use joins to replicate type matching in the gradual typing literature.\footnote{Typically notated $\tau \blacktriangleright \tau_1 \funarr \tau_2$.} $\tau \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ extracts the domain and codomain of $\tau$, or the gap type $\gap$ if $\tau \equiv \gap$. For instance $(\mathit{Int} \funarr \mathit{Bool}) \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ implies that $\tau_1 \equiv \mathit{Int}$ and $\tau_2 \equiv \mathit{Bool}$, and $\gap \sqcup (\gap \funarr \gap) \equiv \tau_1 \funarr \tau_2$ implies that $\tau_1 \equiv \gap$ and $\tau_2 \equiv \gap$, whereas for $\tau = \mathit{Int}$ the join is undefined and \synr{App} does not apply.
 
 Case expressions can synthesise a type when their branches synthesise \textit{consistent} types. There is a dedicated rule for unannotated let bindings, which differ from function applications in a bidirectional setting due to type information flowing from the binding into the body. The typing rules satisfy the DSGG (\S\ref{sec:gradual-types}).
 \begin{theorem}\label{thm:graduality-syn}
