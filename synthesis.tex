@@ -253,20 +253,20 @@ However, we shall later see that the converse fails: the product of two minimal 
 \label{sec:let-decomp}
 
 A more subtle case is that of let-bindings, which have different assumptions for their two premises:
-\[\inference[\synr{Let}]{
+\[\inference[\synr{let}]{
   \synthesis{e_1}{\tau_1}
   &
   \synthesis[\Delta;\,\Gamma, x:\tau_1]{e_2}{\tau_2}
 }{\synthesis{\mathbf{let}\;x = e_1\;\mathbf{in}\;e_2}{\tau_2}}\]
 A slice of a let-expression can be constructed from a slice $(\gamma_1, \varsigma_1) : \synslice{D_1}{\upsilon_1}$ of the definition (synthesising $\phi_1$) and a slice $(\gamma_2, \varsigma_2) : \synslice{D_2}{\upsilon_2}$ of the body (synthesising $\phi_2$), constrained with an assumption consistency condition: the body's used assumptions for the bound variable $x$ must be \textit{at most as precise as} the type synthesised by the slice of the definition, $\gamma_2(x) \mathbin{\sqsubseteq} \phi_1$.
 
-Then, upon joining the assumptions for the two slices, we must remove the assumption on $x$ from the body (notated $\gamma_{\setminus x}$), as this is now provided by the definition. We get a valid $(\gamma_1, \varsigma_1)\; \mathbin{\mathsf{def}}\; (\gamma_2, \varsigma_2) : \synslice{\synr{Let}\ D_1\ D_2}{\upsilon_2}$:
+Then, upon joining the assumptions for the two slices, we must remove the assumption on $x$ from the body (notated $\gamma_{\setminus x}$), as this is now provided by the definition. We get a valid $(\gamma_1, \varsigma_1)\; \mathbin{\mathsf{def}}\; (\gamma_2, \varsigma_2) : \synslice{\synr{let}\ D_1\ D_2}{\upsilon_2}$:
 \[(\gamma_1, \varsigma_1) \mathbin{\mathsf{def}} (\gamma_2, \varsigma_2) \triangleq (\gamma_1 \sqcup (\gamma_2)_{\setminus x},\; \mathbf{let}\;x = \varsigma_1\;\mathbf{in}\;\varsigma_2)\]
 
 As with products, this let expression synthesises some $\phi_2' \sqsupseteq \phi_2 \sqsupseteq \upsilon_2$, and we get a similar decomposition theorem; the remaining constructs are analogous.
 
 \begin{thmcase}[Binding Decomposition]\label{thm:min-def-decomp}
-Let $m : \minsynslice{\synr{Let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_1 \in \lfloor\tau_1\rfloor$ and minimal slices $m_1 : \minsynslice{D_1}{\phi_1}$ (synthesising some $\phi_1' \sqsupseteq \phi_1$) and $m_2 = (\gamma_2, \varsigma_2) : \minsynslice{D_2}{\upsilon}$ satisfying $\gamma_2(x) \sqsubseteq \phi_1'$, with $m = m_1 \mathbin{\mathsf{def}} m_2$.
+Let $m : \minsynslice{\synr{let}\,D_1\,D_2}{\upsilon}$. Then there exists $\phi_1 \in \lfloor\tau_1\rfloor$ and minimal slices $m_1 : \minsynslice{D_1}{\phi_1}$ (synthesising some $\phi_1' \sqsupseteq \phi_1$) and $m_2 = (\gamma_2, \varsigma_2) : \minsynslice{D_2}{\upsilon}$ satisfying $\gamma_2(x) \sqsubseteq \phi_1'$, with $m = m_1 \mathbin{\mathsf{def}} m_2$.
 \end{thmcase}
 
 \subsection{Contribution Slices}
